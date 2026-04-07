@@ -81,9 +81,7 @@ public class TransactionProcessor extends KeyedProcessFunction<String, Transacti
 
     @SuppressWarnings("unchecked")
     private TypeSerializer<RowData> createSerializer(Schema icebergSchema) {
-        RowType rowType = (RowType) FlinkSchemaUtil.convert(icebergSchema)
-                .toPhysicalRowDataType()
-                .getLogicalType();
+        RowType rowType = FlinkSchemaUtil.convert(icebergSchema);
         return (TypeSerializer<RowData>) (TypeSerializer<?>)
                 new org.apache.flink.table.runtime.typeutils.RowDataSerializer(rowType);
     }

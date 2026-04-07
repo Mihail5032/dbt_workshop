@@ -1,1 +1,4 @@
 
+SELECT * FROM ice_baby.dictionaries.tvarvc 
+WHERE name = 'CHK_FIXES' 
+LIMIT 20;

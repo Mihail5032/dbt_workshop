@@ -1,11 +1,1 @@
-DataStreamJob
-В нём находится метод main(), с которого начинается работа парсера. Он выполняет три задачи. Настройка источника данных: DataStreamJob создаёт подключение к Kafka, откуда будут читаться XML-сообщения.
-Подготовка таблиц: DataStreamJob задаёт соответствие между именами сегментов и Iceberg-таблицами. Для каждого сегмента DataStreamJob загружает из Iceberg два объекта: TableLoader и Schema. Отдельно DataStreamJob задаёт соответствие для PST-сегментов.
-Cоздание sink'ов: DataStreamJob создаёт sink для каждого потока данных. RAW-sink создаётся только для 5 сегментов, у которых нет PST-логики: E1BPSOURCEDOCUMENTLI, E1BPLINEITEMTAX, E1BPRETAILTOTALS, E1BPTENDERTOTALS, E1BPTRANSACTIONDISCO.
-После DataStreamJob передаёт загруженные схемы в RawDataProcessFunction и запускает Flink-джобу.
-RawDataProcessFunction получает каждое сообщение из Kafka и обрабатывает его в методе processElement()
-Сначала сообщение декодируется. Затем XML парсится JAXB в Java-объект. На выходе получается объект IDocWrapper. Через него доступны все данные.
-После парсинга данные передаются в TransactionCorrector для бизнес-коррекций.
-После обогащения RawDataProcessFunction подготавливает вспомогательные данные для PST-логики.
-Затем начинается основной цикл: для каждого сегмента из списка RawDataProcessFunction выполняет два действия. Первое - конвертирует сегмент в формат RowData и отправляет его в RAW сайд аутпут. Второе - проверяет тип сегмента и, если для этого типа есть PST-логика, создаёт трансформированную версию и отправляет её в PST сайд аутпут.
-После основного цикла RawDataProcessFunction создаёт синтетические тендеры.
+https://x5group.ktalk.ru/eb3fbc8c0dab4ae39ddb3254e666c751

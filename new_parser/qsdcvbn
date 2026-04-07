@@ -1,19 +1,45 @@
-В нём находится метод main(), с которого начинается работа парсера. Он выполняет три задачи. Настройка источника данных: DataStreamJob создаёт подключение к Kafka, откуда будут читаться XML-сообщения.
-
-Подготовка таблиц: DataStreamJob задаёт соответствие между именами сегментов и Iceberg-таблицами. Для каждого сегмента DataStreamJob загружает из Iceberg два объекта: TableLoader и Schema. Отдельно DataStreamJob задаёт соответствие для PST-сегментов.
-
-Cоздание sink'ов. DataStreamJob создаёт sink для каждого потока данных. RAW-sink создаётся только для 5 сегментов, у которых нет PST-логики: E1BPSOURCEDOCUMENTLI, E1BPLINEITEMTAX, E1BPRETAILTOTALS, E1BPTENDERTOTALS, E1BPTRANSACTIONDISCO.
-
-После DataStreamJob передаёт загруженные схемы в RawDataProcessFunction и запускает Flink-джобу.
-
-RawDataProcessFunction получает каждое сообщение из Kafka и обрабатывает его в методе processElement()
-
-Сначала сообщение декодируется. Затем XML парсится JAXB в Java-объект. На выходе получается объект IDocWrapper. Через него доступны все данные.
-
-После парсинга данные передаются в TransactionCorrector для бизнес-коррекций.
-
-После обогащения RawDataProcessFunction подготавливает вспомогательные данные для PST-логики.
-
-Затем начинается основной цикл: для каждого сегмента из списка RawDataProcessFunction выполняет два действия. Первое - конвертирует сегмент в формат RowData и отправляет его в RAW сайд аутпут. Второе - проверяет тип сегмента и, если для этого типа есть PST-логика, создаёт трансформированную версию и отправляет её в PST сайд аутпут.
-
-После основного цикла RawDataProcessFunction создаёт синтетические тендеры.
+2026-04-07 10:34:42
+java.lang.Exception: Cannot deploy task sink-pst_bpfinancialmovemen-IcebergStreamWriter -> sink-pst_bpfinancialmovemen-IcebergFilesCommitter -> sink-pst_bpfinancialmovemen-IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_bpfinancialmovemen_test: Writer (1/1) (4c407dca75e210144a4528de18d7df97_7c8aa05b1b2bbb56f7aee70f30246d91_0_3) - TaskManager (100.127.158.138:6122-1d5fcd @ 100.127.158.138 (dataPort=38599)) not responding after a rpcTimeout of PT10S
+	at org.apache.flink.runtime.executiongraph.Execution.lambda$deploy$5(Execution.java:662)
+	at java.base/java.util.concurrent.CompletableFuture.uniWhenComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$Completion.run(Unknown Source)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.lambda$handleRunAsync$4(PekkoRpcActor.java:460)
+	at org.apache.flink.runtime.concurrent.ClassLoadingUtils.runWithContextClassLoader(ClassLoadingUtils.java:68)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRunAsync(PekkoRpcActor.java:460)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRpcMessage(PekkoRpcActor.java:225)
+	at org.apache.flink.runtime.rpc.pekko.FencedPekkoRpcActor.handleRpcMessage(FencedPekkoRpcActor.java:88)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleMessage(PekkoRpcActor.java:174)
+	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:33)
+	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:29)
+	at scala.PartialFunction.applyOrElse(PartialFunction.scala:127)
+	at scala.PartialFunction.applyOrElse$(PartialFunction.scala:126)
+	at org.apache.pekko.japi.pf.UnitCaseStatement.applyOrElse(CaseStatements.scala:29)
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:175)
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
+	at org.apache.pekko.actor.Actor.aroundReceive(Actor.scala:547)
+	at org.apache.pekko.actor.Actor.aroundReceive$(Actor.scala:545)
+	at org.apache.pekko.actor.AbstractActor.aroundReceive(AbstractActor.scala:229)
+	at org.apache.pekko.actor.ActorCell.receiveMessage(ActorCell.scala:590)
+	at org.apache.pekko.actor.ActorCell.invoke(ActorCell.scala:557)
+	at org.apache.pekko.dispatch.Mailbox.processMailbox(Mailbox.scala:272)
+	at org.apache.pekko.dispatch.Mailbox.run(Mailbox.scala:233)
+	at org.apache.pekko.dispatch.Mailbox.exec(Mailbox.scala:245)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(Unknown Source)
+Caused by: java.util.concurrent.TimeoutException: Invocation of [RemoteRpcInvocation(TaskExecutorGateway.submitTask(TaskDeploymentDescriptor, JobMasterId, Duration))] at recipient [pekko.tcp://flink@100.127.158.138:6122/user/rpc/taskmanager_0] timed out. This is usually caused by: 1) Pekko failed sending the message silently, due to problems like oversized payload or serialization failures. In that case, you should find detailed error information in the logs. 2) The recipient needs more time for responding, due to problems like slow machines or network jitters. In that case, you can try to increase pekko.ask.timeout.
+	at org.apache.flink.runtime.jobmaster.RpcTaskManagerGateway.submitTask(RpcTaskManagerGateway.java:60)
+	at org.apache.flink.runtime.executiongraph.Execution.lambda$deploy$4(Execution.java:640)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(Unknown Source)
+	at org.apache.flink.util.MdcUtils.lambda$wrapRunnable$1(MdcUtils.java:70)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: org.apache.pekko.pattern.AskTimeoutException: Ask timed out on [Actor[pekko.tcp://flink@100.127.158.138:6122/user/rpc/taskmanager_0#85906642]] after [10000 ms]. Message of type [org.apache.flink.runtime.rpc.messages.RemoteRpcInvocation]. A typical reason for `AskTimeoutException` is that the recipient actor didn't send a reply.

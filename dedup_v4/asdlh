@@ -1,21 +1,21 @@
-
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  6.790 s
-[INFO] Finished at: 2026-04-07T23:08:43+03:00
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project
- xml-parser-correction: Compilation failure: Compilation failure:
-[ERROR] /C:/Users/Mikha.Shishkanov/flink-jobs/xml-parser-correction/src/main/java/ru/x5/process/TransactionProcessor.java:[85,17] cannot find symbol
-[ERROR]   symbol:   method toPhysicalRowDataType()
-[ERROR]   location: class org.apache.flink.table.types.logical.RowType
-[ERROR] /C:/Users/Mikha.Shishkanov/flink-jobs/xml-parser-correction/src/main/java/ru/x5/process/IdocParser.java:[148,17] cannot find symbol
-[ERROR]   symbol:   method toPhysicalRowDataType()
-[ERROR]   location: class org.apache.flink.table.types.logical.RowType
-[ERROR] -> [Help 1]
-[ERROR]
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR]
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+2026-04-07 23:20:56
+java.lang.IllegalStateException: Recovered a buffer from old ResultSubpartitionInfo{partitionIdx=0, subPartitionIdx=1} that has no mapping in IdentityRescaleMappings{1->[]}
+	at org.apache.flink.runtime.checkpoint.channel.ResultSubpartitionRecoveredStateHandler.calculateMapping(RecoveredChannelStateHandler.java:253)
+	at java.base/java.util.HashMap.computeIfAbsent(Unknown Source)
+	at org.apache.flink.runtime.checkpoint.channel.ResultSubpartitionRecoveredStateHandler.getMappedSubpartitions(RecoveredChannelStateHandler.java:234)
+	at org.apache.flink.runtime.checkpoint.channel.ResultSubpartitionRecoveredStateHandler.recover(RecoveredChannelStateHandler.java:200)
+	at org.apache.flink.runtime.checkpoint.channel.ResultSubpartitionRecoveredStateHandler.recover(RecoveredChannelStateHandler.java:156)
+	at org.apache.flink.runtime.checkpoint.channel.ChannelStateChunkReader.readChunk(SequentialChannelStateReaderImpl.java:213)
+	at org.apache.flink.runtime.checkpoint.channel.SequentialChannelStateReaderImpl.readSequentially(SequentialChannelStateReaderImpl.java:109)
+	at org.apache.flink.runtime.checkpoint.channel.SequentialChannelStateReaderImpl.read(SequentialChannelStateReaderImpl.java:95)
+	at org.apache.flink.runtime.checkpoint.channel.SequentialChannelStateReaderImpl.readOutputData(SequentialChannelStateReaderImpl.java:81)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.restoreStateAndGates(StreamTask.java:851)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.lambda$restoreInternal$5(StreamTask.java:812)
+	at org.apache.flink.streaming.runtime.tasks.StreamTaskActionExecutor$1.call(StreamTaskActionExecutor.java:55)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.restoreInternal(StreamTask.java:812)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.restore(StreamTask.java:771)
+	at org.apache.flink.runtime.taskmanager.Task.runWithSystemExitMonitoring(Task.java:963)
+	at org.apache.flink.runtime.taskmanager.Task.restoreAndInvoke(Task.java:932)
+	at org.apache.flink.runtime.taskmanager.Task.doRun(Task.java:756)
+	at org.apache.flink.runtime.taskmanager.Task.run(Task.java:568)
+	at java.base/java.lang.Thread.run(Unknown Source)

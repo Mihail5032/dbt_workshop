@@ -19,3 +19,5 @@ java.lang.IllegalStateException: Recovered a buffer from old ResultSubpartitionI
 	at org.apache.flink.runtime.taskmanager.Task.doRun(Task.java:756)
 	at org.apache.flink.runtime.taskmanager.Task.run(Task.java:568)
 	at java.base/java.lang.Thread.run(Unknown Source)
+
+SQL Error [84148230]: Query failed (#20260407_205126_00488_vgfzn): Error opening Iceberg split s3a://warehouse/core_flow_ing_raw/raw_bptransaction_test-ff6bde90bce74cc8b992129052dc7e5c/data/00000-16-fde3af2a-eae0-48d9-bc40-d24c14a5c3da-00184.parquet (offset=4, length=4658261): s3a://warehouse/core_flow_ing_raw/raw_bptransaction_test-ff6bde90bce74cc8b992129052dc7e5c/data/00000-16-fde3af2a-eae0-48d9-bc40-d24c14a5c3da-00184.parquet

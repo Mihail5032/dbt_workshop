@@ -7,3 +7,17 @@ CALL ice_baby.system.rollback_to_snapshot(
   'raw_bptransaction_test', 
   4437666381311212348
 );
+
+
+WITH cnt AS (
+    SELECT 
+        retailstoreid,
+        businessdaydate,
+        workstationid,
+        transactionsequencenumber,
+        count(*) AS qnty
+    FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem_test
+    GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+)
+SELECT * FROM cnt
+WHERE qnty > 1

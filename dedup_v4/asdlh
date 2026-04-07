@@ -1,3 +1,9 @@
 SELECT snapshot_id, committed_at, operation 
 FROM ice_baby.core_flow_ing_raw."raw_bptransaction_test$snapshots" 
 ORDER BY committed_at;
+
+CALL ice_baby.system.rollback_to_snapshot(
+  'core_flow_ing_raw', 
+  'raw_bptransaction_test', 
+  4437666381311212348
+);

@@ -11,13 +11,11 @@ CALL ice_baby.system.rollback_to_snapshot(
 
 WITH cnt AS (
     SELECT 
-        retailstoreid,
-        businessdaydate,
-        workstationid,
-        transactionsequencenumber,
+        rtl_txn_item_rk,
         count(*) AS qnty
     FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem_test
-    GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+    GROUP BY rtl_txn_item_rk
 )
 SELECT * FROM cnt
 WHERE qnty > 1
+

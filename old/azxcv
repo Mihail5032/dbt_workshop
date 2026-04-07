@@ -1,6 +1,18 @@
-Расхождение в raw_bpretaillineitem, код 2043:
-1) В Trino для записей с автоуценкой (в raw_bplineitemextensio есть fieldname = 'AUTO_MD' and fieldvalue = 'Y' ) проставляется retailtypecode = '2043'
-2) В SAP этот код не проставляется, вместо него в тех же записях стоят коды 2001, 2002, 2011 или 2803
-3) Кроме расхождений по коду записи идентичны
-4) В abap коде перед проставлением кода 2043 проверяется содержимое справочника tvarvc (стр. 92-93, 269-278)
-5) В SAPе в этом справочнике нет нужной записи. У нас тоже её нет. Похоже, у нас эта проверка не выполняется вообще.
+-- стр. 92-93 - заполнение lr_fixes значениями из справочника tvarvc
+SELECT sign opti low high INTO TABLE lr_fixes
+    FROM tvarvc WHERE name = 'CHK_FIXES' AND type = 'S'.
+
+
+
+
+-- стр. 269-278 - проверка содержимого lr_fixes перед заменой кода на 2043
+IF '2125781' IN lr_fixes. " Подмена RETAILTYPECODE при авто-уценке
+      LOOP AT <transaction>-retaillineitem ASSIGNING <item>.
+        READ TABLE <item>-extensions ASSIGNING <ext> WITH TABLE KEY FIELDGROUP = 'POS'
+                                                                    FIELDNAME = 'AUTO_MD'
+                                                                    FIELDVALUE = 'Y'.
+        IF sy-subrc IS INITIAL.
+          <item>-retailtypecode = '2043'.
+        ENDIF.
+      ENDLOOP.
+    ENDIF.

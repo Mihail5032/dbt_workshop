@@ -2,5 +2,8 @@ namespace: "flink-operator" AND (ERROR OR FATAL OR "shutting down" OR "killed" O
 
 namespace: "flink-operator" AND "heartbeat"
 
+namespace: "flink-operator" AND "heartbeat" AND ("timeout" OR "timed out" OR "expired")
+
+
 
 

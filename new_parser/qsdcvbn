@@ -1,2 +1,12 @@
-logger.rocksdb.name = org.rocksdb        # для всех классов из пакета org.rocksdb
-logger.rocksdb.level = WARN 
+WITH cnt AS (
+    SELECT 
+        retailstoreid, 
+        businessdaydate, 
+        workstationid, 
+        transactionsequencenumber, 
+        count(*) AS qnty
+    FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+    GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+)
+SELECT count(*) FROM cnt
+WHERE qnty > 1 and businessdaydate = date '2026-04-06'

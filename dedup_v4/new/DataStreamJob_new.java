@@ -83,23 +83,22 @@ public class DataStreamJob {
         Map<String, TableLoader> tableLoaders = new HashMap<>();
         Map<String, Schema> icebergSchemas = new HashMap<>();
 
-        // Оставляем только E1BPTRANSACTION — нужен для схемы конвертации
         tableMap.put("E1BPTRANSACTION", TableIdentifier.of(SCHEMA, "raw_bptransaction"));
-        // tableMap.put("E1BPSOURCEDOCUMENTLI", TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli"));
-        // tableMap.put("E1BPFINACIALMOVEMENT", TableIdentifier.of(SCHEMA, "raw_bpfinacialmovement"));
-        // tableMap.put("E1BPFINANCIALMOVEMEN", TableIdentifier.of(SCHEMA, "raw_bpfinancialmovemen"));
-        // tableMap.put("E1BPLINEITEMDISCEXT", TableIdentifier.of(SCHEMA, "raw_bplineitemdiscext"));
-        // tableMap.put("E1BPLINEITEMDISCOUNT", TableIdentifier.of(SCHEMA, "raw_bplineitemdiscount"));
-        // tableMap.put("E1BPLINEITEMEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bplineitemextensio"));
-        // tableMap.put("E1BPLINEITEMTAX", TableIdentifier.of(SCHEMA, "raw_bplineitemtax"));
-        // tableMap.put("E1BPRETAILLINEITEM", TableIdentifier.of(SCHEMA, "raw_bpretaillineitem"));
-        // tableMap.put("E1BPRETAILTOTALS", TableIdentifier.of(SCHEMA, "raw_bpretailtotals"));
-        // tableMap.put("E1BPTENDER", TableIdentifier.of(SCHEMA, "raw_bptender"));
-        // tableMap.put("E1BPTENDEREXTENSIONS", TableIdentifier.of(SCHEMA, "raw_bptenderextensions"));
-        // tableMap.put("E1BPTENDERTOTALS", TableIdentifier.of(SCHEMA, "raw_bptendertotals"));
-        // tableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco"));
-        // tableMap.put("E1BPTRANSACTEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bptransactextensio"));
-        // tableMap.put("E1BPTRANSACTDISCEXT", TableIdentifier.of(SCHEMA, "raw_bptransactdiscext"));
+        tableMap.put("E1BPSOURCEDOCUMENTLI", TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli"));
+        tableMap.put("E1BPFINACIALMOVEMENT", TableIdentifier.of(SCHEMA, "raw_bpfinacialmovement"));
+        tableMap.put("E1BPFINANCIALMOVEMEN", TableIdentifier.of(SCHEMA, "raw_bpfinancialmovemen"));
+        tableMap.put("E1BPLINEITEMDISCEXT", TableIdentifier.of(SCHEMA, "raw_bplineitemdiscext"));
+        tableMap.put("E1BPLINEITEMDISCOUNT", TableIdentifier.of(SCHEMA, "raw_bplineitemdiscount"));
+        tableMap.put("E1BPLINEITEMEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bplineitemextensio"));
+        tableMap.put("E1BPLINEITEMTAX", TableIdentifier.of(SCHEMA, "raw_bplineitemtax"));
+        tableMap.put("E1BPRETAILLINEITEM", TableIdentifier.of(SCHEMA, "raw_bpretaillineitem"));
+        tableMap.put("E1BPRETAILTOTALS", TableIdentifier.of(SCHEMA, "raw_bpretailtotals"));
+        tableMap.put("E1BPTENDER", TableIdentifier.of(SCHEMA, "raw_bptender"));
+        tableMap.put("E1BPTENDEREXTENSIONS", TableIdentifier.of(SCHEMA, "raw_bptenderextensions"));
+        tableMap.put("E1BPTENDERTOTALS", TableIdentifier.of(SCHEMA, "raw_bptendertotals"));
+        tableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco"));
+        tableMap.put("E1BPTRANSACTEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bptransactextensio"));
+        tableMap.put("E1BPTRANSACTDISCEXT", TableIdentifier.of(SCHEMA, "raw_bptransactdiscext"));
 
         for (Map.Entry<String, TableIdentifier> entry : tableMap.entrySet()) {
             String segment = entry.getKey();
@@ -109,19 +108,19 @@ public class DataStreamJob {
             icebergSchemas.put(segment, getIcebergSchema(loader));
         }
 
-        // === PST таблицы — оставляем только PST_BPTRANSACTION, пишем в _test_2 ===
+        // === PST таблицы ===
         Map<String, TableIdentifier> pstTableMap = new HashMap<>();
-        pstTableMap.put("PST_BPTRANSACTION",              TableIdentifier.of(SCHEMA, "raw_bptransaction_test_2"));
-        // pstTableMap.put("PST_BPFINANCIALMOVEMEN",          TableIdentifier.of(SCHEMA, "raw_bpfinancialmovemen_test"));
-        // pstTableMap.put("PST_BPTRANSACTEXTENSIO",          TableIdentifier.of(SCHEMA, "raw_bptransactextensio_test"));
-        // pstTableMap.put("PST_BPFINANCIALMOVEMENTEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bpfinacialmovement_test"));
-        // pstTableMap.put("PST_BPRETAILLINEITEM",            TableIdentifier.of(SCHEMA, "raw_bpretaillineitem_test"));
-        // pstTableMap.put("PST_BPLINEITEMEXTENSIO",          TableIdentifier.of(SCHEMA, "raw_bplineitemextensio_test"));
-        // pstTableMap.put("PST_BPLINEITEMDISCOUNT",          TableIdentifier.of(SCHEMA, "raw_bplineitemdiscount_test"));
-        // pstTableMap.put("PST_BPLINEITEMDISCEXT",           TableIdentifier.of(SCHEMA, "raw_bplineitemdiscext_test"));
-        // pstTableMap.put("PST_BPTRANSACTDISCEXT",           TableIdentifier.of(SCHEMA, "raw_bptransactdiscext_test"));
-        // pstTableMap.put("PST_BPTENDER",                    TableIdentifier.of(SCHEMA, "raw_bptender_test"));
-        // pstTableMap.put("PST_BPTENDEREXTENSIONS",          TableIdentifier.of(SCHEMA, "raw_bptenderextensions_test"));
+        pstTableMap.put("PST_BPTRANSACTION",              TableIdentifier.of(SCHEMA, "raw_bptransaction_test"));
+        pstTableMap.put("PST_BPFINANCIALMOVEMEN",          TableIdentifier.of(SCHEMA, "raw_bpfinancialmovemen_test"));
+        pstTableMap.put("PST_BPTRANSACTEXTENSIO",          TableIdentifier.of(SCHEMA, "raw_bptransactextensio_test"));
+        pstTableMap.put("PST_BPFINANCIALMOVEMENTEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bpfinacialmovement_test"));
+        pstTableMap.put("PST_BPRETAILLINEITEM",            TableIdentifier.of(SCHEMA, "raw_bpretaillineitem_test"));
+        pstTableMap.put("PST_BPLINEITEMEXTENSIO",          TableIdentifier.of(SCHEMA, "raw_bplineitemextensio_test"));
+        pstTableMap.put("PST_BPLINEITEMDISCOUNT",          TableIdentifier.of(SCHEMA, "raw_bplineitemdiscount_test"));
+        pstTableMap.put("PST_BPLINEITEMDISCEXT",           TableIdentifier.of(SCHEMA, "raw_bplineitemdiscext_test"));
+        pstTableMap.put("PST_BPTRANSACTDISCEXT",           TableIdentifier.of(SCHEMA, "raw_bptransactdiscext_test"));
+        pstTableMap.put("PST_BPTENDER",                    TableIdentifier.of(SCHEMA, "raw_bptender_test"));
+        pstTableMap.put("PST_BPTENDEREXTENSIONS",          TableIdentifier.of(SCHEMA, "raw_bptenderextensions_test"));
 
         Map<String, Schema> pstSchemas = new HashMap<>();
         for (Map.Entry<String, TableIdentifier> entry : pstTableMap.entrySet()) {
@@ -139,17 +138,17 @@ public class DataStreamJob {
                 .setParallelism(10)
                 .uid(UID_PARSER);
 
-        // SourceDocument — ЗАКОММЕНТИРОВАНО, пишем только PST_BPTRANSACTION
-        // DataStream<RowData> sourceDocStream = parsed.getSideOutput(IdocParser.SOURCE_DOC_TAG);
-        // TableLoader sourceDocLoader = TableLoader.fromCatalog(catalogLoader,
-        //         TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli_test"));
-        // FlinkSink.forRowData(sourceDocStream)
-        //         .tableLoader(sourceDocLoader)
-        //         .writeParallelism(1)
-        //         .upsert(false)
-        //         .uidPrefix("sink-sourcedocument")
-        //         .set("write.target-file-size-bytes", "268435456")
-        //         .append();
+        // SourceDocument — per-IDOC, эмитится из IdocParser через side output
+        DataStream<RowData> sourceDocStream = parsed.getSideOutput(IdocParser.SOURCE_DOC_TAG);
+        TableLoader sourceDocLoader = TableLoader.fromCatalog(catalogLoader,
+                TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli_test"));
+        FlinkSink.forRowData(sourceDocStream)
+                .tableLoader(sourceDocLoader)
+                .writeParallelism(1)
+                .upsert(false)
+                .uidPrefix("sink-sourcedocument")
+                .set("write.target-file-size-bytes", "268435456")
+                .append();
 
         // Этап 2: keyBy(txnKey) → TransactionProcessor (деdup + десериализация + эмит)
         SingleOutputStreamOperator<RowData> processed = parsed
@@ -158,50 +157,57 @@ public class DataStreamJob {
                 .setParallelism(15)
                 .uid(UID_PROCESSOR);
 
-        // === RAW sinks — ЗАКОММЕНТИРОВАНО, пишем только PST_BPTRANSACTION ===
-        // Map<String, TableIdentifier> rawOnlyTableMap = new HashMap<>();
-        // rawOnlyTableMap.put("E1BPLINEITEMTAX",      TableIdentifier.of(SCHEMA, "raw_bplineitemtax_test"));
-        // rawOnlyTableMap.put("E1BPRETAILTOTALS",     TableIdentifier.of(SCHEMA, "raw_bpretailtotals_test"));
-        // rawOnlyTableMap.put("E1BPTENDERTOTALS",     TableIdentifier.of(SCHEMA, "raw_bptendertotals_test"));
-        // rawOnlyTableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco_test"));
-        //
-        // for (Map.Entry<String, TableIdentifier> entry : rawOnlyTableMap.entrySet()) {
-        //     String segment = entry.getKey();
-        //     OutputTag<RowData> tag = StreamSideOutputTag.getTag(segment);
-        //     DataStream<RowData> sideStream = processed.getSideOutput(tag);
-        //     TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
-        //
-        //     FlinkSink.forRowData(sideStream)
-        //             .tableLoader(loader)
-        //             .writeParallelism(1)
-        //             .upsert(false)
-        //             .uidPrefix("sink-" + segment.toLowerCase())
-        //             .set("write.target-file-size-bytes", "268435456")
-        //             .append();
-        // }
+        // === RAW sinks — 4 сегмента без PST-логики ===
+        Map<String, TableIdentifier> rawOnlyTableMap = new HashMap<>();
+        rawOnlyTableMap.put("E1BPLINEITEMTAX",      TableIdentifier.of(SCHEMA, "raw_bplineitemtax_test"));
+        rawOnlyTableMap.put("E1BPRETAILTOTALS",     TableIdentifier.of(SCHEMA, "raw_bpretailtotals_test"));
+        rawOnlyTableMap.put("E1BPTENDERTOTALS",     TableIdentifier.of(SCHEMA, "raw_bptendertotals_test"));
+        rawOnlyTableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco_test"));
 
-        // === PST sinks — только PST_BPTRANSACTION → raw_bptransaction_test_2 ===
-        // Map<String, Integer> sinkParallelism = new HashMap<>();  // не нужен — один синк
+        for (Map.Entry<String, TableIdentifier> entry : rawOnlyTableMap.entrySet()) {
+            String segment = entry.getKey();
+            OutputTag<RowData> tag = StreamSideOutputTag.getTag(segment);
+            DataStream<RowData> sideStream = processed.getSideOutput(tag);
+            TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
+
+            FlinkSink.forRowData(sideStream)
+                    .tableLoader(loader)
+                    .writeParallelism(1)
+                    .upsert(false)
+                    .uidPrefix("sink-" + segment.toLowerCase())
+                    .set("write.target-file-size-bytes", "268435456")
+                    .append();
+        }
+
+        // === PST sinks ===
+        Map<String, Integer> sinkParallelism = new HashMap<>();
+        sinkParallelism.put("PST_BPLINEITEMEXTENSIO", 3);
+        sinkParallelism.put("PST_BPTRANSACTEXTENSIO", 3);
+        sinkParallelism.put("PST_BPRETAILLINEITEM", 3);
+        sinkParallelism.put("PST_BPTENDEREXTENSIONS", 2);
+        sinkParallelism.put("PST_BPTRANSACTION", 2);
+        sinkParallelism.put("PST_BPTENDER", 2);
 
         Map<String, TableLoader> pstSinkLoaders = new HashMap<>();
-        {
-            String pstKey = "PST_BPTRANSACTION";
+        for (Map.Entry<String, TableIdentifier> entry : pstTableMap.entrySet()) {
+            String pstKey = entry.getKey();
             OutputTag<RowData> tag = StreamSideOutputTag.getTag(pstKey);
             DataStream<RowData> pstStream = processed.getSideOutput(tag);
-            TableLoader loader = TableLoader.fromCatalog(catalogLoader,
-                    TableIdentifier.of(SCHEMA, "raw_bptransaction_test_2"));
+            TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
             pstSinkLoaders.put(pstKey, loader);
+
+            int parallelism = sinkParallelism.getOrDefault(pstKey, 1);
 
             FlinkSink.forRowData(pstStream)
                     .tableLoader(loader)
-                    .writeParallelism(1)
+                    .writeParallelism(parallelism)
                     .upsert(false)
                     .uidPrefix("sink-" + pstKey.toLowerCase())
                     .set("write.target-file-size-bytes", "268435456")
                     .append();
         }
 
-        env.execute("XML Parser with transaction-level dedup");
+        env.execute("XML Parser with transaction-level dedup and pst trans before keyBy and bin serial");
         closeTableLoaders(tableLoaders);
         closeTableLoaders(pstSinkLoaders);
         env.close();

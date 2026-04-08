@@ -1,18 +1,18 @@
 -- стр. 92-93 - заполнение lr_fixes значениями из справочника tvarvc
 SELECT sign opti low high INTO TABLE lr_fixes
     FROM tvarvc WHERE name = 'CHK_FIXES' AND type = 'S'.
-
-
-
-
--- стр. 269-278 - проверка содержимого lr_fixes перед заменой кода на 2043
-IF '2125781' IN lr_fixes. " Подмена RETAILTYPECODE при авто-уценке
-      LOOP AT <transaction>-retaillineitem ASSIGNING <item>.
-        READ TABLE <item>-extensions ASSIGNING <ext> WITH TABLE KEY FIELDGROUP = 'POS'
-                                                                    FIELDNAME = 'AUTO_MD'
-                                                                    FIELDVALUE = 'Y'.
-        IF sy-subrc IS INITIAL.
-          <item>-retailtypecode = '2043'.
-        ENDIF.
-      ENDLOOP.
+-- стр. 292-305 - проверка содержимого (вложенное условие) перед заменой кода на 2044
+IF '2525942' IN lr_fixes.
+      IF <transaction>-workstationid = '0000001000'.
+        LOOP AT <transaction>-retaillineitem ASSIGNING <item>.
+          IF <item>-retailtypecode = '2804'.
+            <item>-retailtypecode = '2826'.
+          ENDIF.
+          IF '2525942_2' IN lr_fixes AND <item>-itemid = 'S003147' AND <transaction>-transtypecode = '1016'.
+            <item>-retailtypecode = '2044'.
+          ELSEIF '2525942_2' IN lr_fixes AND <item>-itemid = 'S003147' AND <transaction>-transtypecode = '1017'.
+            <item>-retailtypecode = '2831'.
+          ENDIF.
+        ENDLOOP.
+      ENDIF.
     ENDIF.

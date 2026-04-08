@@ -1,16 +1,14 @@
-SELECT 
-    businessdaydate,
-    COUNT(*) AS duplicate_transactions
-FROM (
-    SELECT 
-        retailstoreid, 
-        businessdaydate, 
-        workstationid, 
-        transactionsequencenumber, 
-        COUNT(*) AS qnty
-    FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-    GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
-    HAVING COUNT(*) > 1
-) dupes
-GROUP BY businessdaydate
-ORDER BY businessdaydate
+-- Транзакции, которые есть в old, но нет в new
+SELECT 'missing_in_new' as status, retailstoreid, businessdaydate, workstationid, transactionsequencenumber, count(*) as cnt
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+WHERE businessdaydate = date '2026-04-07'
+GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+HAVING count(*) = 1
+
+EXCEPT
+
+SELECT 'missing_in_new', retailstoreid, businessdaydate, workstationid, transactionsequencenumber, count(*) as cnt
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test_2
+WHERE businessdaydate = date '2026-04-07'
+GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+HAVING count(*) = 1

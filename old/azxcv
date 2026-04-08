@@ -1,1 +1,2 @@
-    private static final Logger log = LogManager.getLogger("ru.x5.parser");
+state.backend.incremental	true
+state.backend.type	rocksdb

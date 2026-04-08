@@ -1,8 +1,8 @@
-SELECT COUNT(*) as duplicate_transactions
-FROM (
-    SELECT retailstoreid, businessdaydate, workstationid, transactionsequencenumber
-    FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test_2
-    WHERE businessdaydate = date '2026-04-07'
-    GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
-    HAVING count(*) > 1
-)
+SELECT retailstoreid, businessdaydate, workstationid, transactionsequencenumber, count(*) as cnt
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test_2
+WHERE (retailstoreid, transactionsequencenumber) IN (
+    ('L426', '1000000000004290225'),
+    ('L963', '1000000000005377290'),
+    ('36AA', '1000000000001883333')
+  )
+GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber

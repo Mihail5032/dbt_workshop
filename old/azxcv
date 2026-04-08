@@ -1,17 +1,31 @@
-2026-04-08 10:48:23
-org.apache.flink.util.FlinkExpectedException: The TaskExecutor is shutting down.
-	at org.apache.flink.runtime.taskexecutor.TaskExecutor.onStop(TaskExecutor.java:523)
-	at org.apache.flink.runtime.rpc.RpcEndpoint.internalCallOnStop(RpcEndpoint.java:255)
-	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor$StartedState.lambda$terminate$0(PekkoRpcActor.java:583)
+2026-04-08 10:55:13
+java.util.concurrent.CompletionException: java.util.concurrent.CompletionException: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.
+	at org.apache.flink.runtime.scheduler.DefaultExecutionDeployer.lambda$assignResource$4(DefaultExecutionDeployer.java:226)
+	at java.base/java.util.concurrent.CompletableFuture.uniHandle(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.completeExceptionally(Unknown Source)
+	at org.apache.flink.runtime.jobmaster.slotpool.PendingRequest.failRequest(PendingRequest.java:88)
+	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.cancelPendingRequests(DeclarativeSlotPoolBridge.java:191)
+	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.failPendingRequests(DeclarativeSlotPoolBridge.java:475)
+	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.notifyNotEnoughResourcesAvailable(DeclarativeSlotPoolBridge.java:463)
+	at org.apache.flink.runtime.jobmaster.JobMaster.notifyNotEnoughResourcesAvailable(JobMaster.java:972)
+	at jdk.internal.reflect.GeneratedMethodAccessor224.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.lambda$handleRpcInvocation$0(PekkoRpcActor.java:310)
 	at org.apache.flink.runtime.concurrent.ClassLoadingUtils.runWithContextClassLoader(ClassLoadingUtils.java:83)
-	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor$StartedState.terminate(PekkoRpcActor.java:582)
-	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleControlMessage(PekkoRpcActor.java:203)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRpcInvocation(PekkoRpcActor.java:309)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRpcMessage(PekkoRpcActor.java:229)
+	at org.apache.flink.runtime.rpc.pekko.FencedPekkoRpcActor.handleRpcMessage(FencedPekkoRpcActor.java:88)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleMessage(PekkoRpcActor.java:174)
 	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:33)
 	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:29)
 	at scala.PartialFunction.applyOrElse(PartialFunction.scala:127)
 	at scala.PartialFunction.applyOrElse$(PartialFunction.scala:126)
 	at org.apache.pekko.japi.pf.UnitCaseStatement.applyOrElse(CaseStatements.scala:29)
 	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:175)
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
 	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
 	at org.apache.pekko.actor.Actor.aroundReceive(Actor.scala:547)
 	at org.apache.pekko.actor.Actor.aroundReceive$(Actor.scala:545)
@@ -26,3 +40,9 @@ org.apache.flink.util.FlinkExpectedException: The TaskExecutor is shutting down.
 	at java.base/java.util.concurrent.ForkJoinPool.scan(Unknown Source)
 	at java.base/java.util.concurrent.ForkJoinPool.runWorker(Unknown Source)
 	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(Unknown Source)
+Caused by: java.util.concurrent.CompletionException: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniApply.tryFire(Unknown Source)
+	... 37 more
+Caused by: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.

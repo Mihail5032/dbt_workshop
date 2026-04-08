@@ -1,1 +1,4 @@
-Привет! У нас упали TaskManager'ы, можешь поднять их? Причина: чекпоинты зависали из-за того что barrier'ы не доходили до всех subtask'ов вовремя (backpressure на Source). Пока subtask'и ждали barrier'ы, in-flight данные копились в памяти и TaskManager'ы упали по OOM
+git checkout -b feature/deduplication_with_bin_serial
+git add .
+git commit -m "feat: deduplication with binary serialization before keyBy + tvarvc dictionary"
+git push -u origin feature/deduplication_with_bin_serial

@@ -1,12 +1,16 @@
-WITH cnt AS (
+SELECT 
+    businessdaydate,
+    COUNT(*) AS duplicate_transactions
+FROM (
     SELECT 
         retailstoreid, 
         businessdaydate, 
         workstationid, 
         transactionsequencenumber, 
-        count(*) AS qnty
+        COUNT(*) AS qnty
     FROM ice_baby.core_flow_ing_raw.raw_bptransaction
     GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
-)
-SELECT count(*) FROM cnt
-WHERE qnty > 1 and businessdaydate = date '2026-04-06'
+    HAVING COUNT(*) > 1
+) dupes
+GROUP BY businessdaydate
+ORDER BY businessdaydate

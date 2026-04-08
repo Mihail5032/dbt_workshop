@@ -2,3 +2,7 @@
 Path	pekko.tcp://flink@100.127.158.154:6122/user/rpc/taskmanager_0	Free/All Slots	22 / 32
 Last Heartbeat	2026-04-08 15:40:27	Data Port	41015	CPU Cores	8
 Physical Memory	50.0 GB	JVM Heap Size	24.3 GB	Flink Managed Memory	19.5 GB
+
+.cleanupInRocksdbCompactFilter(1000)
+
+

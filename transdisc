@@ -1,2 +1,5 @@
- Сейчас буду чистить чекпоинты завершённых и отменённых джобов в flink-checkpoints-dev и flink-checkpoints-dev2, чекпоинты трёх текущих работающих джобов не трогаю. Перед тем как удалю, хочу уточнить — никто не планирует в ближайшее время запускать джобу на тестовом кластере из какого-либо старого чекпоинта? Если да, скажите какой job-id нужен, я его оставлю.
-
+select is_aligned_tran, count(*) from ice_baby.core_flow_ing_raw.raw_bptransaction
+group by is_aligned_tran
+false	77900506
+true	346093707
+null	4312

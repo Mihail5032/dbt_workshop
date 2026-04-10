@@ -119,6 +119,7 @@ public class TenderPstProcessor {
         tender.setRetailStoreId(x.retailStoreId);
         tender.setBusinessDayDate(x.businessDayDate);
         tender.setTransactionTypeCode(x.transactionTypeCode);
+        tender.setIs_aligned_tran(x.getIs_aligned_tran());
         return tender;
     }
 

@@ -1,5 +1,5 @@
-SELECT transactiontypecode, is_aligned_tran, count(*) as cnt
-FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE is_aligned_tran IS NULL
-GROUP BY transactiontypecode, is_aligned_tran
-ORDER BY cnt DESC
+SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber
+FROM ice_baby.core_flow_ing_raw.raw_bptender t
+WHERE t.is_aligned_tran IS NULL
+  AND t.transactiontypecode = '1001'
+LIMIT 5

@@ -20,3 +20,6 @@ DELETE FROM core_flow_ing_raw.raw_bptendertotals_test WHERE businessdaydate < da
 DELETE FROM core_flow_ing_raw.raw_bptransactiondisco_test WHERE businessdaydate < date '2026-04-03';
 
 SQL Error [16777242]: Query failed (#20260410_120113_01155_f6hhv): Error committing write parquet to Hive
+
+ALTER TABLE core_flow_ing_raw.raw_bptransaction_test EXECUTE expire_snapshots(older_than => TIMESTAMP '2026-03-28 00:00:00');
+

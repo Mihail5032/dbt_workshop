@@ -1,25 +1,5 @@
-1. Общая картина — должны быть true, false и NULL:
-
-SELECT is_aligned_tran, count(*) 
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test
-GROUP BY is_aligned_tran
-
-2. Тендеры — должны быть НЕ только NULL:
-
-SELECT is_aligned_tran, count(*) 
-FROM ice_baby.core_flow_ing_raw.raw_bptender_test
-GROUP BY is_aligned_tran
-
-3. Типы 11xx/13xx/16xx — должны быть NULL, а не false:
-
 SELECT transactiontypecode, is_aligned_tran, count(*) as cnt
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test
-WHERE transactiontypecode IN ('1101','1103','1107','1108','1301','1601')
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+WHERE is_aligned_tran IS NULL
 GROUP BY transactiontypecode, is_aligned_tran
-
-4. Типы 1001-1003 — должны быть в основном true:
-
-SELECT transactiontypecode, is_aligned_tran, count(*) as cnt
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test
-WHERE transactiontypecode IN ('1001','1002','1003')
-GROUP BY transactiontypecode, is_aligned_tran
+ORDER BY cnt DESC

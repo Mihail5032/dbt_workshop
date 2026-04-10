@@ -1,1 +1,20 @@
 
+-- Удаление данных до 2026-04-03 из всех тестовых таблиц
+-- Iceberg поддерживает DELETE FROM
+
+DELETE FROM core_flow_ing_raw.raw_bptransaction_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bpfinancialmovemen_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bptransactextensio_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bpfinacialmovement_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bpretaillineitem_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bplineitemextensio_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bplineitemdiscount_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bplineitemdiscext_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bptransactdiscext_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bptender_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bptenderextensions_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bpsourcedocumentli_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bplineitemtax_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bpretailtotals_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bptendertotals_test WHERE businessdaydate < date '2026-04-03';
+DELETE FROM core_flow_ing_raw.raw_bptransactiondisco_test WHERE businessdaydate < date '2026-04-03';

@@ -1,12 +1,5 @@
-SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-       t.transactiontypecode,
-       (SELECT count(*) FROM ice_baby.core_flow_ing_raw.raw_bptender te 
-        WHERE te.retailstoreid = t.retailstoreid AND te.businessdaydate = t.businessdaydate
-        AND te.workstationid = t.workstationid AND te.transactionsequencenumber = t.transactionsequencenumber) as tender_cnt,
-       (SELECT count(*) FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem r 
-        WHERE r.retailstoreid = t.retailstoreid AND r.businessdaydate = t.businessdaydate
-        AND r.workstationid = t.workstationid AND r.transactionsequencenumber = t.transactionsequencenumber) as lineitem_cnt
+SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber
 FROM ice_baby.core_flow_ing_raw.raw_bptransaction t
 WHERE t.is_aligned_tran IS NULL
   AND t.transactiontypecode = '1002'
-LIMIT 10
+LIMIT 5

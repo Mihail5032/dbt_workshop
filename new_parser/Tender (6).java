@@ -48,6 +48,7 @@ public class Tender extends BaseTransactionKey {
                 .tendertypecode(tenderTypeCode).tenderamount(String.valueOf(tenderAmount))
                 .tendercurrency(tenderCurrency).tendercurrency_iso(tenderCurrencyISO)
                 .tenderid(tenderId).accountnumber(accountNumber).refererenceid(referenceId)
+                .is_aligned_tran(String.valueOf(super.getIs_aligned_tran()))
                 .build().toRowData(icebergSchema, timestampDataXml, dateXml);
     }
 

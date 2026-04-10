@@ -1,4 +1,25 @@
-git checkout -b feature/audit_new
-git add -A
-git commit -m "fix: is_aligned_tran null->false bug, add tvarvc CHK_FIXES checks, add is_aligned_tran to Tender/TenderTotals"
-git push -u origin feature/audit_new
+1. Общая картина — должны быть true, false и NULL:
+
+SELECT is_aligned_tran, count(*) 
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test
+GROUP BY is_aligned_tran
+
+2. Тендеры — должны быть НЕ только NULL:
+
+SELECT is_aligned_tran, count(*) 
+FROM ice_baby.core_flow_ing_raw.raw_bptender_test
+GROUP BY is_aligned_tran
+
+3. Типы 11xx/13xx/16xx — должны быть NULL, а не false:
+
+SELECT transactiontypecode, is_aligned_tran, count(*) as cnt
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test
+WHERE transactiontypecode IN ('1101','1103','1107','1108','1301','1601')
+GROUP BY transactiontypecode, is_aligned_tran
+
+4. Типы 1001-1003 — должны быть в основном true:
+
+SELECT transactiontypecode, is_aligned_tran, count(*) as cnt
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test
+WHERE transactiontypecode IN ('1001','1002','1003')
+GROUP BY transactiontypecode, is_aligned_tran

@@ -47,7 +47,9 @@ public class TenderTotals extends BaseTransactionKey {
                 .tenderamount(tenderAmount).tendercount(tenderCount).actualamount(actualAmount)
                 .shortamount(shortAmount).overamount(overAmount)
                 .removalamount(removalAmount).removalcount(removalCount)
-                .bankamount(bankAmount).build().toRowData(icebergSchema, timestampDataXml, dateXml);
+                .bankamount(bankAmount)
+                .is_aligned_tran(String.valueOf(super.getIs_aligned_tran()))
+                .build().toRowData(icebergSchema, timestampDataXml, dateXml);
     }
 
     @Override

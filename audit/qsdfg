@@ -23,3 +23,7 @@ SQL Error [16777242]: Query failed (#20260410_120113_01155_f6hhv): Error committ
 
 ALTER TABLE core_flow_ing_raw.raw_bptransaction_test EXECUTE expire_snapshots(older_than => TIMESTAMP '2026-03-28 00:00:00');
 
+Samsonov, Anatoly
+[84148230] Query failed (#20260410_125142_01753_f6hhv): Error opening Iceberg split s3a://warehouse/core_flow_ing_raw/raw_bptender_test-5b56b30db20545ddbe35008199b03671/data/00001-0-85caeee6-03e1-4723-9368-36b8554b9e81-00042.parquet (offset=4, length=3271617): s3a://warehouse/core_flow_ing_raw/raw_bptender_test-5b56b30db20545ddbe35008199b03671/data/00001-0-85caeee6-03e1-4723-9368-36b8554b9e81-00042.parquet
+java.io.FileNotFoundException: s3a://warehouse/core_flow_ing_raw/raw_bptender_test-5b56b30db20545ddbe35008199b03671/data/00001-0-85caeee6-03e1-4723-9368-36b8554b9e81-00042.parque
+

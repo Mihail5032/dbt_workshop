@@ -251,7 +251,8 @@ public class RowTablePart {
                 .businessdaydate(base.businessdaydate)
                 .transactiontypecode(base.transactiontypecode)
                 .workstationid(base.workstationid)
-                .transactionsequencenumber(base.transactionsequencenumber);
+                .transactionsequencenumber(base.transactionsequencenumber)
+                .is_aligned_tran(base.is_aligned_tran);
     }
 
     public long createKey(List<String> fields) {
@@ -307,8 +308,11 @@ public class RowTablePart {
                         TimestampData td = dateTime == null ? null : TimestampData.fromLocalDateTime(dateTime);
                         rowData.setField(pos, td);
                     } else if (typeID == Type.TypeID.BOOLEAN) {
-                        Boolean boolValue = Boolean.parseBoolean(value);
-                        rowData.setField(pos, boolValue);
+                        if (value == null || "null".equalsIgnoreCase(value)) {
+                            rowData.setField(pos, null);
+                        } else {
+                            rowData.setField(pos, Boolean.parseBoolean(value));
+                        }
                     } else {
                         if (key.contains("date") || key.contains("timestamp")) {
                             StringData stringDateTime = parseToFormattedDateString(value);

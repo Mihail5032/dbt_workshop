@@ -18,3 +18,5 @@ DELETE FROM core_flow_ing_raw.raw_bplineitemtax_test WHERE businessdaydate < dat
 DELETE FROM core_flow_ing_raw.raw_bpretailtotals_test WHERE businessdaydate < date '2026-04-03';
 DELETE FROM core_flow_ing_raw.raw_bptendertotals_test WHERE businessdaydate < date '2026-04-03';
 DELETE FROM core_flow_ing_raw.raw_bptransactiondisco_test WHERE businessdaydate < date '2026-04-03';
+
+SQL Error [16777242]: Query failed (#20260410_120113_01155_f6hhv): Error committing write parquet to Hive

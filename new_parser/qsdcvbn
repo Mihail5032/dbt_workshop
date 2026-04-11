@@ -1,6 +1,2 @@
-SELECT 
-    CASE WHEN is_aligned_tran IS NULL THEN 'NULL' ELSE CAST(is_aligned_tran AS VARCHAR) END as flag,
-    COUNT(*) as cnt
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-WHERE transactiontypecode = '1001'
-GROUP BY 1
+SELECT tendersequencenumber, tenderamount, tendertypecode
+FROM ice_baby.core_flow_ing_raw.raw_bptender

@@ -3,3 +3,10 @@ FROM ice_baby.core_flow_ing_raw.raw_bptender t
 WHERE t.is_aligned_tran IS NULL
   AND t.transactiontypecode = '1001'
 LIMIT 5
+
+SELECT count(*)
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+WHERE retailstoreid = '<значение>'
+  AND businessdaydate = '<значение>'
+  AND workstationid = '<значение>'
+  AND transactionsequencenumber = '<значение>'

@@ -1,6 +1,7 @@
-SELECT retailsequencenumber, salesamount, retailtypecode, itemid
-FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+SELECT fieldname, fieldvalue
+FROM ice_baby.core_flow_ing_raw.raw_bptransactionextension
 WHERE retailstoreid = 'Y709'
   AND businessdaydate = date '2026-04-03'
   AND workstationid = '1'
   AND transactionsequencenumber = '10000000003021953'
+  AND fieldname = 'SOURCE'

@@ -1,11 +1,6 @@
-SELECT fieldname, fieldvalue
-FROM ice_baby.core_flow_ing_raw.raw_bptransactionextension
-WHERE retailstoreid = 'Y709'
-  AND businessdaydate = date '2026-04-03'
-  AND workstationid = '1'
-  AND transactionsequencenumber = '10000000003021953'
-  AND fieldname = 'SOURCE'
-
-
-SELECT is_aligned_tran, transactiontypecode
+SELECT 
+    CASE WHEN is_aligned_tran IS NULL THEN 'NULL' ELSE CAST(is_aligned_tran AS VARCHAR) END as flag,
+    COUNT(*) as cnt
 FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+WHERE transactiontypecode = '1001'
+GROUP BY 1

@@ -1,12 +1,6 @@
-SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber
-FROM ice_baby.core_flow_ing_raw.raw_bptender t
-WHERE t.is_aligned_tran IS NULL
-  AND t.transactiontypecode = '1001'
-LIMIT 5
-
-SELECT count(*)
+SELECT retailsequencenumber, salesamount, retailtypecode, itemid
 FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
-WHERE retailstoreid = '<значение>'
-  AND businessdaydate = '<значение>'
-  AND workstationid = '<значение>'
-  AND transactionsequencenumber = '<значение>'
+WHERE retailstoreid = 'Y709'
+  AND businessdaydate = date '2026-04-03'
+  AND workstationid = '1'
+  AND transactionsequencenumber = '10000000003021953'

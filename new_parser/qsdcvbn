@@ -1,2 +1,18 @@
-SELECT tendersequencenumber, tenderamount, tendertypecode
+SELECT 'tender' as src, retailstoreid, businessdaydate, transactiontypecode, workstationid, transactionsequencenumber,
+       LENGTH(retailstoreid) as len_store, LENGTH(workstationid) as len_ws, LENGTH(transactionsequencenumber) as len_tsn
 FROM ice_baby.core_flow_ing_raw.raw_bptender
+WHERE retailstoreid = 'Y709'
+  AND businessdaydate = date '2026-04-03'
+  AND workstationid = '1'
+  AND transactionsequencenumber = '10000000003021953'
+
+UNION ALL
+
+SELECT 'lineitem' as src, retailstoreid, businessdaydate, transactiontypecode, workstationid, transactionsequencenumber,
+       LENGTH(retailstoreid) as len_store, LENGTH(workstationid) as len_ws, LENGTH(transactionsequencenumber) as len_tsn
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+WHERE retailstoreid = 'Y709'
+  AND businessdaydate = date '2026-04-03'
+  AND workstationid = '1'
+  AND transactionsequencenumber = '10000000003021953'
+LIMIT 2

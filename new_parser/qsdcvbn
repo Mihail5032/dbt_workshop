@@ -5,3 +5,7 @@ WHERE retailstoreid = 'Y709'
   AND workstationid = '1'
   AND transactionsequencenumber = '10000000003021953'
   AND fieldname = 'SOURCE'
+
+
+SELECT is_aligned_tran, transactiontypecode
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction

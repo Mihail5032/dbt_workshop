@@ -10,4 +10,4 @@ JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem li
 WHERE t.transactiontypecode = '1014'
   AND t.is_aligned_tran IS NULL
   AND t.businessdaydate = date '2026-04-12'
-LIMIT 5
+GROUP BY t.transactiontypecode, li.transactiontypecode

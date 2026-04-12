@@ -1,11 +1,7 @@
 SELECT 
-    CAST(load_date_xml AS VARCHAR) as day,
-    SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) as null_cnt,
-    SUM(CASE WHEN is_aligned_tran = true THEN 1 ELSE 0 END) as true_cnt,
-    COUNT(*) as total,
-    ROUND(100.0 * SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) / COUNT(*), 3) as null_pct
+    CAST(load_date_xml AS VARCHAR) as day, 
+    COUNT(*) as total_tenders
 FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE transactiontypecode LIKE '10%'
-  AND load_date_xml IN (date '2026-04-11', date '2026-04-12')
+WHERE load_date_xml IN (date '2026-04-11', date '2026-04-12')
 GROUP BY 1
 ORDER BY 1

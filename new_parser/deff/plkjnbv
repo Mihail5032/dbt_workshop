@@ -1,82 +1,13 @@
-SELECT 
-    transactiontypecode,
-    SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) as null_cnt,
-    SUM(CASE WHEN is_aligned_tran = true THEN 1 ELSE 0 END) as true_cnt,
-    SUM(CASE WHEN is_aligned_tran = false THEN 1 ELSE 0 END) as false_cnt,
-    COUNT(*) as total,
-    ROUND(100.0 * SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) / COUNT(*), 2) as null_pct
-FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE businessdaydate = date '2026-04-12'
-GROUP BY 1
-ORDER BY null_cnt DESC
-LIMIT 20
-
--- 2. NULL тендеры с типом "10%" — есть ли у них line items с salesamount?
-SELECT 
-    CASE 
-        WHEN li_cnt = 0 THEN 'нет line items'
-        WHEN li_with_amount = 0 THEN 'line items без salesamount'
-        ELSE 'есть line items с salesamount'
-    END as причина_null,
-    COUNT(*) as кол_во_транзакций
-FROM (
-    SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-           COUNT(li.retailsequencenumber) as li_cnt,
-           COUNT(li.salesamount) as li_with_amount
-    FROM ice_baby.core_flow_ing_raw.raw_bptender t
-    LEFT JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem li
-        ON t.retailstoreid = li.retailstoreid
-        AND t.businessdaydate = li.businessdaydate
-        AND t.workstationid = li.workstationid
-        AND t.transactionsequencenumber = li.transactionsequencenumber
-    WHERE t.transactiontypecode LIKE '10%'
-      AND t.is_aligned_tran IS NULL
-      AND t.businessdaydate = date '2026-04-12'
-    GROUP BY 1,2,3,4
-) sub
-GROUP BY 1
-ORDER BY 2 DESC
-
--- 3. Если есть "есть line items с salesamount" — найти пример для расследования
-SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-       t.transactiontypecode, t.tenderamount
+SELECT t.transactiontypecode as tender_type, 
+       li.transactiontypecode as lineitem_type, 
+       COUNT(*) as cnt
 FROM ice_baby.core_flow_ing_raw.raw_bptender t
 JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem li
     ON t.retailstoreid = li.retailstoreid
     AND t.businessdaydate = li.businessdaydate
     AND t.workstationid = li.workstationid
     AND t.transactionsequencenumber = li.transactionsequencenumber
-WHERE t.transactiontypecode LIKE '10%'
+WHERE t.transactiontypecode = '1014'
   AND t.is_aligned_tran IS NULL
   AND t.businessdaydate = date '2026-04-12'
-  AND li.salesamount IS NOT NULL
-  AND t.tenderamount IS NOT NULL
 LIMIT 5
-------------------------------
-
-
-
-SELECT 
-    CASE 
-        WHEN li_cnt = 0 THEN 'нет line items'
-        WHEN li_with_amount = 0 THEN 'line items без salesamount'
-        ELSE 'есть line items с salesamount'
-    END as причина_null,
-    COUNT(*) as кол_во_транзакций
-FROM (
-    SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-           COUNT(li.retailsequencenumber) as li_cnt,
-           COUNT(li.salesamount) as li_with_amount
-    FROM ice_baby.core_flow_ing_raw.raw_bptender t
-    LEFT JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem li
-        ON t.retailstoreid = li.retailstoreid
-        AND t.businessdaydate = li.businessdaydate
-        AND t.workstationid = li.workstationid
-        AND t.transactionsequencenumber = li.transactionsequencenumber
-    WHERE t.transactiontypecode = '1014'
-      AND t.is_aligned_tran IS NULL
-      AND t.businessdaydate = date '2026-04-12'
-    GROUP BY 1,2,3,4
-) sub
-GROUP BY 1
-ORDER BY 2 DESC

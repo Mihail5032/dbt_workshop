@@ -2,23 +2,10 @@ SELECT
     CAST(load_date_xml AS VARCHAR) as day,
     SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) as null_cnt,
     SUM(CASE WHEN is_aligned_tran = true THEN 1 ELSE 0 END) as true_cnt,
-    SUM(CASE WHEN is_aligned_tran = false THEN 1 ELSE 0 END) as false_cnt
+    COUNT(*) as total,
+    ROUND(100.0 * SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) / COUNT(*), 3) as null_pct
 FROM ice_baby.core_flow_ing_raw.raw_bptender
 WHERE transactiontypecode LIKE '10%'
-  AND load_date_xml >= date '2026-04-11'
+  AND load_date_xml IN (date '2026-04-11', date '2026-04-12')
 GROUP BY 1
 ORDER BY 1
-
-
-SELECT 
-    CAST(load_date_xml AS VARCHAR) as day,
-    SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) as null_cnt,
-    SUM(CASE WHEN is_aligned_tran = true THEN 1 ELSE 0 END) as true_cnt,
-    SUM(CASE WHEN is_aligned_tran = false THEN 1 ELSE 0 END) as false_cnt
-FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
-WHERE transactiontypecode LIKE '10%'
-  AND load_date_xml >= date '2026-04-11'
-GROUP BY 1
-ORDER BY 1
-
-

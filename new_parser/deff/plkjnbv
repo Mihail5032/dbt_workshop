@@ -1,8 +1,8 @@
 SELECT 
-    CASE WHEN t.tenderamount IS NULL THEN 'tenderAmount NULL' ELSE 'tenderAmount заполнен' END as tender_status,
-    COUNT(DISTINCT CONCAT(t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber)) as txn_count
-FROM ice_baby.core_flow_ing_raw.raw_bptender t
-WHERE t.transactiontypecode = '1014'
-  AND t.is_aligned_tran IS NULL
-  AND t.businessdaydate = date '2026-04-12'
+    CASE WHEN tenderamount IS NULL THEN 'NULL' ELSE 'заполнен' END as tender_amount_status,
+    COUNT(*) as cnt
+FROM ice_baby.core_flow_ing_raw.raw_bptender
+WHERE transactiontypecode = '1014'
+  AND is_aligned_tran IS NULL
+  AND businessdaydate = date '2026-04-12'
 GROUP BY 1

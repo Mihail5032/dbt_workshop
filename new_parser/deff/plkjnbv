@@ -1,2 +1,2 @@
+fix: null key NPE в TransactionCorrector, восстановлена коррекция для битых IDOC
 
-mvn clean package -DskipTests

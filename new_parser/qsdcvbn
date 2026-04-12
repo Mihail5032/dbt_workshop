@@ -1,17 +1,15 @@
-SELECT 
-    CASE WHEN li_cnt > 0 THEN 'есть_lineitem' ELSE 'нет_lineitem' END as has_li,
-    COUNT(*) as txn_count
-FROM (
-    SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-           COUNT(li.retailsequencenumber) as li_cnt
-    FROM ice_baby.core_flow_ing_raw.raw_bptransaction t
-    LEFT JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem li
-        ON t.retailstoreid = li.retailstoreid
-        AND t.businessdaydate = li.businessdaydate
-        AND t.workstationid = li.workstationid
-        AND t.transactionsequencenumber = li.transactionsequencenumber
-    WHERE t.transactiontypecode = '1014'
-      AND t.is_aligned_tran IS NULL
-    GROUP BY 1,2,3,4
-) sub
-GROUP BY 1
+SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
+       COUNT(DISTINCT t.timestamp_xml) as txn_timestamps,
+       COUNT(DISTINCT te.timestamp_xml) as tender_timestamps
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction t
+JOIN ice_baby.core_flow_ing_raw.raw_bptender te
+    ON t.retailstoreid = te.retailstoreid
+    AND t.businessdaydate = te.businessdaydate
+    AND t.workstationid = te.workstationid
+    AND t.transactionsequencenumber = te.transactionsequencenumber
+WHERE t.transactiontypecode = '1014'
+  AND t.is_aligned_tran IS NULL
+GROUP BY 1,2,3,4
+HAVING COUNT(DISTINCT t.timestamp_xml) > 1 
+    OR COUNT(DISTINCT te.timestamp_xml) > 1
+LIMIT 10

@@ -52,3 +52,31 @@ WHERE t.transactiontypecode LIKE '10%'
   AND li.salesamount IS NOT NULL
   AND t.tenderamount IS NOT NULL
 LIMIT 5
+------------------------------
+
+
+
+SELECT 
+    CASE 
+        WHEN li_cnt = 0 THEN 'нет line items'
+        WHEN li_with_amount = 0 THEN 'line items без salesamount'
+        ELSE 'есть line items с salesamount'
+    END as причина_null,
+    COUNT(*) as кол_во_транзакций
+FROM (
+    SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
+           COUNT(li.retailsequencenumber) as li_cnt,
+           COUNT(li.salesamount) as li_with_amount
+    FROM ice_baby.core_flow_ing_raw.raw_bptender t
+    LEFT JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem li
+        ON t.retailstoreid = li.retailstoreid
+        AND t.businessdaydate = li.businessdaydate
+        AND t.workstationid = li.workstationid
+        AND t.transactionsequencenumber = li.transactionsequencenumber
+    WHERE t.transactiontypecode = '1014'
+      AND t.is_aligned_tran IS NULL
+      AND t.businessdaydate = date '2026-04-12'
+    GROUP BY 1,2,3,4
+) sub
+GROUP BY 1
+ORDER BY 2 DESC

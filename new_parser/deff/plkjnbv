@@ -1,13 +1,8 @@
-SELECT t.transactiontypecode as tender_type, 
-       li.transactiontypecode as lineitem_type, 
-       COUNT(*) as cnt
+SELECT 
+    CASE WHEN t.tenderamount IS NULL THEN 'tenderAmount NULL' ELSE 'tenderAmount заполнен' END as tender_status,
+    COUNT(DISTINCT CONCAT(t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber)) as txn_count
 FROM ice_baby.core_flow_ing_raw.raw_bptender t
-JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem li
-    ON t.retailstoreid = li.retailstoreid
-    AND t.businessdaydate = li.businessdaydate
-    AND t.workstationid = li.workstationid
-    AND t.transactionsequencenumber = li.transactionsequencenumber
 WHERE t.transactiontypecode = '1014'
   AND t.is_aligned_tran IS NULL
   AND t.businessdaydate = date '2026-04-12'
-GROUP BY t.transactiontypecode, li.transactiontypecode
+GROUP BY 1

@@ -1,2 +1,2 @@
-fix: null key NPE в TransactionCorrector, восстановлена коррекция для битых IDOC
-
+WARN ru.x5.parser [] - JAXB validation event: unexpected element (uri:"", local:"WPUWBW01"). Expected elements are <{}_-POSDW_-POSTR_CREATEMULTIPLE02>
+ ERROR ru.x5.parser [] - Error on message parsing: jakarta.xml.bind.UnmarshalException: unexpected element (uri:"", local:"WPUWBW01"). Expected elements are <{}_-POSDW_-POSTR_CREATEMULTIPLE02> 

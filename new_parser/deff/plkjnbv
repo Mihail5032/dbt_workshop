@@ -1,8 +1,15 @@
-SELECT 
-    retailstoreid, workstationid, transactionsequencenumber,
-    MIN(load_ts_xml) as tender_ts
+SELECT 'tender' as src, load_ts_xml, tenderamount as amount
 FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE transactiontypecode = '1014'
-  AND is_aligned_tran IS NULL
+WHERE retailstoreid = '<ПОДСТАВЬ>'
   AND businessdaydate = date '2026-04-12'
-LIMIT 1
+  AND workstationid = '<ПОДСТАВЬ>'
+  AND transactionsequencenumber = '<ПОДСТАВЬ>'
+
+UNION ALL
+
+SELECT 'lineitem', load_ts_xml, salesamount
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+WHERE retailstoreid = '<ПОДСТАВЬ>'
+  AND businessdaydate = date '2026-04-12'
+  AND workstationid = '<ПОДСТАВЬ>'
+  AND transactionsequencenumber = '<ПОДСТАВЬ>'

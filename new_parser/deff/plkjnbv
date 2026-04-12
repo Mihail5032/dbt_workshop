@@ -1,8 +1,8 @@
 SELECT 
-    CASE WHEN tenderamount IS NULL THEN 'NULL' ELSE 'заполнен' END as tender_amount_status,
-    COUNT(*) as cnt
+    retailstoreid, workstationid, transactionsequencenumber,
+    MIN(load_ts_xml) as tender_ts
 FROM ice_baby.core_flow_ing_raw.raw_bptender
 WHERE transactiontypecode = '1014'
   AND is_aligned_tran IS NULL
   AND businessdaydate = date '2026-04-12'
-GROUP BY 1
+LIMIT 1

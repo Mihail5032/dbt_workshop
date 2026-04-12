@@ -245,6 +245,9 @@ public class TransactionCorrector implements Serializable {
     private void addToMapLineItemExtensionTax(Map<String, String> lineItemExtensions, LineItemExtension lineItemExtension) {
         String key = lineItemExtension.createKeyLineItem();
         String value = lineItemExtension.getFieldValue();
+        if (key == null || value == null || value.isEmpty()) {
+            return;  //пропуск пустых TAX-значений и записей без ключа
+        }
         lineItemExtensions.merge(key, value, (existing, newValue) -> existing + newValue);  //сохранение конкатенации значений TAX
     }
 

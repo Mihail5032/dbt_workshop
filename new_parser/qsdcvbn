@@ -1,10 +1,17 @@
-SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-       COUNT(*) as row_count,
-       COUNT(is_aligned_tran) as non_null_count,
-       SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) as null_count
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction t
-WHERE t.transactiontypecode = '1014'
-  AND t.is_aligned_tran IS NULL
-GROUP BY 1,2,3,4
-HAVING COUNT(*) > 1
-LIMIT 5
+SELECT 
+    'transaction' as tbl, COUNT(*) as total, SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END) as null_cnt
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+WHERE retailstoreid = 'Y709' AND businessdaydate = date '2026-04-03' 
+  AND workstationid = '1' AND transactionsequencenumber = '10000000003021953'
+UNION ALL
+SELECT 
+    'tender', COUNT(*), SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END)
+FROM ice_baby.core_flow_ing_raw.raw_bptender
+WHERE retailstoreid = 'Y709' AND businessdaydate = date '2026-04-03' 
+  AND workstationid = '1' AND transactionsequencenumber = '10000000003021953'
+UNION ALL
+SELECT 
+    'lineitem', COUNT(*), SUM(CASE WHEN is_aligned_tran IS NULL THEN 1 ELSE 0 END)
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+WHERE retailstoreid = 'Y709' AND businessdaydate = date '2026-04-03' 
+  AND workstationid = '1' AND transactionsequencenumber = '10000000003021953'

@@ -1,7 +1,20 @@
-SELECT 
-    CAST(load_date_xml AS VARCHAR) as day, 
-    COUNT(*) as total_tenders
-FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE load_date_xml IN (date '2026-04-11', date '2026-04-12')
-GROUP BY 1
-ORDER BY 1
+SELECT COUNT(*) as broken_txn_count
+FROM (
+    SELECT retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+    FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+    WHERE transactiontypecode LIKE '10%'
+      AND is_aligned_tran IS NULL
+      AND businessdaydate = date '2026-04-12'
+    INTERSECT
+    SELECT retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+    FROM ice_baby.core_flow_ing_raw.raw_bptender
+    WHERE transactiontypecode LIKE '10%'
+      AND is_aligned_tran IS NULL
+      AND businessdaydate = date '2026-04-12'
+    INTERSECT
+    SELECT retailstoreid, businessdaydate, workstationid, transactionsequencenumber
+    FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+    WHERE transactiontypecode LIKE '10%'
+      AND is_aligned_tran IS NULL
+      AND businessdaydate = date '2026-04-12'
+) sub

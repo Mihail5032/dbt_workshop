@@ -17,14 +17,13 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 
 
-ice_baby.dictionaries.tvarvc
+SELECT count(*)
+FROM ice_baby.core_flow_ing.raw_bpretaillineitem
+WHERE retailtypecode = '2902';
 
+-- Пример записей 2902
 SELECT retailstoreid, businessdaydate, workstationid,
        transactionsequencenumber, retailsequencenumber,
        retailtypecode, itemid
 FROM ice_baby.core_flow_ing.raw_bpretaillineitem
-WHERE itemid = 'S003147'
-  AND workstationid = '0000001000'
-  AND transactiontypecode = '1016'
-  AND retailtypecode != '2044'
-LIMIT 20;
+WHERE retailtypecode = '2902'

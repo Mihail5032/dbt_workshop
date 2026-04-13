@@ -1,5 +1,4 @@
-s3.access-key-id=1a0eb020906a43ac6f20
-s3.secret-access-key=yFLv74FPswa0gwqvbxxgymaSGoAC2GQJzWJ/JnjJ
-client.region=endpoint
-connection.ssl.enabled=true
-impl.disable.cache=true
+s3.path.style.access=true
+s3.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+s3.aws.credentials.provider=org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider
+

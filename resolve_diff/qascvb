@@ -17,21 +17,35 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 
 
-[INFO] --- jar:3.4.1:jar (default-jar) @ xml-parser-correction ---
-[INFO] Building jar: C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction\target\xml-parser-correction-1.0.6.jar
-[INFO]
-[INFO] --- shade:3.1.1:shade (default) @ xml-parser-correction ---
-[INFO] Including at.yawk.lz4:lz4-java:jar:1.8.1 in the shaded jar.
-[INFO] Excluding org.slf4j:slf4j-api:jar:1.7.36 from the shaded jar.
-[INFO] Excluding org.apache.logging.log4j:log4j-slf4j-impl:jar:2.17.1 from the shaded jar.
-[INFO] Excluding org.apache.logging.log4j:log4j-core:jar:2.17.1 from the shaded jar.
-[INFO] Replacing original artifact with shaded artifact.
-[INFO] Replacing C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction\target\xml-parser-correction-1.0.6.jar with C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction\target\xml-parser-correction-1.0.6-shaded.jar
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  5.629 s
-[INFO] Finished at: 2026-04-13T22:23:27+03:00
-[INFO] ------------------------------------------------------------------------
+SELECT r.retailstoreid, r.businessdaydate, r.workstationid, 
+       r.transactionsequencenumber, r.retailsequencenumber,
+       r.retailtypecode
+FROM ice_baby.core_flow_ing.raw_bpretaillineitem r
+JOIN ice_baby.core_flow_ing.raw_bplineitemextensi e
+  ON r.retailstoreid = e.retailstoreid
+  AND r.businessdaydate = e.businessdaydate
+  AND r.workstationid = e.workstationid
+  AND r.transactionsequencenumber = e.transactionsequencenumber
+  AND r.retailsequencenumber = e.retailsequencenumber
+WHERE e.fieldgroup = 'POS'
+  AND e.fieldname = 'AUTO_MD'
+  AND e.fieldvalue = 'Y'
+  AND r.retailtypecode != '2043'
+  AND r.businessdaydate >= date '2026-04-14'
+LIMIT 20;
 
-C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction>
+-- Обратная проверка: записи с AUTO_MD=Y и retailTypeCode=2043
+-- Если фикс работает — тут должны быть строки
+SELECT count(*)
+FROM ice_baby.core_flow_ing.raw_bpretaillineitem r
+JOIN ice_baby.core_flow_ing.raw_bplineitemextensi e
+  ON r.retailstoreid = e.retailstoreid
+  AND r.businessdaydate = e.businessdaydate
+  AND r.workstationid = e.workstationid
+  AND r.transactionsequencenumber = e.transactionsequencenumber
+  AND r.retailsequencenumber = e.retailsequencenumber
+WHERE e.fieldgroup = 'POS'
+  AND e.fieldname = 'AUTO_MD'
+  AND e.fieldvalue = 'Y'
+  AND r.retailtypecode = '2043'
+  AND r.businessdaydate >= date '2026-04-14';

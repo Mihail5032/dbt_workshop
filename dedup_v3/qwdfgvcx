@@ -1,2 +1,41 @@
-s3.access.key.id=1a0eb020906a43ac6f20
-s3.secret.access.key=yFLv74FPswa0gwqvbxxgymaSGoAC2GQJzWJ/JnjJ
+Server Response Message:
+org.apache.flink.runtime.rest.handler.RestHandlerException: Could not execute application.
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.lambda$handleRequest$1(JarRunHandler.java:114)
+	at java.base/java.util.concurrent.CompletableFuture.uniHandle(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.util.concurrent.CompletionException: org.apache.flink.util.FlinkRuntimeException: Could not execute application.
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(Unknown Source)
+	... 2 more
+Caused by: org.apache.flink.util.FlinkRuntimeException: Could not execute application.
+	at org.apache.flink.client.deployment.application.DetachedApplicationRunner.tryExecuteJobs(DetachedApplicationRunner.java:88)
+	at org.apache.flink.client.deployment.application.DetachedApplicationRunner.run(DetachedApplicationRunner.java:70)
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.lambda$handleRequest$0(JarRunHandler.java:108)
+	... 2 more
+Caused by: org.apache.flink.client.program.ProgramInvocationException: The main method caused an error: null value in entry: client.region=null
+	at org.apache.flink.client.program.PackagedProgram.callMainMethod(PackagedProgram.java:360)
+	at org.apache.flink.client.program.PackagedProgram.invokeInteractiveModeForExecution(PackagedProgram.java:223)
+	at org.apache.flink.client.ClientUtils.executeProgram(ClientUtils.java:105)
+	at org.apache.flink.client.deployment.application.DetachedApplicationRunner.tryExecuteJobs(DetachedApplicationRunner.java:84)
+	... 4 more
+Caused by: java.lang.NullPointerException: null value in entry: client.region=null
+	at org.apache.iceberg.relocated.com.google.common.collect.CollectPreconditions.checkEntryNotNull(CollectPreconditions.java:32)
+	at org.apache.iceberg.relocated.com.google.common.collect.RegularImmutableMap.fromEntryArrayCheckingBucketOverflow(RegularImmutableMap.java:130)
+	at org.apache.iceberg.relocated.com.google.common.collect.RegularImmutableMap.fromEntryArray(RegularImmutableMap.java:96)
+	at org.apache.iceberg.relocated.com.google.common.collect.RegularImmutableMap.fromEntries(RegularImmutableMap.java:79)
+	at org.apache.iceberg.relocated.com.google.common.collect.ImmutableMap.copyOf(ImmutableMap.java:729)
+	at org.apache.iceberg.relocated.com.google.common.collect.ImmutableMap.copyOf(ImmutableMap.java:702)
+	at org.apache.iceberg.hive.HiveCatalog.initialize(HiveCatalog.java:99)
+	at org.apache.iceberg.CatalogUtil.loadCatalog(CatalogUtil.java:280)
+	at org.apache.iceberg.flink.CatalogLoader$HiveCatalogLoader.loadCatalog(CatalogLoader.java:128)
+	at org.apache.iceberg.flink.TableLoader$CatalogTableLoader.open(TableLoader.java:122)
+	at ru.x5.DataStreamJob.getIcebergSchema(DataStreamJob.java:219)
+	at ru.x5.DataStreamJob.run(DataStreamJob.java:108)
+	at ru.x5.DataStreamJob.main(DataStreamJob.java:49)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)

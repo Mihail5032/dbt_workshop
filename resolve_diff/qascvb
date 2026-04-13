@@ -17,11 +17,13 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 
 
-SELECT count(*)
-FROM ice_baby.core_flow_ing.raw_bpretaillineitem
-WHERE retailtypecode = '2020';
+Понял, поправляю. Выполни:
 
--- В PST слое записей 2020 быть НЕ должно
 SELECT count(*)
-FROM ice_baby.core_flow_ing.pst_bpretaillineitem
-WHERE retailtypecode = '2020';
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+WHERE retailtypecode IN ('2001', '2002', '2011', '2803', '2043', '2902');
+
+SELECT count(*)
+FROM ice_baby.core_flow_ing_raw.raw_bptender
+WHERE tendersequencenumber IN ('8', '9')
+  AND transactiontypecode = '1014';

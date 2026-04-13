@@ -16,96 +16,17 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransaction
 TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 
-6
-Записи с нулевым tenderamount	bptender	
+# 2. Создай новую ветку
+git checkout -b feature/parser_bin_serial_resolve_dif
 
+# 3. Добавь изменённые файлы
+git add -A
 
-select * 
-from ice_baby.core_flow_ing_raw.raw_bptender
-where 1=1
-	and businessdaydate = date'2026-04-07'
-	and retailstoreid = '30D7'
-	and workstationid = '2'
-	and transactionsequencenumber = '100000000004004700'
-;
+# 4. Посмотри что попадёт в коммит
+git status
 
+# 5. Закоммить
+git commit -m "fix: resolve SAP discrepancies in PST layer"
 
-1) transactiontypecode = 1014 - отмена продажи.
-2) В retaillineitem две записи с retailtypecode = 2901 и 2902. Их salesamount складываются в ноль, например 100 и -100.
-3) В SAP есть запись с tenderamount = 0.0
-4) В Trino нет записи в bptender	
-
-
-IF <transaction>-transtypecode = '1014'. " аннулированный чек
-      IF <transaction>-tender[] IS INITIAL.   " не содержит оплат
-        " добавим фэйковую оплату наличными чтобы транзакция была сбалансирована
-        APPEND INITIAL LINE TO <transaction>-tender ASSIGNING <tender>.
-        <tender>-tendertypecode = '3101'.
-        <tender>-tenderamount = l_amnt.
-        <tender>-tendernumber = '8'.
-      ELSEIF  l_tndr NE l_amnt.  "Если для аннулированного чека разнятся сумма оплаты и сумма платежа
-        " добавим фэйковую оплату наличными чтобы транзакция была сбалансирована
-        APPEND INITIAL LINE TO <transaction>-tender ASSIGNING <tender>.
-        <tender>-tendertypecode = '3101'.
-        <tender>-tenderamount = l_amnt - l_tndr.
-        <tender>-tendernumber = '9'.
-      ENDIF.
-    ENDIF.
-    IF lv_clear_telnr = 'X'.
-      FIELD-SYMBOLS <fs_ext> LIKE LINE OF <transaction>-extensions.
-      LOOP AT <transaction>-extensions ASSIGNING <fs_ext>.
-        IF <fs_ext>-fieldname = 'MobileNum' OR <fs_ext>-fieldname = 'MailClient'.
-          CLEAR <fs_ext>-fieldvalue.
-        ENDIF.
-      ENDLOOP.
-    ENDIF.
-
-
-8	NULL значения в поле tendersequencenumber	bptender	
-
-
-select * 
-from ice_baby.core_flow_ing_raw.raw_bptender
-where 1=1
-	and businessdaydate = date'2026-04-07'
-	and retailstoreid = '30D7'
-	and tendersequencenumber is null
-	and tendertypecode = '3101'
-	and transactiontypecode = '1014'
-;
-1) В SAP записям, соответствующим отмене продаж (transcode = 1014, tendercode = 3101), присваивается tendernumber, равный 8 или 9
-2) В Trino вместо этого остаются NULL значения в поле tendersequencenumber	
-
-
-IF <transaction>-transtypecode = '1014'. " аннулированный чек
-      IF <transaction>-tender[] IS INITIAL.   " не содержит оплат
-        " добавим фэйковую оплату наличными чтобы транзакция была сбалансирована
-        APPEND INITIAL LINE TO <transaction>-tender ASSIGNING <tender>.
-        <tender>-tendertypecode = '3101'.
-        <tender>-tenderamount = l_amnt.
-        <tender>-tendernumber = '8'.
-      ELSEIF  l_tndr NE l_amnt.  "Если для аннулированного чека разнятся сумма оплаты и сумма платежа
-        " добавим фэйковую оплату наличными чтобы транзакция была сбалансирована
-        APPEND INITIAL LINE TO <transaction>-tender ASSIGNING <tender>.
-        <tender>-tendertypecode = '3101'.
-        <tender>-tenderamount = l_amnt - l_tndr.
-        <tender>-tendernumber = '9'.
-      ENDIF.
-    ENDIF.
-    IF lv_clear_telnr = 'X'.
-      FIELD-SYMBOLS <fs_ext> LIKE LINE OF <transaction>-extensions.
-      LOOP AT <transaction>-extensions ASSIGNING <fs_ext>.
-        IF <fs_ext>-fieldname = 'MobileNum' OR <fs_ext>-fieldname = 'MailClient'.
-          CLEAR <fs_ext>-fieldvalue.
-        ENDIF.
-      ENDLOOP.
-    ENDIF.
-
-
-
-SELECT transactiontypecode, count(*)
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-WHERE is_aligned_tran IS NULL
-GROUP BY transactiontypecode
-ORDER BY count(*) DESC
-LIMIT 10;
+# 6. Запушь ветку в remote
+git push -u origin feature/parser_bin_serial_resolve_dif

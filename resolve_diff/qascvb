@@ -14,3 +14,24 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactdiscext
 TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactextensio
 TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransaction
 TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
+
+
+
+[INFO] --- jar:3.4.1:jar (default-jar) @ xml-parser-correction ---
+[INFO] Building jar: C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction\target\xml-parser-correction-1.0.6.jar
+[INFO]
+[INFO] --- shade:3.1.1:shade (default) @ xml-parser-correction ---
+[INFO] Including at.yawk.lz4:lz4-java:jar:1.8.1 in the shaded jar.
+[INFO] Excluding org.slf4j:slf4j-api:jar:1.7.36 from the shaded jar.
+[INFO] Excluding org.apache.logging.log4j:log4j-slf4j-impl:jar:2.17.1 from the shaded jar.
+[INFO] Excluding org.apache.logging.log4j:log4j-core:jar:2.17.1 from the shaded jar.
+[INFO] Replacing original artifact with shaded artifact.
+[INFO] Replacing C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction\target\xml-parser-correction-1.0.6.jar with C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction\target\xml-parser-correction-1.0.6-shaded.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.629 s
+[INFO] Finished at: 2026-04-13T22:23:27+03:00
+[INFO] ------------------------------------------------------------------------
+
+C:\Users\Mikha.Shishkanov\flink-jobs\xml-parser-correction>

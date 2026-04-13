@@ -19,11 +19,9 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 SELECT count(*)
 FROM ice_baby.core_flow_ing.raw_bpretaillineitem
-WHERE retailtypecode = '2902';
+WHERE retailtypecode = '2020';
 
--- Пример записей 2902
-SELECT retailstoreid, businessdaydate, workstationid,
-       transactionsequencenumber, retailsequencenumber,
-       retailtypecode, itemid
-FROM ice_baby.core_flow_ing.raw_bpretaillineitem
-WHERE retailtypecode = '2902'
+-- В PST слое записей 2020 быть НЕ должно
+SELECT count(*)
+FROM ice_baby.core_flow_ing.pst_bpretaillineitem
+WHERE retailtypecode = '2020';

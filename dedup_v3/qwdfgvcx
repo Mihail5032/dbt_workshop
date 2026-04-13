@@ -1,1 +1,3 @@
-в описании расхождения 7 "transactiontypecode = 2020" — это действительно transactiontypecode поле, или имелся в виду retailtypecode? 
+Caused by: java.lang.NullPointerException: null value in entry: s3.secret-access-key=null
+	at org.apache.iceberg.relocated.com.google.common.collect.CollectPreconditions.checkEntryNotNull(CollectPreconditions.java:32) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.relocated.com.google.common.collect.RegularImmutableMap.fromEntryArrayCheckingBucketOverflow(RegularImmutableMap.java:130) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]

@@ -1,15 +1,16 @@
-
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  5.988 s
-[INFO] Finished at: 2026-04-13T22:16:34+03:00
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:testCompile (default-testCompile) on project xml-parser-correction: Compilation failure
-[ERROR] /C:/Users/Mikha.Shishkanov/flink-jobs/xml-parser-correction/src/test/java/ru/x5/xml/XmlParserTest.java:[138,56] method toRowDataPst in class ru.x5.model.RetailLineItem cannot be applied to given types;
-[ERROR]   required: org.apache.iceberg.Schema,org.apache.flink.table.data.TimestampData,java.time.LocalDate,boolean,boolean,boolean
-[ERROR]   found: org.apache.iceberg.Schema,org.apache.flink.table.data.TimestampData,java.time.LocalDate,boolean
-[ERROR]   reason: actual and formal argument lists differ in length
-[ERROR]
-[ERROR] -> [Help 1]
-mvn clean package -Dmaven.test.skip=true
-
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpfinacialmovement;
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpfinancialmovemen
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemdiscext
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemdiscount
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemextensio
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemtax
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpretaillineitem
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpretailtotals
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpsourcedocumentli
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptender
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptenderextensions
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptendertotals
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactdiscext
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactextensio
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransaction
+TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco

@@ -17,13 +17,18 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 
 
-Понял, поправляю. Выполни:
-
-SELECT count(*)
-FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
-WHERE retailtypecode IN ('2001', '2002', '2011', '2803', '2043', '2902');
-
 SELECT count(*)
 FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE tendersequencenumber IN ('8', '9')
-  AND transactiontypecode = '1014';
+WHERE transactiontypecode = '1014'
+  AND tenderamount = 0
+  AND tendersequencenumber = 8;
+
+-- Примеры
+SELECT retailstoreid, businessdaydate, workstationid,
+       transactionsequencenumber, tendersequencenumber,
+       tenderamount, tendertypecode
+FROM ice_baby.core_flow_ing_raw.raw_bptender
+WHERE transactiontypecode = '1014'
+  AND tenderamount = 0
+  AND tendersequencenumber = 8
+LIMIT 10;

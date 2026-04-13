@@ -1,3 +1,5 @@
 Caused by: java.lang.NullPointerException: null value in entry: s3.secret-access-key=null
 	at org.apache.iceberg.relocated.com.google.common.collect.CollectPreconditions.checkEntryNotNull(CollectPreconditions.java:32) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
 	at org.apache.iceberg.relocated.com.google.common.collect.RegularImmutableMap.fromEntryArrayCheckingBucketOverflow(RegularImmutableMap.java:130) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+
+Caused by: org.apache.hadoop.net.ConnectTimeoutException: getFileStatus on s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json: com.amazonaws.SdkClientException: Unable to execute HTTP request: Connect to datatransfer.s3.amazonaws.com:443 [datatransfer.s3.amazonaws.com/3.5.205.235, datatransfer.s3.amazonaws.com/3.5.204.173] failed: Connect timed out

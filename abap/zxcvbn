@@ -1,1 +1,555 @@
 
+METHOD /posdw/if_ex_bapiinput_pst~call.
+  TYPES:
+    BEGIN OF t_ean,
+      matnr TYPE matnr18,
+      meins TYPE meinh,
+      umrez TYPE umrez,
+      ean11 TYPE ean11,
+    END OF t_ean,
+    tt_ean TYPE TABLE OF t_ean.
+
+  FIELD-SYMBOLS:
+    <transaction>  TYPE /posdw/transaction_int,
+    <transaction2> TYPE /posdw/transaction_int,
+    <item>         TYPE /posdw/retaillineitem,
+    <extensions>   TYPE /posdw/extensions,
+    <tender>       TYPE /posdw/tender,
+    <tender2>      TYPE /posdw/tender,
+    <rtotals>      TYPE /posdw/retailtotals,
+    <finitem>      TYPE /posdw/financialmovement,
+    <ext>          TYPE /posdw/extensions,
+    <stitem>       TYPE /posdw/retaillineitem,
+    <return>       TYPE bapiret2,
+    <nqdoc>        TYPE znqdoctype.
+  DATA:
+    l_qty          TYPE /posdw/retailquantity,
+    l_amnt         TYPE /posdw/retailquantity,
+    l_tndr         TYPE /posdw/tenderamount,
+    l_diff         TYPE /posdw/tenderamount,
+    lt_nqdoc       TYPE TABLE OF znqdoctype,
+*    l_meins    TYPE meinh,
+    lt_stitem      TYPE TABLE OF /posdw/retaillineitem,
+    l_alc_mark_del TYPE string,
+    l_alc_mark     TYPE string,
+    l_fl_del 	     TYPE char1,
+    l_numc         TYPE num4,
+    l_werks        TYPE werks_d,
+    l_store        TYPE /posdw/retailstoreid,
+    l_busday       TYPE dats,
+    l_busday1      TYPE dats,
+    l_closetime    TYPE char14,
+    l_closetran    TYPE char14,
+    ls_item        TYPE /posdw/retaillineitem,
+    l_fl_vprok     TYPE char1,
+    l_virtDays     TYPE i,
+    l_lockwait     TYPE /posdw/lockwait VALUE 60,
+    VirtHours      TYPE tvarv_val,
+    lr_extypes     TYPE RANGE OF tvarv_val,
+    "lr_dm_cat      TYPE RANGE OF tvarv_val,
+    lr_explant     TYPE RANGE OF tvarv_val,
+    lr_fixes       TYPE RANGE OF tvarv_val,
+    lt_transaction TYPE /posdw/tt_transaction_int,
+    l_dchan        TYPE vtweg,
+    l_cis_mark_del TYPE string,
+    l_cis_mark     TYPE string.
+
+  DEFINE alpha.
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+      EXPORTING
+        input  = &1
+      IMPORTING
+        output = &2.
+  END-OF-DEFINITION.
+  IF lines( ct_transaction ) = 1.
+    READ TABLE ct_transaction INDEX 1 ASSIGNING <transaction>.
+    IF <transaction>-transtypecode = 'FAKE'.
+      APPEND INITIAL LINE TO et_return ASSIGNING <return>.
+      <return>-type = 'I'.
+      <return>-id = 'ZPOSDW'.
+      <return>-number = '004'.
+*      CLEAR CT_TRANSACTION.
+      EXIT.
+    ENDIF.
+  ENDIF.
+
+  get time.
+  clear err_pos.
+
+  CHECK ct_transaction IS NOT INITIAL.
+
+  READ TABLE ct_transaction INDEX 1 ASSIGNING <transaction>.
+  l_store = <transaction>-retailstoreid.
+  l_busday = <transaction>-businessdaydate.
+  l_busday1 = l_busday - 1.
+  alpha <transaction>-retailstoreid l_werks.
+
+  SELECT sign opti low high INTO TABLE lr_extypes
+    FROM tvarvc WHERE name = 'VH_EXTYPES' AND type = 'S'.
+
+  SELECT sign opti low high INTO TABLE dm_categories
+    FROM tvarvc WHERE name = 'DMCAT_CHECK' AND type = 'S'. " Список категорий DM
+
+  SELECT sign opti low high INTO TABLE lr_fixes
+    FROM tvarvc WHERE name = 'CHK_FIXES' AND type = 'S'.
+
+  SELECT SINGLE distr_chan INTO l_dchan FROM zav_plant WHERE plant = l_werks.
+  DATA x_gkbf  TYPE i VALUE 0.
+  SELECT COUNT(*) INTO x_gkbf FROM tvarvc WHERE name = 'GKBF_PD_PX_CHAN' AND low = l_dchan.
+
+  DATA lv_clear_telnr TYPE abap_bool.
+  DATA lv_low TYPE tvarv_val.
+
+  CLEAR: lv_clear_telnr, lv_low.
+
+  SELECT SINGLE low INTO lv_low FROM tvarvc WHERE name = 'ZCLEAR_TELNR'.
+  IF ( sy-subrc IS INITIAL AND lv_low = 'X' ).
+    lv_clear_telnr = 'X'.
+  ENDIF.
+
+  LOOP AT ct_transaction ASSIGNING <transaction> WHERE retaillineitem IS NOT INITIAL.
+    CLEAR lt_stitem.
+    " Соберем отмены!
+    LOOP AT <transaction>-retaillineitem ASSIGNING <item> WHERE retailtypecode = '2901'.
+      IF <item>-retailquantity < 0.
+        APPEND <item> TO lt_stitem.
+      ELSE.
+        <item>-retailtypecode = '2001'.
+      ENDIF.
+    ENDLOOP.
+
+    LOOP AT lt_stitem ASSIGNING <stitem>.
+      CLEAR l_alc_mark_del.
+      CLEAR l_cis_mark_del.
+      LOOP AT <stitem>-extensions ASSIGNING <ext> WHERE fieldgroup = 'TAX' OR fieldname = 'DATAMATRIX'.
+        IF <ext>-fieldgroup = 'TAX'.
+          CONCATENATE l_alc_mark_del <ext>-fieldvalue INTO l_alc_mark_del.
+        ENDIF.
+        IF <ext>-fieldname = 'DATAMATRIX'.
+          l_cis_mark_del = <ext>-fieldvalue.
+        ENDIF.
+      ENDLOOP.
+      l_qty = - <stitem>-retailquantity.
+      l_amnt = - <stitem>-salesamount.
+      CLEAR l_fl_del.
+      IF l_alc_mark_del IS NOT INITIAL."Алкогольный товар. Найдем и удалим товар с одинаковым номером акломарки
+        LOOP AT <transaction>-retaillineitem ASSIGNING <item>
+          WHERE itemid = <stitem>-itemid AND retailquantity = l_qty AND salesamount = l_amnt
+            AND retailtypecode <> '2902'.
+          CLEAR l_alc_mark.
+          LOOP AT <item>-extensions ASSIGNING <ext> WHERE fieldgroup = 'TAX'.
+            CONCATENATE l_alc_mark <ext>-fieldvalue INTO l_alc_mark.
+          ENDLOOP.
+          IF l_alc_mark = l_alc_mark_del.
+            <item>-retailtypecode = '2902'.
+            "delete <transaction>-retaillineitem.
+            "delete lt_stitem.
+            l_fl_del = 'X'.
+            EXIT.
+          ENDIF.
+        ENDLOOP.
+      ENDIF.
+      IF l_cis_mark_del IS NOT INITIAL."Маркированный товар. Найдем и удалим товар с одинаковым номером КИЗа
+        LOOP AT <transaction>-retaillineitem ASSIGNING <item>
+          WHERE itemid = <stitem>-itemid AND retailquantity = l_qty AND salesamount = l_amnt
+            AND retailtypecode <> '2902'.
+          CLEAR l_cis_mark.
+          LOOP AT <item>-extensions ASSIGNING <ext> WHERE fieldname = 'DATAMATRIX'.
+            l_cis_mark = <ext>-fieldvalue.
+            EXIT.
+          ENDLOOP.
+          IF l_cis_mark = l_cis_mark_del.
+            <item>-retailtypecode = '2902'.
+            l_fl_del = 'X'.
+            EXIT.
+          ENDIF.
+        ENDLOOP.
+      ENDIF.
+      IF l_fl_del = ''. "Товар не алкогольный или же мы не нашли нужный номер алкомарки, поэтому удалим первый попавшийся
+        LOOP AT <transaction>-retaillineitem ASSIGNING <item>
+          WHERE itemid = <stitem>-itemid AND retailquantity = l_qty AND salesamount = l_amnt
+            AND retailtypecode <> '2902'.
+          <item>-retailtypecode = '2902'.
+          EXIT.
+        ENDLOOP.
+        "delete <transaction>-retaillineitem index sy-tabix.
+        "delete lt_stitem.
+      ENDIF.
+    ENDLOOP.
+
+    check_datamatrix( is_transaction = <transaction> it_item = <transaction>-retaillineitem ).
+    check_itemid( is_transaction = <transaction> it_item = <transaction>-retaillineitem ).
+
+    CLEAR: l_amnt, l_tndr.
+    LOOP AT <transaction>-retaillineitem ASSIGNING <item>.
+      l_amnt = l_amnt + <item>-salesamount.
+    ENDLOOP.
+    LOOP AT <transaction>-tender ASSIGNING <tender2>.
+      l_tndr = l_tndr + <tender2>-tenderamount.
+    ENDLOOP.
+
+    l_diff = l_tndr - l_amnt.
+
+    IF 'INTEG-5441' IN lr_fixes. " INTEG-5441. Костыль на отсутствие позиции округдения в возврате
+      IF ( <transaction>-transtypecode = '1002' OR <transaction>-transtypecode = '1003' )
+      AND l_diff <> 0 AND abs( l_diff ) < 1.
+        APPEND INITIAL LINE TO <transaction>-retaillineitem ASSIGNING <item>.
+        <item>-retailquantity = 1.
+        <item>-itemidqualifier = '2'.
+        <item>-itemid = 'S000004'.
+        <item>-retailtypecode = '2805'.
+        <item>-retailnumber = lines( <transaction>-retaillineitem ).
+        <item>-salesamount = l_diff.
+        <item>-salesuom = 'ST'.
+      ENDIF.
+    ENDIF.
+
+    IF 'INTEG-8929' IN lr_fixes. " INTEG-8929. CAR. Проблема с лишней поз. округления.
+      IF <transaction>-transtypecode = '1001'
+      AND l_diff <> 0 AND  abs( l_diff ) < 1.
+        READ TABLE <transaction>-retaillineitem WITH KEY retailtypecode = '2006' ASSIGNING <item>.
+        IF sy-subrc IS INITIAL AND <item>-salesamount = - l_diff.
+          DELETE <transaction>-retaillineitem INDEX sy-tabix.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+
+    IF 'INTEG-9061' IN lr_fixes. " INTEG-9061 - Временное исправление для отмененных чеков CashOut
+      IF <transaction>-transtypecode = '1015' AND l_tndr = 0.
+        <transaction>-transtypecode = '1014'.
+      ENDIF.
+    ENDIF.
+
+    IF 'INTEG-8236' IN lr_fixes.  " INTEG-8236 Временный костыль с подменной номера кассы для чеков ВПРОК АГ
+      READ TABLE <transaction>-extensions WITH KEY fieldname = 'SOURCE'
+                                                   fieldvalue = 'vprok.express'
+                                                   TRANSPORTING NO FIELDS.
+      IF sy-subrc = 0.
+        <transaction>-workstationid = '0000001002'.
+        l_fl_vprok = 'X'.
+      ENDIF.
+    ENDIF.
+
+    IF <transaction>-transtypecode = '1014'. " аннулированный чек
+      IF <transaction>-tender[] IS INITIAL.   " не содержит оплат
+        " добавим фэйковую оплату наличными чтобы транзакция была сбалансирована
+        APPEND INITIAL LINE TO <transaction>-tender ASSIGNING <tender>.
+        <tender>-tendertypecode = '3101'.
+        <tender>-tenderamount = l_amnt.
+        <tender>-tendernumber = '8'.
+      ELSEIF  l_tndr NE l_amnt.  "Если для аннулированного чека разнятся сумма оплаты и сумма платежа
+        " добавим фэйковую оплату наличными чтобы транзакция была сбалансирована
+        APPEND INITIAL LINE TO <transaction>-tender ASSIGNING <tender>.
+        <tender>-tendertypecode = '3101'.
+        <tender>-tenderamount = l_amnt - l_tndr.
+        <tender>-tendernumber = '9'.
+      ENDIF.
+    ENDIF.
+    IF lv_clear_telnr = 'X'.
+      FIELD-SYMBOLS <fs_ext> LIKE LINE OF <transaction>-extensions.
+      LOOP AT <transaction>-extensions ASSIGNING <fs_ext>.
+        IF <fs_ext>-fieldname = 'MobileNum' OR <fs_ext>-fieldname = 'MailClient'.
+          CLEAR <fs_ext>-fieldvalue.
+        ENDIF.
+      ENDLOOP.
+    ENDIF.
+
+    IF '492128' in lr_fixes " 000029870 1492128: Обработка чеков по сертификатам ОПТ TC5
+    and line_exists( <transaction>-tender[ tendertypecode = '3108' ] ).
+      " Временная подмена 3108 на 3123 - Сертификат ОПТ TC5
+      READ TABLE <transaction>-tender WITH KEY tendertypecode = '3108' ASSIGNING <tender>.
+      if value #( <tender>-extensions[ fieldname = 'CERT_PARTY' ]-fieldvalue optional ) cp 'RU02*'.
+        <tender>-tendertypecode = '3123'.
+        if value #( <tender>-extensions[ fieldname = 'CERT_PRICE' ]-fieldvalue optional ) cp '*.0'.
+          ASSIGN <tender>-extensions[ fieldname = 'CERT_PRICE' ] to FIELD-SYMBOL(<fext>).
+          SPLIT <fext>-fieldvalue at '.' INTO <fext>-fieldvalue data(rem).
+        endif.
+      ENDIF.
+    ENDIF.
+
+    IF '2125781' IN lr_fixes. " Подмена RETAILTYPECODE при авто-уценке
+      LOOP AT <transaction>-retaillineitem ASSIGNING <item>.
+        READ TABLE <item>-extensions ASSIGNING <ext> WITH TABLE KEY FIELDGROUP = 'POS'
+                                                                    FIELDNAME = 'AUTO_MD'
+                                                                    FIELDVALUE = 'Y'.
+        IF sy-subrc IS INITIAL.
+          <item>-retailtypecode = '2043'.
+        ENDIF.
+      ENDLOOP.
+    ENDIF.
+
+    IF '2125781_2' IN lr_fixes. " Если пустая PLU в чеке кэшаут - подставляем константу --Стр 281-324 доработки
+      IF <transaction>-transtypecode = '1015'.
+        LOOP AT <transaction>-retaillineitem ASSIGNING <item>
+          WHERE itemid IS INITIAL.
+          <item>-itemid = 'S001332'.
+          <item>-materialnumber = 'S001332'.
+          <item>-merchandisecat = 'SERV106'.
+          <item>-baseuom = 'ST'.
+        ENDLOOP.
+      ENDIF.
+    ENDIF.
+
+    IF '2525942' IN lr_fixes.
+      IF <transaction>-workstationid = '0000001000'.
+        LOOP AT <transaction>-retaillineitem ASSIGNING <item>.
+          IF <item>-retailtypecode = '2804'.
+            <item>-retailtypecode = '2826'.
+          ENDIF.
+          IF '2525942_2' IN lr_fixes AND <item>-itemid = 'S003147' AND <transaction>-transtypecode = '1016'.
+            <item>-retailtypecode = '2044'.
+          ELSEIF '2525942_2' IN lr_fixes AND <item>-itemid = 'S003147' AND <transaction>-transtypecode = '1017'.
+            <item>-retailtypecode = '2831'.
+          ENDIF.
+        ENDLOOP.
+      ENDIF.
+    ENDIF.
+
+    IF '2550770' in lr_fixes and <transaction>-transtypecode = '1001'.
+      if line_exists( <transaction>-tender[ tendertypecode = 'OPT' ] ).
+        LOOP AT <transaction>-tender ASSIGNING <tender> WHERE tendertypecode = 'OPT'.
+          data(party) = value /POSDW/FIELDVALUE( <tender>-extensions[ fieldname = 'CERT_PARTY' ]-fieldvalue OPTIONAL ) .
+          IF party cp 'RU02*'.
+            <tender>-tendertypecode = '3123'.
+          ELSEIF party cp 'RU06*'.
+            <tender>-tendertypecode = '3108'.
+          ENDIF.
+        ENDLOOP.
+      ELSEIF line_exists( <transaction>-tender[ tendertypecode = 'RET' ] ).
+        <transaction>-tender[ tendertypecode = 'RET' ]-tendertypecode = '3110'.
+      ENDIF.
+      IF l_diff < 0 and l_tndr < 0 and l_amnt > 0  and lines( <transaction>-tender ) = 1.
+        <transaction>-tender[ 1 ]-tenderamount = l_amnt.
+      ENDIF.
+    ENDIF.
+  ENDLOOP.
+
+  IF err_pos is not initial.
+    modify zposdw_chk_err from table err_pos.
+  ENDIF.
+  IF l_fl_vprok = 'X'.
+    zcl_posdw_utils=>del_duplicates( CHANGING ct_transaction = ct_transaction ).
+  ENDIF.
+
+  LOOP AT ct_transaction ASSIGNING <transaction> WHERE financialmovement IS NOT INITIAL.
+    READ TABLE <transaction>-financialmovement ASSIGNING <finitem> INDEX 1.
+    READ TABLE <transaction>-extensions WITH KEY fieldname = 'NOTE' ASSIGNING <ext>.
+    IF sy-subrc = 0 AND ( <finitem>-fitypecode = '3200' OR <finitem>-fitypecode = '3100' ).
+      APPEND INITIAL LINE TO lt_nqdoc ASSIGNING <nqdoc>.
+      alpha <transaction>-retailstoreid <nqdoc>-werks.
+      <nqdoc>-doctype = <finitem>-fitypecode(2).
+      <nqdoc>-maxnumber = <ext>-fieldvalue+2.
+    ENDIF.
+  ENDLOOP.
+  SORT lt_nqdoc BY werks doctype maxnumber DESCENDING.
+  DELETE ADJACENT DUPLICATES FROM lt_nqdoc COMPARING werks doctype.
+  LOOP AT lt_nqdoc ASSIGNING <nqdoc>.
+    UPDATE znqdoctype SET maxnumber = <nqdoc>-maxnumber
+      WHERE werks = <nqdoc>-werks AND doctype = <nqdoc>-doctype AND maxnumber < <nqdoc>-maxnumber.
+  ENDLOOP.
+
+  " Преобразуем позиции с упаковками
+  DATA:
+    l_umrez    TYPE string,
+    l_matnr    TYPE matnr18,
+    lt_ean_tmp TYPE tt_ean,
+    lt_ean     TYPE tt_ean,
+    ls_ean     TYPE t_ean.
+  " Соберем сперва все упаковки
+  LOOP AT ct_transaction ASSIGNING <transaction> WHERE retaillineitem IS NOT INITIAL.
+    CLEAR: l_umrez, ls_ean.
+    LOOP AT <transaction>-retaillineitem ASSIGNING <item> WHERE itemid CP '*UP*'.
+      "число после UP - количество в упаковке (напрр. 123UP4)
+      SPLIT <item>-itemid AT 'UP' INTO l_matnr l_umrez.
+      alpha l_matnr ls_ean-matnr.
+      ls_ean-umrez = l_umrez.
+      CHECK ls_ean IS NOT INITIAL.
+      APPEND ls_ean TO lt_ean_tmp.
+    ENDLOOP.
+  ENDLOOP.
+  SORT lt_ean_tmp BY matnr umrez.
+  DELETE ADJACENT DUPLICATES FROM lt_ean_tmp COMPARING matnr umrez.
+  IF lt_ean_tmp[] IS NOT INITIAL.
+    SELECT m~matnr m~meinh m~umrez e~ean11 "RPA_HPEAN "RPA_UMREZ RPA_UMREN
+      INTO TABLE lt_ean FROM zav_marm AS m
+      INNER JOIN zav_mean AS e ON m~matnr = e~matnr AND m~meinh = e~meinh
+      FOR ALL ENTRIES IN lt_ean_tmp
+      WHERE m~matnr = lt_ean_tmp-matnr AND m~umrez = lt_ean_tmp-umrez AND e~ean11 <> ''.
+
+    SORT lt_ean BY matnr umrez.
+    LOOP AT ct_transaction ASSIGNING <transaction>  WHERE retaillineitem IS NOT INITIAL.
+      LOOP AT <transaction>-retaillineitem ASSIGNING <item>  WHERE itemid CP '*UP*'.
+        " Число после UP - количество в упаковке (напрр. 123UP4)
+        SPLIT <item>-itemid AT 'UP' INTO l_matnr l_umrez.
+        alpha l_matnr l_matnr.
+        CLEAR ls_ean.
+        READ TABLE lt_ean WITH KEY matnr = l_matnr umrez = l_umrez INTO ls_ean BINARY SEARCH.
+        IF ls_ean-ean11 IS INITIAL.
+          " Не нашли EAN, падаем в ошибку
+          APPEND INITIAL LINE TO et_return ASSIGNING <return>.
+          <return>-type = 'E'.
+          <return>-id = 'ZPOSDW'.
+          <return>-number = '025'.
+          <return>-message_v1 =  <item>-itemid.
+          CLEAR <transaction>-transnumber.
+          EXIT.
+        ELSE.
+          " Найден EAN
+          <item>-itemid = ls_ean-ean11.
+          <item>-itemidqualifier = '1'. " EAN
+          <item>-salesuom = ls_ean-meins.
+        ENDIF.
+      ENDLOOP.
+      IF <transaction>-transnumber IS INITIAL.
+        DELETE ct_transaction.
+        CONTINUE.
+      ENDIF.
+    ENDLOOP.
+  ENDIF.
+
+  " Исправляем проблему пустого itemid в отмненных чеках.
+  LOOP AT ct_transaction ASSIGNING <transaction>  WHERE transtypecode = '1014'.
+    LOOP AT <transaction>-retaillineitem ASSIGNING <item> WHERE itemid is initial.
+      <item>-itemid = '0'.
+      <item>-itemidqualifier = ''.
+    ENDLOOP.
+  ENDLOOP.
+  "---------------------------
+  " Виртуальный час
+  VirtHours = '000000'.
+  CLEAR l_virtDays.
+  SELECT SINGLE low INTO VirtHours FROM tvarvc WHERE name = 'GK_VIRT_HOURS'.
+  IF x_gkbf > 0.
+    " Список GKBF магазинов-исключений для вирт.часа.
+    SELECT sign opti low high INTO TABLE lr_explant
+      FROM tvarvc WHERE name = 'VH_EXWERKS' AND type = 'S'.
+    IF l_werks IN lr_explant.
+      VirtHours = '000000'.
+    ENDIF.
+  ENDIF.
+
+  IF VirtHours > '000000'.
+    " По умолчанию деллайн на закрытие.
+    CONCATENATE l_busday VirtHours INTO l_closetime.
+    " Проверим наличие уже закрытого КД прошлого дня
+    CLEAR l_closetran.
+    SELECT SINGLE closedate FROM zposdw_bal_list INTO l_closetran " Время закрытия вчерашнего дня
+      WHERE retailstoreid = l_store AND businessdaydate = l_busday1.
+    IF l_closetran(8) = l_busday1 AND l_closetran+8(6) > VirtHours  " Закрытие прошедшего дня было в прошедших сутках
+    OR l_closetran(8) = l_busday  AND l_closetran+8(6) < VirtHours. " Закрытие прошедшего дня было в этих сутках
+      l_closetime = l_closetran.
+    ENDIF.
+    LOOP AT ct_transaction ASSIGNING <transaction> WHERE transtypecode = '1601'. " Смотрим итоги
+      IF <transaction>-begintimestamp+8(6) < VirtHours                    " Время в интервале вирт.часа
+      AND <transaction>-begintimestamp(8) = <transaction>-businessdaydate
+      AND <transaction>-begintimestamp <= l_closetime.   " Не меньше уже имеющегося закрытия
+        <transaction>-businessdaydate = <transaction>-businessdaydate -  1.
+        l_virtDays =  l_virtDays + 1.
+        IF <transaction>-workstationid = '0000000000'. " Закрытие дня в магазине
+          l_closetime = <transaction>-begintimestamp.
+        ENDIF.
+      ENDIF.
+    ENDLOOP.
+    " ПКО/РКО
+    LOOP AT ct_transaction ASSIGNING <transaction>
+      WHERE transtypecode = '1301' " Смотрим ПКО
+         OR transtypecode = '1302' " Смотрим РКО
+         OR transtypecode = '1305'. " Смотрим ПБП
+      IF <transaction>-begintimestamp+8(6) < VirtHours       " Время в интервале вирт.часа
+      AND <transaction>-begintimestamp(8) = <transaction>-businessdaydate
+      AND <transaction>-begintimestamp <= l_closetime.      " Не меньше уже имеющегося закрытия
+        <transaction>-businessdaydate = <transaction>-businessdaydate -  1.
+        l_virtDays =  l_virtDays + 1.
+      ENDIF.
+    ENDLOOP.
+    " Чеки
+    LOOP AT ct_transaction ASSIGNING <transaction> WHERE transtypecode CP '10*'. " Чеки
+      IF lr_extypes[] IS NOT INITIAL.
+        CHECK <transaction>-transtypecode NOT IN lr_extypes.
+      ENDIF.
+      IF <transaction>-begintimestamp+8(6) < VirtHours
+      AND <transaction>-begintimestamp(8) = <transaction>-businessdaydate
+      AND <transaction>-begintimestamp <= l_closetime.
+        <transaction>-businessdaydate = <transaction>-businessdaydate -  1.
+        l_virtDays =  l_virtDays + 1.
+      ENDIF.
+    ENDLOOP.
+
+    IF  l_virtDays > 0 AND  l_virtDays < lines( ct_transaction ).
+      " В списке транзакции с разными  BUSINESSDAYDATE
+      LOOP AT ct_transaction ASSIGNING <transaction> WHERE businessdaydate = l_busday1.
+        APPEND <transaction> TO lt_transaction.
+        DELETE ct_transaction.
+      ENDLOOP.
+      zcl_posdw_utils=>del_duplicates( CHANGING ct_transaction = lt_transaction ).
+      IF lt_transaction[] IS NOT INITIAL.
+*     Commit work allowed -> direct posting, not through update task.
+*     Advantages: better performance, immediate tasks are executed
+        CALL FUNCTION '/POSDW/CREATE_TRANSACTIONS_INT'
+          EXPORTING
+            i_lockwait           = l_lockwait
+            i_sourceobjectlink   = c_sourceobjectlink
+            i_process_indicator  = /posdw/if_badi_change_bef_save=>c_bapi
+            i_execute_conversion = abap_false
+          IMPORTING
+            et_return            = et_return
+          CHANGING
+            ct_transaction       = lt_transaction.
+        LOOP AT et_return TRANSPORTING NO FIELDS WHERE type = 'E' OR type = 'A'.
+          EXIT.
+        ENDLOOP.
+        IF sy-subrc IS INITIAL.
+*         error during direct posting (type E or A)
+          ROLLBACK WORK.
+          EXIT.
+        ENDIF.
+      ENDIF.
+    ELSEIF l_virtDays > 0 AND  l_virtDays = lines( ct_transaction ).
+      " Сменили даты у ВСЕХ транзакций айдока
+      zcl_posdw_utils=>del_duplicates( CHANGING ct_transaction = ct_transaction ).
+    ENDIF.
+  ENDIF.
+
+  DATA correctDate TYPE tvarv_val.
+  SELECT SINGLE low INTO correctDate FROM tvarvc WHERE name = 'ZGK_BUSDAY_CORRECT'.
+  IF correctDate = 'X'.
+    " ---INTEG-5441. Исправление BISINESSDAYDATE в контрольных транзакцимях
+    CLEAR lt_transaction[].
+    LOOP AT ct_transaction ASSIGNING <transaction> WHERE transtypecode CP '11*'.
+      CHECK <transaction>-endtimestamp(8) <> <transaction>-businessdaydate.
+      APPEND <transaction> TO lt_transaction ASSIGNING <transaction2>.
+      <transaction2>-businessdaydate = <transaction>-endtimestamp.
+      DELETE ct_transaction.
+    ENDLOOP.
+
+    zcl_posdw_utils=>del_duplicates( CHANGING ct_transaction = lt_transaction ).
+
+    IF ct_transaction[] IS INITIAL.
+      ct_transaction[] = lt_transaction[].
+      CLEAR lt_transaction[].
+    ENDIF.
+
+    IF lt_transaction[] IS NOT INITIAL.
+      CALL FUNCTION '/POSDW/CREATE_TRANSACTIONS_INT'
+        EXPORTING
+          i_lockwait           = l_lockwait
+          i_sourceobjectlink   = c_sourceobjectlink
+          i_process_indicator  = /posdw/if_badi_change_bef_save=>c_bapi
+          i_execute_conversion = abap_false
+        IMPORTING
+          et_return            = et_return
+        CHANGING
+          ct_transaction       = lt_transaction.
+      LOOP AT et_return TRANSPORTING NO FIELDS WHERE type = 'E' OR type = 'A'.
+        EXIT.
+      ENDLOOP.
+      IF sy-subrc IS INITIAL.
+*       error during direct posting (type E or A)
+        ROLLBACK WORK.
+        EXIT.
+      ENDIF.
+    ENDIF.
+    " --- end of INTEG-5441
+  ENDIF.
+
+ENDMETHOD.

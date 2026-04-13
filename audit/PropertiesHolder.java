@@ -1,6 +1,5 @@
 package ru.x5.config;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.iceberg.CatalogProperties;
 import org.apache.iceberg.aws.s3.S3FileIOProperties;
 import org.apache.log4j.Logger;
@@ -10,9 +9,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Класс для хранения конфигураций из property-файла
- */
 public class PropertiesHolder {
     private static final Logger log = Logger.getLogger(PropertiesHolder.class);
 
@@ -40,15 +36,13 @@ public class PropertiesHolder {
     private static final String KEYTAB_PRINCIPAL = "keytab.principal";
 
     private static volatile PropertiesHolder instance;
-
     private final Properties props;
 
     private PropertiesHolder() {
         try {
             props = new Properties();
             props.load(PropertiesHolder.class.getClassLoader().getResourceAsStream("application.properties"));
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             log.error("Could not read properties");
             throw new CommonParserException(ex);
         }
@@ -65,38 +59,30 @@ public class PropertiesHolder {
         return instance;
     }
 
-
-    public Configuration getEntriesHMS() {
-        List<String> keys = Arrays.asList(HIVE_METASTORE_LOCAL,
-                HIVE_METASTORE_URIS,
-//                FS_S3A_ACCESS_KEY,
-//                FS_S3A_SECRET_KEY,
-                FS_S3A_CONNECTIONS_SSL_ENABLED,
-//                FS_S3A_AWS_CREDENTIALS_PROVIDER,
-//                FS_S3A_PATH_STYLE_ACCESS,
-//                FS_S3A_ENDPOINT,
-//                FS_S3A_REGION,
-                FILE_IO_IMPL
-//                PATH_STYLE_ACCESS,
-//                S3_ENDPOINT
-        );
-        Configuration conf = new Configuration();
-        keys.forEach(x -> conf.set(x, props.getProperty(x)));
+    // ✅ ВСЕ НАСТРОЙКИ ДЛЯ HADOOP (Hive Metastore + S3A)
+    public Map<String, String> getEntriesHMS() {
+        Map<String, String> conf = new HashMap<>();
+        conf.put(HIVE_METASTORE_LOCAL, props.getProperty(HIVE_METASTORE_LOCAL));
+        conf.put(HIVE_METASTORE_URIS, props.getProperty(HIVE_METASTORE_URIS));
+        conf.put(FS_S3A_ACCESS_KEY, props.getProperty(FS_S3A_ACCESS_KEY));
+        conf.put(FS_S3A_SECRET_KEY, props.getProperty(FS_S3A_SECRET_KEY));
+        conf.put(FS_S3A_CONNECTIONS_SSL_ENABLED, props.getProperty(FS_S3A_CONNECTIONS_SSL_ENABLED));
+        conf.put(FS_S3A_AWS_CREDENTIALS_PROVIDER, props.getProperty(FS_S3A_AWS_CREDENTIALS_PROVIDER));
+        conf.put(FS_S3A_PATH_STYLE_ACCESS, props.getProperty(FS_S3A_PATH_STYLE_ACCESS));
+        conf.put(FS_S3A_ENDPOINT, props.getProperty(FS_S3A_ENDPOINT));
+        conf.put(FS_S3A_REGION, props.getProperty(FS_S3A_REGION));
+        conf.put(FILE_IO_IMPL, props.getProperty(FILE_IO_IMPL));
         return conf;
     }
 
+    // ✅ НАСТРОЙКИ ДЛЯ ICEBERG (S3FileIO)
     public Map<String, String> getEntriesS3() {
-        List<String> keys = Arrays.asList(WAREHOUSE,
-//                FS_S3A_ACCESS_KEY,
-//                FS_S3A_SECRET_KEY,
-                FS_S3A_CONNECTIONS_SSL_ENABLED
-//                FS_S3A_AWS_CREDENTIALS_PROVIDER,
-//                FS_S3A_PATH_STYLE_ACCESS,
-//                FS_S3A_ENDPOINT,
-//                FS_S3A_REGION
-        );
-        return keys.stream().collect(
-                Collectors.toMap(x -> x, props::getProperty));
+        Map<String, String> conf = new HashMap<>();
+        conf.put(WAREHOUSE, props.getProperty(WAREHOUSE));
+        conf.put(PATH_STYLE_ACCESS, props.getProperty(PATH_STYLE_ACCESS));
+        conf.put(S3_ENDPOINT, props.getProperty(S3_ENDPOINT));
+        // при необходимости можно добавить другие s3.* настройки
+        return conf;
     }
 
     public boolean isLocalRun() {

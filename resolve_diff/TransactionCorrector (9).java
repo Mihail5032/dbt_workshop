@@ -304,13 +304,14 @@ public class TransactionCorrector implements Serializable {
                                                       Map<BaseTransactionKey, BigDecimal> salesAmountSum,
                                                       List<BaseTransactionKey> baseTransactionKeys) {
         for (BaseTransactionKey key : baseTransactionKeys) {
-            BigDecimal tenderSum = tenderAmountSum.get(key.getTransactionKey());
-            BigDecimal salesSum = salesAmountSum.get(key.getTransactionKey());
-            if (tenderSum != null && salesSum != null) {
-                key.setIs_aligned_tran(tenderSum.compareTo(salesSum) == 0);
-            } else {
-                key.setIs_aligned_tran(null);
+            if (!isCheckTransaction(key.getTransactionTypeCode())) {
+                key.setIs_aligned_tran(null);  // не чековые транзакции (11xx, 13xx, 16xx и т.д.)
+                continue;
             }
+            // Для чековых транзакций (10xx) — null трактуем как 0
+            BigDecimal tenderSum = tenderAmountSum.getOrDefault(key.getTransactionKey(), BigDecimal.ZERO);
+            BigDecimal salesSum = salesAmountSum.getOrDefault(key.getTransactionKey(), BigDecimal.ZERO);
+            key.setIs_aligned_tran(tenderSum.compareTo(salesSum) == 0);
         }
     }
 }

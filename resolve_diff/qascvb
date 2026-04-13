@@ -18,17 +18,6 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 
 SELECT count(*)
-FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE transactiontypecode = '1014'
-  AND tenderamount = 0
-  AND tendersequencenumber = 8;
-
--- Примеры
-SELECT retailstoreid, businessdaydate, workstationid,
-       transactionsequencenumber, tendersequencenumber,
-       tenderamount, tendertypecode
-FROM ice_baby.core_flow_ing_raw.raw_bptender
-WHERE transactiontypecode = '1014'
-  AND tenderamount = 0
-  AND tendersequencenumber = 8
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+WHERE retailtypecode = '2020';
 LIMIT 10;

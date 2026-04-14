@@ -1,74 +1,58 @@
-select is_aligned_tran, count(*) from ice_baby.core_flow_ing_raw.raw_bptransaction
-group by is_aligned_tran
-false	77900506
-true	346093707
-null	4312
+Отсутствуют некоторые workstationid и operatorid в скидках на уровне заголовка транзакции	bptransaction, bptransactiondisco	
 
-1. Распределение false по типам транзакций — покажет, какие типы дают больше всего false:
 
-SELECT transactiontypecode, is_aligned_tran, count(*) as cnt
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-GROUP BY transactiontypecode, is_aligned_tran
-ORDER BY transactiontypecode, is_aligned_tran
+SELECT DISTINCT
 
-2. Примеры false для 1002/1003 — эти должны были быть скорректированы, если diff < 1.00:
+tx.workstationid as bptransaction_workstationid,
 
-SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-       t.transactiontypecode,
-       sum(r.salesamount) as sales_sum,
-       sum(te.tenderamount) as tender_sum,
-       sum(te.tenderamount) - sum(r.salesamount) as diff
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction t
-JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem r
-  ON t.retailstoreid = r.retailstoreid
-  AND t.businessdaydate = r.businessdaydate
-  AND t.workstationid = r.workstationid
-  AND t.transactionsequencenumber = r.transactionsequencenumber
-JOIN ice_baby.core_flow_ing_raw.raw_bptender te
-  ON t.retailstoreid = te.retailstoreid
-  AND t.businessdaydate = te.businessdaydate
-  AND t.workstationid = te.workstationid
-  AND t.transactionsequencenumber = te.transactionsequencenumber
-WHERE t.is_aligned_tran = 'false'
-  AND t.transactiontypecode IN ('1002','1003')
-GROUP BY t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber, t.transactiontypecode
-LIMIT 20
+d.workstationid as bptransactiondisco_workstationid
 
-3. Размер разницы для false — покажет, сколько из них > 1.00 (не корректируются):
+FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco d
 
-SELECT 
-  CASE 
-    WHEN abs(diff) < 1.00 THEN '< 1.00'
-    WHEN abs(diff) < 10.00 THEN '1.00 - 10.00'
-    WHEN abs(diff) < 100.00 THEN '10.00 - 100.00'
-    ELSE '>= 100.00'
-  END as diff_bucket,
-  count(*) as cnt
-FROM (
-  SELECT t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber,
-         sum(r.salesamount) as sales_sum,
-         sum(te.tenderamount) as tender_sum,
-         sum(te.tenderamount) - sum(r.salesamount) as diff
-  FROM ice_baby.core_flow_ing_raw.raw_bptransaction t
-  JOIN ice_baby.core_flow_ing_raw.raw_bpretaillineitem r
-    ON t.retailstoreid = r.retailstoreid AND t.businessdaydate = r.businessdaydate
-    AND t.workstationid = r.workstationid AND t.transactionsequencenumber = r.transactionsequencenumber
-  JOIN ice_baby.core_flow_ing_raw.raw_bptender te
-    ON t.retailstoreid = te.retailstoreid AND t.businessdaydate = te.businessdaydate
-    AND t.workstationid = te.workstationid AND t.transactionsequencenumber = te.transactionsequencenumber
-  WHERE t.is_aligned_tran = 'false'
-    AND t.transactiontypecode IN ('1001','1002','1003')
-  GROUP BY t.retailstoreid, t.businessdaydate, t.workstationid, t.transactionsequencenumber
+JOIN ice_baby.core_flow_ing_raw.raw_bptransaction tx
+
+ON tx.rtl_txn_rk = d.rtl_txn_rk
+
+WHERE d.reductionamount IS NOT NULL
+
+AND d.reductionamount <> 0
+
+AND tx.transactiontypecode IN (
+
+'1001','1002','1003','1016','1017',
+
+'1011','1024','1006','1019',
+
+'1010','1012','1015','1025','1027','1028'
+
 )
-GROUP BY 1
-ORDER BY 1
 
-4. Сколько false приходится на типы вне 1001/1002/1003:
 
-SELECT 
-  CASE WHEN transactiontypecode IN ('1001','1002','1003') THEN 'correctable (1001-1003)'
-       ELSE 'other 10xx' END as txn_group,
-  count(*) as cnt
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-WHERE is_aligned_tran = 'false'
-GROUP BY 1
+
+SELECT DISTINCT tx.operatorid as bptransaction_operatorid
+
+FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco d
+
+JOIN ice_baby.core_flow_ing_raw.raw_bptransaction tx
+
+ON tx.rtl_txn_rk = d.rtl_txn_rk
+
+WHERE tx.businessdaydate = DATE '2026-04-06'
+
+AND d.reductionamount IS NOT NULL
+
+AND d.reductionamount <> 0
+
+AND tx.transactiontypecode IN (
+
+'1001','1002','1003','1016','1017',
+
+'1011','1024','1006','1019',
+
+'1010','1012','1015','1025','1027','1028'
+
+)
+
+1) отсутствуют workstationid > 7 для скидок на уровне заголовка транзакции в bptransactiondisco и bptransactiondisco 
+
+2)Не совпадают operatorid для скидок на уровне заголовка транзакции в bptransaction 

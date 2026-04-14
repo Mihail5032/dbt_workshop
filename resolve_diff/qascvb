@@ -1,65 +1,443 @@
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpfinacialmovement;
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpfinancialmovemen
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemdiscext
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemdiscount
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemextensio
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bplineitemtax
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpretaillineitem
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpretailtotals
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bpsourcedocumentli
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptender
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptenderextensions
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptendertotals
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactdiscext
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactextensio
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransaction
-TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
-
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransaction WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpfinacialmovement_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpfinacialmovement WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpfinancialmovemen_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpfinancialmovemen WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscext_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemdiscext WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscount_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemdiscount WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemextensio_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemextensio WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemtax_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemtax WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpretaillineitem_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpretailtotals_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpretailtotals WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpsourcedocumentli_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpsourcedocumentli WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptender_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptender WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptenderextensions_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptenderextensions WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptendertotals_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptendertotals WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransactdiscext_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransactdiscext WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransactextensio_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransactextensio WHERE 1=0;
-
-CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransactiondisco_2 AS
-SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco WHERE 1=0;
+--------------------------------------------------------------------------------
+2026-04-14 06:31:23,575 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] - Registered UNIX signal handlers for [TERM, HUP, INT]
+2026-04-14 06:31:23,582 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Using standard YAML parser to load flink configuration file from /opt/flink/conf/config.yaml.
+2026-04-14 06:31:23,649 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.flink-operator-data.connection.ssl.enabled, false
+2026-04-14 06:31:23,649 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.impl, org.apache.hadoop.fs.s3a.S3AFileSystem
+2026-04-14 06:31:23,649 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.jobmanager.replicas, 1
+2026-04-14 06:31:23,649 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.warehouse.aws.credentials.provider, org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider
+2026-04-14 06:31:23,649 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: jobmanager.rpc.address, flink-metrics.flink-operator
+2026-04-14 06:31:23,649 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.service-account, flink
+2026-04-14 06:31:23,649 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.cluster-id, flink-metrics
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: s3.secret-key, ******
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.taskmanager.cpu.amount, 6.0
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.savepoint-dir, s3a://flink-operator-data/flink-savepoints-dev3/
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.namespace, flink-operator
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: parallelism.default, 1
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.aws.credentials.provider, org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.jobmanager.owner.reference, apiVersion:flink.apache.org/v1beta1,kind:FlinkDeployment,uid:ec1c2d58-bc65-495c-aaf0-5c771bf55f60,name:flink-metrics,controller:false,blockOwnerDeletion:true
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.container.image.ref, docker-sap-car-transfer-prod.x5.ru/sap-car-transfer/applications/flinkv2/flink-v2-app/dev/builds/9207fd630e9f9a99148bedfc49f8423770cec40d:latest
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: state.backend.type, rocksdb
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.secret.key, ******
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.mode, EXACTLY_ONCE
+2026-04-14 06:31:23,650 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: metrics.reporter.prom.port, 9249
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: taskmanager.memory.process.size, 21474836480
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.tolerable-failed-checkpoints, 3
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.flink-operator-data.endpoint, https://s3-endpoint.sss2-msk2.x5.ru
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.flink-operator-data.secret.key, ******
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.pod-template-file.taskmanager, /tmp/flink_op_generated_podTemplate_10943373977343491027.yaml
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: state.backend.incremental, true
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: web.cancel.enable, true
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.path.style.access, true
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.internal.cluster-mode, SESSION
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.region, endpoint
+2026-04-14 06:31:23,651 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: s3.access-key, 00c4b5bd3e60fd0287e7
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.interval, 60s
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.timeout, 10min
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: taskmanager.memory.off-heap.size, 4g
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.jobmanager.cpu.amount, 2.0
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: env.java.default-opts.all, --add-exports=java.base/sun.net.util=ALL-UNNAMED --add-exports=java.rmi/sun.rmi.registry=ALL-UNNAMED --add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: $internal.flink.version, v2_1
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.max-concurrent-checkpoints, 1
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.flink-operator-data.path.style.access, true
+2026-04-14 06:31:23,652 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.pod-template-file.jobmanager, /tmp/flink_op_generated_podTemplate_15436081251175585611.yaml
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.warehouse.secret.key, ******
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: jobmanager.memory.jvm-overhead.max, 1g
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: blob.server.port, 6124
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.access.key, 00c4b5bd3e60fd0287e7
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.connection.establish.timeout, 5000
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.jobmanager.annotations, flinkdeployment.flink.apache.org/generation:6
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: s3.region, endpoint
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: classloader.check-leaked-classloader, false
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: metrics.reporter.prom.factory.class, org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+2026-04-14 06:31:23,653 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.flink-operator-data.region, endpoint
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.warehouse.connection.ssl.enabled, false
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.warehouse.endpoint, https://s3-endpoint.sss2-msk2.x5.ru
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: s3.endpoint, https://s3-endpoint.sss2-msk2.x5.ru
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.internal.taskmanager.replicas, 1
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.warehouse.access.key, 00c4b5bd3e60fd0287e7
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: taskmanager.numberOfTaskSlots, 32
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: kubernetes.rest-service.exposed.type, ClusterIP
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.dir, s3a://flink-operator-data/flink-checkpoints-dev3/
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.warehouse.path.style.access, true
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: jobmanager.archive.fs.dir, s3a://flink-operator-data/flink-archive-dev3/
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.warehouse.region, endpoint
+2026-04-14 06:31:23,654 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.connection.timeout, 5000
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: io-impl, org.apache.iceberg.aws.s3.S3FileIO
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: iceberg.catalog.io-impl, org.apache.iceberg.hadoop.HadoopFileIO
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.target, remote
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.flink-operator-data.aws.credentials.provider, org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: jobmanager.memory.process.size, 4294967296
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: taskmanager.rpc.port, 6122
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.connection.ssl.enabled, false
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.externalized-checkpoint-retention, RETAIN_ON_CANCELLATION
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.bucket.flink-operator-data.access.key, 00c4b5bd3e60fd0287e7
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: execution.checkpointing.min-pause, 30s
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: iceberg.catalog.warehouse, s3a://flink-operator-data/
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: fs.s3a.endpoint, https://s3-endpoint.sss2-msk2.x5.ru
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading configuration property: s3.path.style.access, true
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading dynamic configuration property: jobmanager.memory.off-heap.size, 134217728b
+2026-04-14 06:31:23,655 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading dynamic configuration property: jobmanager.memory.jvm-overhead.min, 429496736b
+2026-04-14 06:31:23,656 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading dynamic configuration property: jobmanager.memory.jvm-metaspace.size, 268435456b
+2026-04-14 06:31:23,656 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading dynamic configuration property: jobmanager.memory.heap.size, 3462817376b
+2026-04-14 06:31:23,656 INFO  org.apache.flink.configuration.GlobalConfiguration           [] - Loading dynamic configuration property: jobmanager.memory.jvm-overhead.max, 429496736b
+2026-04-14 06:31:23,679 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] - Starting StandaloneSessionClusterEntrypoint.
+2026-04-14 06:31:23,702 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] - Install default filesystem.
+2026-04-14 06:31:23,737 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-jmx
+2026-04-14 06:31:23,741 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-otel
+2026-04-14 06:31:23,741 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-statsd
+2026-04-14 06:31:23,741 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-datadog
+2026-04-14 06:31:23,741 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-graphite
+2026-04-14 06:31:23,741 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-influx
+2026-04-14 06:31:23,741 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: external-resource-gpu
+2026-04-14 06:31:23,742 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-prometheus
+2026-04-14 06:31:23,742 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: metrics-slf4j
+2026-04-14 06:31:23,742 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID not found, creating it: s3-fs-hadoop
+2026-04-14 06:31:23,799 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] - Install security context.
+2026-04-14 06:31:23,812 WARN  org.apache.flink.runtime.util.HadoopUtils                    [] - Could not find Hadoop configuration via any of the supported methods (Flink configuration, environment variables).
+2026-04-14 06:31:23,834 INFO  org.apache.flink.runtime.security.modules.HadoopModule       [] - Hadoop user set to flink (auth:SIMPLE)
+2026-04-14 06:31:23,835 INFO  org.apache.flink.runtime.security.modules.HadoopModule       [] - Kerberos security is disabled.
+2026-04-14 06:31:23,839 INFO  org.apache.flink.runtime.security.modules.JaasModule         [] - Jaas file will be created as /tmp/jaas-11257621998409606939.conf.
+2026-04-14 06:31:23,845 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] - Initializing cluster services.
+2026-04-14 06:31:23,850 INFO  org.apache.flink.runtime.entrypoint.ClusterEntrypoint        [] - Using working directory: WorkingDirectory(/tmp/jm_c67e3e32e3e114f6cabcc16eb8fcf28c).
+2026-04-14 06:31:24,036 INFO  org.apache.flink.runtime.rpc.pekko.PekkoRpcServiceUtils      [] - Trying to start actor system, external address flink-metrics.flink-operator:6123, bind address 0.0.0.0:6123.
+2026-04-14 06:31:24,505 INFO  org.apache.pekko.event.slf4j.Slf4jLogger                     [] - Slf4jLogger started
+2026-04-14 06:31:24,527 INFO  org.apache.pekko.remote.RemoteActorRefProvider               [] - Pekko Cluster not in use - enabling unsafe features anyway because `pekko.remote.use-unsafe-remote-features-outside-cluster` has been enabled.
+2026-04-14 06:31:24,527 INFO  org.apache.pekko.remote.Remoting                             [] - Starting remoting
+2026-04-14 06:31:24,699 INFO  org.apache.pekko.remote.Remoting                             [] - Remoting started; listening on addresses :[pekko.tcp://flink@flink-metrics.flink-operator:6123]
+2026-04-14 06:31:24,797 INFO  org.apache.flink.runtime.rpc.pekko.PekkoRpcServiceUtils      [] - Actor system started at pekko.tcp://flink@flink-metrics.flink-operator:6123
+2026-04-14 06:31:24,813 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Loading delegation token providers
+2026-04-14 06:31:24,816 WARN  org.apache.flink.runtime.util.HadoopUtils                    [] - Could not find Hadoop configuration via any of the supported methods (Flink configuration, environment variables).
+2026-04-14 06:31:24,816 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Delegation token provider hadoopfs loaded and initialized
+2026-04-14 06:31:24,817 WARN  org.apache.flink.runtime.util.HadoopUtils                    [] - Could not find Hadoop configuration via any of the supported methods (Flink configuration, environment variables).
+2026-04-14 06:31:24,890 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Delegation token provider hbase loaded and initialized
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-jmx
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-otel
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-statsd
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-datadog
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-graphite
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-influx
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: external-resource-gpu
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-prometheus
+2026-04-14 06:31:24,891 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-slf4j
+2026-04-14 06:31:24,892 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: s3-fs-hadoop
+2026-04-14 06:31:24,895 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Delegation token provider s3-hadoop loaded and initialized
+2026-04-14 06:31:24,895 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Delegation token providers loaded successfully
+2026-04-14 06:31:24,896 INFO  org.apache.flink.runtime.security.token.DelegationTokenReceiverRepository [] - Loading delegation token receivers
+2026-04-14 06:31:24,898 INFO  org.apache.flink.runtime.security.token.DelegationTokenReceiverRepository [] - Delegation token receiver hadoopfs loaded and initialized
+2026-04-14 06:31:24,898 INFO  org.apache.flink.runtime.security.token.DelegationTokenReceiverRepository [] - Delegation token receiver hbase loaded and initialized
+2026-04-14 06:31:24,899 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-jmx
+2026-04-14 06:31:24,899 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-otel
+2026-04-14 06:31:24,899 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-statsd
+2026-04-14 06:31:24,899 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-datadog
+2026-04-14 06:31:24,899 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-graphite
+2026-04-14 06:31:24,899 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-influx
+2026-04-14 06:31:24,899 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: external-resource-gpu
+2026-04-14 06:31:24,900 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-prometheus
+2026-04-14 06:31:24,900 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-slf4j
+2026-04-14 06:31:24,900 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: s3-fs-hadoop
+2026-04-14 06:31:24,901 INFO  org.apache.flink.runtime.security.token.DelegationTokenReceiverRepository [] - Delegation token receiver s3-hadoop loaded and initialized
+2026-04-14 06:31:24,902 INFO  org.apache.flink.runtime.security.token.DelegationTokenReceiverRepository [] - Delegation token receivers loaded successfully
+2026-04-14 06:31:24,902 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Checking provider and receiver instances consistency
+2026-04-14 06:31:24,902 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Provider and receiver instances are consistent
+2026-04-14 06:31:24,902 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Obtaining delegation tokens
+2026-04-14 06:31:24,904 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Delegation tokens obtained successfully
+2026-04-14 06:31:24,904 WARN  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - No tokens obtained so skipping notifications
+2026-04-14 06:31:24,914 INFO  org.apache.flink.configuration.Configuration                 [] - Config uses fallback configuration key 'jobmanager.rpc.address' instead of key 'rest.address'
+2026-04-14 06:31:24,939 INFO  org.apache.flink.runtime.blob.BlobServer                     [] - Created BLOB server storage directory /tmp/jm_c67e3e32e3e114f6cabcc16eb8fcf28c/blobStorage
+2026-04-14 06:31:24,942 INFO  org.apache.flink.runtime.blob.BlobServer                     [] - Started BLOB server at 0.0.0.0:6124 - max concurrent requests: 50 - max backlog: 1000
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-jmx
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-otel
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-statsd
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-datadog
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-graphite
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-influx
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: external-resource-gpu
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-prometheus
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: metrics-slf4j
+2026-04-14 06:31:24,958 INFO  org.apache.flink.core.plugin.DefaultPluginManager            [] - Plugin loader with ID found, reusing it: s3-fs-hadoop
+2026-04-14 06:31:24,974 INFO  org.apache.flink.metrics.prometheus.PrometheusReporter       [] - Started PrometheusReporter HTTP server on port 9249.
+2026-04-14 06:31:24,979 INFO  org.apache.flink.runtime.metrics.MetricRegistryImpl          [] - Reporting metrics for reporter prom of type org.apache.flink.metrics.prometheus.PrometheusReporter.
+2026-04-14 06:31:24,980 INFO  org.apache.flink.runtime.metrics.MetricRegistryImpl          [] - No trace reporter configured, no traces will be exposed/reported.
+2026-04-14 06:31:24,980 INFO  org.apache.flink.runtime.metrics.MetricRegistryImpl          [] - No event reporter configured, no events will be exposed/reported.
+2026-04-14 06:31:24,983 INFO  org.apache.flink.runtime.rpc.pekko.PekkoRpcServiceUtils      [] - Trying to start actor system, external address flink-metrics.flink-operator:0, bind address 0.0.0.0:0.
+2026-04-14 06:31:24,996 INFO  org.apache.pekko.event.slf4j.Slf4jLogger                     [] - Slf4jLogger started
+2026-04-14 06:31:24,998 INFO  org.apache.pekko.remote.RemoteActorRefProvider               [] - Pekko Cluster not in use - enabling unsafe features anyway because `pekko.remote.use-unsafe-remote-features-outside-cluster` has been enabled.
+2026-04-14 06:31:24,998 INFO  org.apache.pekko.remote.Remoting                             [] - Starting remoting
+2026-04-14 06:31:25,005 INFO  org.apache.pekko.remote.Remoting                             [] - Remoting started; listening on addresses :[pekko.tcp://flink-metrics@flink-metrics.flink-operator:37113]
+2026-04-14 06:31:25,011 INFO  org.apache.flink.runtime.rpc.pekko.PekkoRpcServiceUtils      [] - Actor system started at pekko.tcp://flink-metrics@flink-metrics.flink-operator:37113
+2026-04-14 06:31:25,038 INFO  org.apache.flink.runtime.rpc.pekko.PekkoRpcService           [] - Starting RPC endpoint for org.apache.flink.runtime.metrics.dump.MetricQueryService at pekko://flink-metrics/user/rpc/MetricQueryService .
+2026-04-14 06:31:25,067 INFO  org.apache.flink.runtime.dispatcher.FileExecutionGraphInfoStore [] - Initializing FileExecutionGraphInfoStore: Storage directory /tmp/executionGraphStore-aeae815d-5a9e-40e3-8c60-06ee24714f22, expiration time 3600000, maximum cache size 52428800 bytes.
+2026-04-14 06:31:25,146 INFO  org.apache.flink.configuration.Configuration                 [] - Config uses fallback configuration key 'jobmanager.rpc.address' instead of key 'rest.address'
+2026-04-14 06:31:25,149 INFO  org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint   [] - Upload directory /tmp/flink-web-20d44351-cd78-484f-990a-85a97cccf730/flink-web-upload does not exist. 
+2026-04-14 06:31:25,149 INFO  org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint   [] - Created directory /tmp/flink-web-20d44351-cd78-484f-990a-85a97cccf730/flink-web-upload for file uploads.
+2026-04-14 06:31:25,151 INFO  org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint   [] - Starting rest endpoint.
+2026-04-14 06:31:25,347 INFO  org.apache.flink.runtime.webmonitor.WebMonitorUtils          [] - Determined location of main cluster component log file: /opt/flink/log/flink--standalonesession-0-flink-metrics-86b69b69b5-4g7pf.log
+2026-04-14 06:31:25,347 INFO  org.apache.flink.runtime.webmonitor.WebMonitorUtils          [] - Determined location of main cluster component stdout file: /opt/flink/log/flink--standalonesession-0-flink-metrics-86b69b69b5-4g7pf.out
+2026-04-14 06:31:25,363 INFO  org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint   [] - Rest endpoint listening at flink-metrics.flink-operator:8081
+2026-04-14 06:31:25,365 INFO  org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint   [] - http://flink-metrics.flink-operator:8081 was granted leadership with leaderSessionID=00000000-0000-0000-0000-000000000000
+2026-04-14 06:31:25,366 INFO  org.apache.flink.runtime.dispatcher.DispatcherRestEndpoint   [] - Web frontend listening at http://flink-metrics.flink-operator:8081.
+2026-04-14 06:31:25,380 INFO  org.apache.flink.runtime.dispatcher.runner.DefaultDispatcherRunner [] - DefaultDispatcherRunner was granted leadership with leader id 00000000-0000-0000-0000-000000000000. Creating new DispatcherLeaderProcess.
+2026-04-14 06:31:25,384 INFO  org.apache.flink.runtime.dispatcher.runner.SessionDispatcherLeaderProcess [] - Start SessionDispatcherLeaderProcess.
+2026-04-14 06:31:25,386 INFO  org.apache.flink.runtime.resourcemanager.ResourceManagerServiceImpl [] - Starting resource manager service.
+2026-04-14 06:31:25,386 INFO  org.apache.flink.runtime.resourcemanager.ResourceManagerServiceImpl [] - Resource manager service is granted leadership with session id 00000000-0000-0000-0000-000000000000.
+2026-04-14 06:31:25,388 INFO  org.apache.flink.runtime.dispatcher.runner.SessionDispatcherLeaderProcess [] - Recover all persisted job graphs that are not finished, yet.
+2026-04-14 06:31:25,388 INFO  org.apache.flink.runtime.dispatcher.runner.SessionDispatcherLeaderProcess [] - Successfully recovered 0 persisted job graphs.
+2026-04-14 06:31:25,400 INFO  org.apache.flink.runtime.rpc.pekko.PekkoRpcService           [] - Starting RPC endpoint for org.apache.flink.runtime.dispatcher.StandaloneDispatcher at pekko://flink/user/rpc/dispatcher_0 .
+2026-04-14 06:31:25,436 INFO  org.apache.flink.runtime.rpc.pekko.PekkoRpcService           [] - Starting RPC endpoint for org.apache.flink.runtime.resourcemanager.StandaloneResourceManager at pekko://flink/user/rpc/resourcemanager_1 .
+2026-04-14 06:31:25,443 INFO  org.apache.flink.runtime.resourcemanager.StandaloneResourceManager [] - Starting the resource manager.
+2026-04-14 06:31:25,447 INFO  org.apache.flink.runtime.resourcemanager.slotmanager.FineGrainedSlotManager [] - Starting the slot manager.
+2026-04-14 06:31:25,448 INFO  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Starting tokens update task
+2026-04-14 06:31:25,448 WARN  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - No tokens obtained so skipping notifications
+2026-04-14 06:31:25,448 WARN  org.apache.flink.runtime.security.token.DefaultDelegationTokenManager [] - Tokens update task not started because either no tokens obtained or none of the tokens specified its renewal date
+2026-04-14 06:31:46,328 INFO  org.apache.flink.runtime.resourcemanager.StandaloneResourceManager [] - Registering TaskManager with ResourceID 100.127.159.251:6122-8d1eb4 (pekko.tcp://flink@100.127.159.251:6122/user/rpc/taskmanager_0) at ResourceManager
+2026-04-14 06:31:46,351 INFO  org.apache.flink.runtime.resourcemanager.slotmanager.FineGrainedSlotManager [] - Registering task executor 100.127.159.251:6122-8d1eb4 under 262b17df568cf8ee9ae667df7bfec04d at the slot manager.
+2026-04-14 08:28:17,694 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:28:17,708 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:28:17,933 INFO  org.apache.hadoop.hive.conf.HiveConf                         [] - Found configuration file null
+2026-04-14 08:28:18,047 DEBUG org.apache.hadoop.hive.conf.HiveConf                         [] - Found metastore URI of thrift://hive-metastore.hive-metastore:9083
+2026-04-14 08:28:18,052 WARN  org.apache.hadoop.hive.conf.HiveConf                         [] - HiveConf of name hive.metastore.local does not exist
+2026-04-14 08:28:18,164 INFO  org.apache.hadoop.hive.metastore.HiveMetaStoreClient         [] - Trying to connect to metastore with URI thrift://hive-metastore.hive-metastore.svc.cluster.local:9083
+2026-04-14 08:28:18,179 INFO  org.apache.hadoop.hive.metastore.HiveMetaStoreClient         [] - Opened a connection to metastore, current connections: 1
+2026-04-14 08:28:18,199 INFO  org.apache.hadoop.hive.metastore.HiveMetaStoreClient         [] - Connected to metastore.
+2026-04-14 08:28:18,199 INFO  org.apache.hadoop.hive.metastore.RetryingMetaStoreClient     [] - RetryingMetaStoreClient proxy=class org.apache.hadoop.hive.metastore.HiveMetaStoreClient ugi=flink (auth:SIMPLE) retries=1 delay=1 lifetime=0
+2026-04-14 08:28:18,306 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:28:18,350 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Initializing S3AFileSystem for datatransfer
+2026-04-14 08:28:18,354 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Propagating entries under fs.s3a.bucket.datatransfer.
+2026-04-14 08:28:18,373 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Data is unencrypted
+2026-04-14 08:28:18,375 DEBUG org.apache.hadoop.fs.s3a.S3ARetryPolicy                      [] - Retrying on recoverable AWS failures 7 times with an initial interval of 500ms
+2026-04-14 08:28:18,407 WARN  org.apache.hadoop.metrics2.impl.MetricsConfig                [] - Cannot locate configuration: tried hadoop-metrics2-s3a-file-system.properties,hadoop-metrics2.properties
+2026-04-14 08:28:18,416 INFO  org.apache.hadoop.metrics2.impl.MetricsSystemImpl            [] - Scheduled Metric snapshot period at 10 second(s).
+2026-04-14 08:28:18,416 INFO  org.apache.hadoop.metrics2.impl.MetricsSystemImpl            [] - s3a-file-system metrics system started
+2026-04-14 08:28:18,421 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Client Side Encryption enabled: false
+2026-04-14 08:28:18,422 DEBUG org.apache.hadoop.fs.s3a.S3ARetryPolicy                      [] - Retrying on recoverable AWS failures 7 times with an initial interval of 500ms
+2026-04-14 08:28:18,423 DEBUG org.apache.hadoop.fs.s3a.S3GuardExistsRetryPolicy            [] - Retrying on recoverable S3Guard table/S3 inconsistencies 7 times with an initial interval of 2000ms
+2026-04-14 08:28:18,423 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.paging.maximum is 5000
+2026-04-14 08:28:18,423 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.block.size is 33554432
+2026-04-14 08:28:18,423 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.readahead.range is 65536
+2026-04-14 08:28:18,423 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.max.total.tasks is 32
+2026-04-14 08:28:18,424 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.threads.keepalivetime is 60
+2026-04-14 08:28:18,425 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.executor.capacity is 16
+2026-04-14 08:28:18,425 DEBUG org.apache.hadoop.fs.s3a.auth.SignerManager                  [] - No custom signers specified
+2026-04-14 08:28:18,426 DEBUG org.apache.hadoop.fs.s3a.audit.AuditIntegration              [] - auditing is disabled
+2026-04-14 08:28:18,426 DEBUG org.apache.hadoop.fs.s3a.audit.AuditIntegration              [] - Started Audit Manager Service NoopAuditManagerS3A in state NoopAuditManagerS3A: STARTED
+2026-04-14 08:28:18,426 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.internal.upload.part.count.limit is 10000
+2026-04-14 08:28:18,432 DEBUG org.apache.hadoop.fs.s3a.S3ARetryPolicy                      [] - Retrying on recoverable AWS failures 7 times with an initial interval of 500ms
+2026-04-14 08:28:18,436 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Credential provider class is org.apache.hadoop.fs.s3a.TemporaryAWSCredentialsProvider
+2026-04-14 08:28:18,436 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Credential provider class is org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider
+2026-04-14 08:28:18,436 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Credential provider class is com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+2026-04-14 08:28:18,436 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Credential provider class is org.apache.hadoop.fs.s3a.auth.IAMInstanceCredentialsProvider
+2026-04-14 08:28:18,697 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - For URI s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json, using credentials AWSCredentialProviderList[refcount= 1: [TemporaryAWSCredentialsProvider, SimpleAWSCredentialsProvider, EnvironmentVariableCredentialsProvider, org.apache.hadoop.fs.s3a.auth.IAMInstanceCredentialsProvider@29775243]
+2026-04-14 08:28:18,697 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Using credential provider AWSCredentialProviderList[refcount= 1: [TemporaryAWSCredentialsProvider, SimpleAWSCredentialsProvider, EnvironmentVariableCredentialsProvider, org.apache.hadoop.fs.s3a.auth.IAMInstanceCredentialsProvider@29775243]
+2026-04-14 08:28:18,704 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.connection.maximum is 96
+2026-04-14 08:28:18,795 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.attempts.maximum is 20
+2026-04-14 08:28:18,795 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.connection.establish.timeout is 5000
+2026-04-14 08:28:18,795 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.connection.timeout is 200000
+2026-04-14 08:28:18,795 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.socket.send.buffer is 8192
+2026-04-14 08:28:18,795 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.socket.recv.buffer is 8192
+2026-04-14 08:28:18,795 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Using User-Agent: Hadoop 3.3.4
+2026-04-14 08:28:18,796 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Data is unencrypted
+2026-04-14 08:28:18,848 DEBUG org.apache.hadoop.fs.s3a.DefaultS3ClientFactory              [] - Creating endpoint configuration for ""
+2026-04-14 08:28:18,848 DEBUG org.apache.hadoop.fs.s3a.DefaultS3ClientFactory              [] - Using default endpoint -no need to generate a configuration
+2026-04-14 08:28:18,848 DEBUG org.apache.hadoop.fs.s3a.DefaultS3ClientFactory              [] - fs.s3a.endpoint.region="us-east-1"
+2026-04-14 08:28:18,848 DEBUG org.apache.hadoop.fs.s3a.DefaultS3ClientFactory              [] - Using default endpoint; setting region to us-east-1
+2026-04-14 08:28:18,983 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - skipping check for bucket existence
+2026-04-14 08:28:18,983 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Input fadvise policy = normal
+2026-04-14 08:28:18,985 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Change detection policy = ETagChangeDetectionPolicy mode=Server
+2026-04-14 08:28:18,985 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Filesystem support for magic committers is enabled
+2026-04-14 08:28:18,987 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.fast.upload.active.blocks is 4
+2026-04-14 08:28:18,987 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Using S3ABlockOutputStream with buffer = disk; block=67108864; queue limit=4
+2026-04-14 08:28:18,989 DEBUG org.apache.hadoop.fs.s3a.s3guard.S3Guard                     [] - Metastore option source [core-default.xml]
+2026-04-14 08:28:18,990 DEBUG org.apache.hadoop.fs.s3a.s3guard.S3Guard                     [] - Using NullMetadataStore metadata store for s3a filesystem
+2026-04-14 08:28:18,991 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3Guard is disabled on this bucket: datatransfer
+2026-04-14 08:28:18,992 DEBUG org.apache.hadoop.fs.s3a.impl.DirectoryPolicyImpl            [] - Directory markers will be deleted
+2026-04-14 08:28:18,992 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Directory marker retention policy is DirectoryMarkerRetention{policy='delete'}
+2026-04-14 08:28:18,992 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.multipart.purge.age is 86400
+2026-04-14 08:28:18,992 DEBUG org.apache.hadoop.fs.s3a.S3AUtils                            [] - Value of fs.s3a.bulk.delete.page.size is 250
+2026-04-14 08:28:18,995 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:28:18,995 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:28:18,998 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:28:19,008 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - Starting: create credentials
+2026-04-14 08:28:19,010 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - create credentials: duration 0:00.002s
+2026-04-14 08:28:19,010 DEBUG org.apache.hadoop.fs.s3a.AWSCredentialProviderList           [] - No credentials from TemporaryAWSCredentialsProvider: org.apache.hadoop.fs.s3a.auth.NoAwsCredentialsException: Session credentials in Hadoop configuration: No AWS Credentials
+2026-04-14 08:28:19,010 DEBUG org.apache.hadoop.fs.s3a.AWSCredentialProviderList           [] - No credentials from SimpleAWSCredentialsProvider: org.apache.hadoop.fs.s3a.auth.NoAwsCredentialsException: SimpleAWSCredentialsProvider: No AWS credentials in the Hadoop configuration
+2026-04-14 08:28:19,011 DEBUG org.apache.hadoop.fs.s3a.AWSCredentialProviderList           [] - Using credentials from EnvironmentVariableCredentialsProvider
+2026-04-14 08:28:23,947 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:28:23,951 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:28:24,001 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:28:24,002 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:28:24,002 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:28:24,002 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:29:07,838 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:29:07,842 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:29:07,871 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:29:07,872 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:29:07,872 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:29:07,872 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:29:14,076 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:29:14,080 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:29:14,110 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:29:14,110 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:29:14,110 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:29:14,110 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:29:23,809 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:29:23,811 ERROR org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Unhandled exception.
+java.util.concurrent.CompletionException: org.apache.flink.client.program.ProgramInvocationException: Neither a 'Main-Class', nor a 'program-class' entry was found in the jar file.
+	at org.apache.flink.runtime.webmonitor.handlers.utils.JarHandlerUtils$JarHandlerContext.toPackagedProgram(JarHandlerUtils.java:187) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.utils.JarHandlerUtils$JarHandlerContext.applyToConfiguration(JarHandlerUtils.java:149) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.handleRequest(JarRunHandler.java:100) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.handleRequest(JarRunHandler.java:57) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.AbstractRestHandler.respondToRequest(AbstractRestHandler.java:83) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.AbstractHandler.respondAsLeader(AbstractHandler.java:196) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.LeaderRetrievalHandler.lambda$channelRead0$0(LeaderRetrievalHandler.java:87) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at java.util.Optional.ifPresent(Unknown Source) [?:?]
+	at org.apache.flink.util.OptionalConsumer.ifPresent(OptionalConsumer.java:45) [flink-core-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.LeaderRetrievalHandler.channelRead0(LeaderRetrievalHandler.java:84) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.LeaderRetrievalHandler.channelRead0(LeaderRetrievalHandler.java:49) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.shaded.netty4.io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.runtime.rest.handler.router.RouterHandler.routed(RouterHandler.java:115) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.router.RouterHandler.channelRead0(RouterHandler.java:94) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.router.RouterHandler.channelRead0(RouterHandler.java:55) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.shaded.netty4.io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.runtime.rest.FileUploadHandler.channelRead0(FileUploadHandler.java:233) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.FileUploadHandler.channelRead0(FileUploadHandler.java:70) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.shaded.netty4.io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:436) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at java.lang.Thread.run(Unknown Source) [?:?]
+Caused by: org.apache.flink.client.program.ProgramInvocationException: Neither a 'Main-Class', nor a 'program-class' entry was found in the jar file.
+	at org.apache.flink.client.program.PackagedProgram.getEntryPointClassNameFromJar(PackagedProgram.java:425) ~[flink-clients-2.1.0.jar:2.1.0]
+	at org.apache.flink.client.program.PackagedProgram.<init>(PackagedProgram.java:159) ~[flink-clients-2.1.0.jar:2.1.0]
+	at org.apache.flink.client.program.PackagedProgram$Builder.build(PackagedProgram.java:684) ~[flink-clients-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.utils.JarHandlerUtils$JarHandlerContext.toPackagedProgram(JarHandlerUtils.java:185) ~[flink-dist-2.1.0.jar:2.1.0]
+	... 50 more
+2026-04-14 08:29:28,487 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:29:28,488 ERROR org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Unhandled exception.
+java.util.concurrent.CompletionException: org.apache.flink.client.program.ProgramInvocationException: Neither a 'Main-Class', nor a 'program-class' entry was found in the jar file.
+	at org.apache.flink.runtime.webmonitor.handlers.utils.JarHandlerUtils$JarHandlerContext.toPackagedProgram(JarHandlerUtils.java:187) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.utils.JarHandlerUtils$JarHandlerContext.applyToConfiguration(JarHandlerUtils.java:149) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.handleRequest(JarRunHandler.java:100) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.handleRequest(JarRunHandler.java:57) ~[flink-dist-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.AbstractRestHandler.respondToRequest(AbstractRestHandler.java:83) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.AbstractHandler.respondAsLeader(AbstractHandler.java:196) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.LeaderRetrievalHandler.lambda$channelRead0$0(LeaderRetrievalHandler.java:87) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at java.util.Optional.ifPresent(Unknown Source) [?:?]
+	at org.apache.flink.util.OptionalConsumer.ifPresent(OptionalConsumer.java:45) [flink-core-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.LeaderRetrievalHandler.channelRead0(LeaderRetrievalHandler.java:84) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.LeaderRetrievalHandler.channelRead0(LeaderRetrievalHandler.java:49) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.shaded.netty4.io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.runtime.rest.handler.router.RouterHandler.routed(RouterHandler.java:115) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.router.RouterHandler.channelRead0(RouterHandler.java:94) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.handler.router.RouterHandler.channelRead0(RouterHandler.java:55) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.shaded.netty4.io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.runtime.rest.FileUploadHandler.channelRead0(FileUploadHandler.java:233) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.rest.FileUploadHandler.channelRead0(FileUploadHandler.java:70) [flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.shaded.netty4.io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:436) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at org.apache.flink.shaded.netty4.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [flink-shaded-netty-4.1.100.Final-20.0.jar:?]
+	at java.lang.Thread.run(Unknown Source) [?:?]
+Caused by: org.apache.flink.client.program.ProgramInvocationException: Neither a 'Main-Class', nor a 'program-class' entry was found in the jar file.
+	at org.apache.flink.client.program.PackagedProgram.getEntryPointClassNameFromJar(PackagedProgram.java:425) ~[flink-clients-2.1.0.jar:2.1.0]
+	at org.apache.flink.client.program.PackagedProgram.<init>(PackagedProgram.java:159) ~[flink-clients-2.1.0.jar:2.1.0]
+	at org.apache.flink.client.program.PackagedProgram$Builder.build(PackagedProgram.java:684) ~[flink-clients-2.1.0.jar:2.1.0]
+	at org.apache.flink.runtime.webmonitor.handlers.utils.JarHandlerUtils$JarHandlerContext.toPackagedProgram(JarHandlerUtils.java:185) ~[flink-dist-2.1.0.jar:2.1.0]
+	... 50 more
+2026-04-14 08:29:57,881 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:29:57,884 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:29:57,914 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:29:57,914 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:29:57,914 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:29:57,914 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:30:04,158 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:30:04,162 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:30:04,189 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:04,189 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:30:04,190 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:04,190 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:30:36,119 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:30:36,122 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:30:36,154 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:36,155 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:30:36,155 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:36,155 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:30:37,452 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:30:37,455 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:30:37,483 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:37,484 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:30:37,484 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:37,484 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:30:38,347 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:30:38,351 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:30:38,378 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:38,378 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:30:38,379 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:38,379 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:30:47,929 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:30:47,933 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:30:47,962 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:47,963 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:30:47,963 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:47,963 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+2026-04-14 08:30:54,230 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-14 08:30:54,233 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-14 08:30:54,262 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:54,262 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
+2026-04-14 08:30:54,262 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
+2026-04-14 08:30:54,262 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null

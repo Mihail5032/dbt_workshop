@@ -69,16 +69,14 @@ public class PropertiesHolder {
     public Configuration getEntriesHMS() {
         List<String> keys = Arrays.asList(HIVE_METASTORE_LOCAL,
                 HIVE_METASTORE_URIS,
-//                FS_S3A_ACCESS_KEY,
-//                FS_S3A_SECRET_KEY,
+                FS_S3A_ACCESS_KEY,
+                FS_S3A_SECRET_KEY,
                 FS_S3A_CONNECTIONS_SSL_ENABLED,
-//                FS_S3A_AWS_CREDENTIALS_PROVIDER,
-//                FS_S3A_PATH_STYLE_ACCESS,
-//                FS_S3A_ENDPOINT,
-//                FS_S3A_REGION,
+                FS_S3A_AWS_CREDENTIALS_PROVIDER,
+                FS_S3A_PATH_STYLE_ACCESS,
+                FS_S3A_ENDPOINT,
+                FS_S3A_REGION,
                 FILE_IO_IMPL
-//                PATH_STYLE_ACCESS,
-//                S3_ENDPOINT
         );
         Configuration conf = new Configuration();
         keys.forEach(x -> conf.set(x, props.getProperty(x)));
@@ -87,13 +85,9 @@ public class PropertiesHolder {
 
     public Map<String, String> getEntriesS3() {
         List<String> keys = Arrays.asList(WAREHOUSE,
-//                FS_S3A_ACCESS_KEY,
-//                FS_S3A_SECRET_KEY,
-                FS_S3A_CONNECTIONS_SSL_ENABLED
-//                FS_S3A_AWS_CREDENTIALS_PROVIDER,
-//                FS_S3A_PATH_STYLE_ACCESS,
-//                FS_S3A_ENDPOINT,
-//                FS_S3A_REGION
+                FS_S3A_CONNECTIONS_SSL_ENABLED,
+                PATH_STYLE_ACCESS,
+                S3_ENDPOINT
         );
         return keys.stream().collect(
                 Collectors.toMap(x -> x, props::getProperty));

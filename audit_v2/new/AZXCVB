@@ -1,1 +1,53 @@
 
+2026-04-14 12:22:50
+org.apache.flink.util.FlinkException: Global failure triggered by OperatorCoordinator for 'Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer' (operator cbc357ccb763df2852fee8c4fc7d55f2).
+	at org.apache.flink.runtime.operators.coordination.OperatorCoordinatorHolder$LazyInitializedCoordinatorContext.failJob(OperatorCoordinatorHolder.java:661)
+	at org.apache.flink.runtime.operators.coordination.RecreateOnResetOperatorCoordinator$QuiesceableContext.failJob(RecreateOnResetOperatorCoordinator.java:267)
+	at org.apache.flink.runtime.source.coordinator.SourceCoordinatorContext.failJob(SourceCoordinatorContext.java:437)
+	at org.apache.flink.runtime.source.coordinator.SourceCoordinator.lambda$runInEventLoop$10(SourceCoordinator.java:566)
+	at org.apache.flink.util.ThrowableCatchingRunnable.run(ThrowableCatchingRunnable.java:40)
+	at org.apache.flink.util.MdcUtils.lambda$wrapRunnable$1(MdcUtils.java:70)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: org.apache.kafka.common.KafkaException: Failed to create new KafkaAdminClient
+	at org.apache.kafka.clients.admin.KafkaAdminClient.createInternal(KafkaAdminClient.java:561)
+	at org.apache.kafka.clients.admin.KafkaAdminClient.createInternal(KafkaAdminClient.java:512)
+	at org.apache.kafka.clients.admin.Admin.create(Admin.java:137)
+	at org.apache.kafka.clients.admin.AdminClient.create(AdminClient.java:39)
+	at org.apache.flink.connector.kafka.source.enumerator.KafkaSourceEnumerator.getKafkaAdminClient(KafkaSourceEnumerator.java:441)
+	at org.apache.flink.connector.kafka.source.enumerator.KafkaSourceEnumerator.start(KafkaSourceEnumerator.java:164)
+	at org.apache.flink.runtime.source.coordinator.SourceCoordinator.lambda$start$1(SourceCoordinator.java:260)
+	at org.apache.flink.runtime.source.coordinator.SourceCoordinator.lambda$runInEventLoop$10(SourceCoordinator.java:552)
+	... 8 more
+Caused by: org.apache.kafka.common.KafkaException: Failed to create new NetworkClient
+	at org.apache.kafka.clients.ClientUtils.createNetworkClient(ClientUtils.java:255)
+	at org.apache.kafka.clients.ClientUtils.createNetworkClient(ClientUtils.java:190)
+	at org.apache.kafka.clients.admin.KafkaAdminClient.createInternal(KafkaAdminClient.java:545)
+	... 15 more
+Caused by: org.apache.kafka.common.KafkaException: javax.security.auth.login.LoginException: Could not login: the client is being asked for a password, but the Kafka client code does not currently support obtaining a password from the user. not available to garner  authentication information from the user
+	at org.apache.kafka.common.network.SaslChannelBuilder.configure(SaslChannelBuilder.java:187)
+	at org.apache.kafka.common.network.ChannelBuilders.create(ChannelBuilders.java:193)
+	at org.apache.kafka.common.network.ChannelBuilders.clientChannelBuilder(ChannelBuilders.java:82)
+	at org.apache.kafka.clients.ClientUtils.createChannelBuilder(ClientUtils.java:120)
+	at org.apache.kafka.clients.ClientUtils.createNetworkClient(ClientUtils.java:224)
+	... 17 more
+Caused by: javax.security.auth.login.LoginException: Could not login: the client is being asked for a password, but the Kafka client code does not currently support obtaining a password from the user. not available to garner  authentication information from the user
+	at jdk.security.auth/com.sun.security.auth.module.Krb5LoginModule.promptForPass(Unknown Source)
+	at jdk.security.auth/com.sun.security.auth.module.Krb5LoginModule.attemptAuthentication(Unknown Source)
+	at jdk.security.auth/com.sun.security.auth.module.Krb5LoginModule.login(Unknown Source)
+	at java.base/javax.security.auth.login.LoginContext.invoke(Unknown Source)
+	at java.base/javax.security.auth.login.LoginContext$4.run(Unknown Source)
+	at java.base/javax.security.auth.login.LoginContext$4.run(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.base/javax.security.auth.login.LoginContext.invokePriv(Unknown Source)
+	at java.base/javax.security.auth.login.LoginContext.login(Unknown Source)
+	at org.apache.kafka.common.security.authenticator.AbstractLogin.login(AbstractLogin.java:61)
+	at org.apache.kafka.common.security.kerberos.KerberosLogin.login(KerberosLogin.java:104)
+	at org.apache.kafka.common.security.authenticator.LoginManager.<init>(LoginManager.java:64)
+	at org.apache.kafka.common.security.authenticator.LoginManager.acquireLoginManager(LoginManager.java:107)
+	at org.apache.kafka.common.network.SaslChannelBuilder.configure(SaslChannelBuilder.java:173)
+	... 21 more

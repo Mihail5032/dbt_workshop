@@ -16,17 +16,50 @@ TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransaction
 TRUNCATE TABLE core_flow_ice.core_flow_ing_raw.raw_bptransactiondisco
 
 
-# 2. Создай новую ветку
-git checkout -b feature/parser_bin_serial_resolve_dif
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransaction WHERE 1=0;
 
-# 3. Добавь изменённые файлы
-git add -A
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpfinacialmovement_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpfinacialmovement WHERE 1=0;
 
-# 4. Посмотри что попадёт в коммит
-git status
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpfinancialmovemen_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpfinancialmovemen WHERE 1=0;
 
-# 5. Закоммить
-git commit -m "fix: resolve SAP discrepancies in PST layer"
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscext_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemdiscext WHERE 1=0;
 
-# 6. Запушь ветку в remote
-git push -u origin feature/parser_bin_serial_resolve_dif
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscount_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemdiscount WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemextensio_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemextensio WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bplineitemtax_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bplineitemtax WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpretaillineitem_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpretailtotals_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpretailtotals WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bpsourcedocumentli_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bpsourcedocumentli WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptender_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptender WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptenderextensions_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptenderextensions WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptendertotals_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptendertotals WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransactdiscext_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransactdiscext WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransactextensio_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransactextensio WHERE 1=0;
+
+CREATE TABLE ice_baby.core_flow_ing_raw.raw_bptransactiondisco_2 AS
+SELECT * FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco WHERE 1=0;

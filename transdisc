@@ -6,3 +6,6 @@ WHERE businessdaydate = DATE '2026-04-06'
                                '1010','1012','1015','1025','1027','1028')
 ORDER BY workstationid;
 
+        <OPERATORID>2453519</OPERATORID>
+
+

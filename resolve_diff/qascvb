@@ -1,165 +1,85 @@
-2026-04-14 08:30:36,122 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
-2026-04-14 08:30:36,154 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:36,155 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
-2026-04-14 08:30:36,155 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:36,155 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:30:37,452 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
-2026-04-14 08:30:37,455 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
-2026-04-14 08:30:37,483 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:37,484 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
-2026-04-14 08:30:37,484 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:37,484 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:30:38,347 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
-2026-04-14 08:30:38,351 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
-2026-04-14 08:30:38,378 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:38,378 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
-2026-04-14 08:30:38,379 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:38,379 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:30:47,929 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
-2026-04-14 08:30:47,933 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
-2026-04-14 08:30:47,962 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:47,963 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
-2026-04-14 08:30:47,963 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:47,963 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:30:54,230 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
-2026-04-14 08:30:54,233 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
-2026-04-14 08:30:54,262 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:54,262 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json  (core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json); needEmptyDirectory=false
-2026-04-14 08:30:54,262 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json
-2026-04-14 08:30:54,262 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:31:54,920 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:31:54,920 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:31:57,845 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:31:57,845 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:31:58,560 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:31:58,561 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:00,820 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:00,821 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:01,681 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:01,681 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:01,960 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:01,960 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:03,042 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:03,042 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:04,784 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:04,785 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:05,891 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:05,891 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:06,207 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:06,207 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:07,004 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:07,004 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:09,657 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:09,657 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:09,673 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:09,674 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:12,114 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
-2026-04-14 08:32:12,114 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:13,680 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:13,680 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:14,018 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:14,018 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:14,576 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:14,577 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:14,627 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:14,627 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:17,389 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:17,390 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:17,472 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:17,472 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:18,154 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:18,155 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:21,406 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:21,406 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:21,827 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:21,827 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:23,197 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
-2026-04-14 08:32:23,198 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:24,791 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:24,792 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:26,212 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:26,212 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:28,091 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:28,091 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:28,659 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:28,659 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:29,527 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:29,527 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:29,729 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:29,730 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:29,753 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:29,753 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:33,787 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:33,787 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:37,266 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
-2026-04-14 08:32:37,266 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:37,483 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:37,483 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:42,547 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:42,547 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:42,908 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:42,908 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:43,137 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:43,138 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:43,659 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:43,660 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:45,697 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:45,697 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:46,260 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:46,261 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:49,329 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:49,330 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:51,463 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:51,464 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:52,483 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:52,483 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:32:53,534 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
-2026-04-14 08:32:53,535 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:04,961 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:04,961 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:08,510 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:08,511 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:11,062 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:11,062 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:12,143 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:12,143 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:12,240 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:12,240 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:13,804 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:13,804 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:16,433 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:16,433 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:17,815 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:17,815 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:21,154 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:21,154 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:22,365 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:22,365 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:22,463 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
-2026-04-14 08:33:22,463 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:44,537 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:33:44,537 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:47,891 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:33:47,891 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:50,391 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:33:50,391 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:50,854 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:33:50,855 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:55,287 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:33:55,287 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:33:57,308 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:33:57,308 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:34:01,059 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:34:01,059 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:34:03,195 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:34:03,195 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:34:03,840 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:34:03,840 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:34:06,994 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:34:06,994 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:34:10,938 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
-2026-04-14 08:34:10,939 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:34:40,035 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #7
-2026-04-14 08:34:40,035 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
-2026-04-14 08:34:45,825 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #7
-2026-04-14 08:34:45,826 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json with change tracker null
+Caused by: org.apache.hadoop.net.ConnectTimeoutException: getFileStatus on s3a://datatransfer/core_flow_ing_raw/raw_table_audit-da32300b989f427892d993f4fb272d74/metadata/00000-761cb53b-8e15-4224-b878-bed775fd247d.metadata.json: com.amazonaws.SdkClientException: Unable to execute HTTP request: Connect to datatransfer.s3.amazonaws.com:443 [datatransfer.s3.amazonaws.com/3.5.206.117, datatransfer.s3.amazonaws.com/3.5.204.55] failed: Connect timed out
+	at org.apache.hadoop.fs.s3a.S3AUtils.translateInterruptedException(S3AUtils.java:392) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AUtils.translateException(S3AUtils.java:201) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AUtils.translateException(S3AUtils.java:175) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3799) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.extractOrFetchSimpleFileStatus(S3AFileSystem.java:5401) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1465) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1441) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:976) ~[hadoop-common-3.3.4.jar:?]
+	at org.apache.iceberg.hadoop.HadoopInputFile.newStream(HadoopInputFile.java:183) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	... 31 more
+Caused by: com.amazonaws.SdkClientException: Unable to execute HTTP request: Connect to datatransfer.s3.amazonaws.com:443 [datatransfer.s3.amazonaws.com/3.5.206.117, datatransfer.s3.amazonaws.com/3.5.204.55] failed: Connect timed out
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.handleRetryableException(AmazonHttpClient.java:1219) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeHelper(AmazonHttpClient.java:1165) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.doExecute(AmazonHttpClient.java:814) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeWithTimer(AmazonHttpClient.java:781) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.execute(AmazonHttpClient.java:755) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.access$500(AmazonHttpClient.java:715) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutionBuilderImpl.execute(AmazonHttpClient.java:697) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:561) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:541) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5456) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.getBucketRegionViaHeadRequest(AmazonS3Client.java:6431) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.fetchRegionFromCache(AmazonS3Client.java:6404) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5441) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5403) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.getObjectMetadata(AmazonS3Client.java:1372) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$getObjectMetadata$10(S3AFileSystem.java:2545) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.Invoker.retryUntranslated(Invoker.java:414) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.Invoker.retryUntranslated(Invoker.java:377) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.getObjectMetadata(S3AFileSystem.java:2533) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.getObjectMetadata(S3AFileSystem.java:2513) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3776) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.extractOrFetchSimpleFileStatus(S3AFileSystem.java:5401) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1465) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1441) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:976) ~[hadoop-common-3.3.4.jar:?]
+	at org.apache.iceberg.hadoop.HadoopInputFile.newStream(HadoopInputFile.java:183) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	... 31 more
+Caused by: com.amazonaws.thirdparty.apache.http.conn.ConnectTimeoutException: Connect to datatransfer.s3.amazonaws.com:443 [datatransfer.s3.amazonaws.com/3.5.206.117, datatransfer.s3.amazonaws.com/3.5.204.55] failed: Connect timed out
+	at com.amazonaws.thirdparty.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:151) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.thirdparty.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:376) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at jdk.internal.reflect.GeneratedMethodAccessor60.invoke(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[?:?]
+	at com.amazonaws.http.conn.ClientConnectionManagerFactory$Handler.invoke(ClientConnectionManagerFactory.java:76) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.conn.$Proxy55.connect(Unknown Source) ~[?:?]
+	at com.amazonaws.thirdparty.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:393) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.thirdparty.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:236) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.thirdparty.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:186) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.thirdparty.apache.http.impl.client.InternalHttpClient.doExecute(InternalHttpClient.java:185) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.thirdparty.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:83) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.thirdparty.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:56) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.apache.client.impl.SdkHttpClient.execute(SdkHttpClient.java:72) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeOneRequest(AmazonHttpClient.java:1346) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeHelper(AmazonHttpClient.java:1157) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.doExecute(AmazonHttpClient.java:814) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeWithTimer(AmazonHttpClient.java:781) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.execute(AmazonHttpClient.java:755) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.access$500(AmazonHttpClient.java:715) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutionBuilderImpl.execute(AmazonHttpClient.java:697) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:561) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:541) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5456) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.getBucketRegionViaHeadRequest(AmazonS3Client.java:6431) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.fetchRegionFromCache(AmazonS3Client.java:6404) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5441) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5403) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at com.amazonaws.services.s3.AmazonS3Client.getObjectMetadata(AmazonS3Client.java:1372) ~[aws-java-sdk-bundle-1.12.262.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$getObjectMetadata$10(S3AFileSystem.java:2545) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.Invoker.retryUntranslated(Invoker.java:414) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.Invoker.retryUntranslated(Invoker.java:377) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.getObjectMetadata(S3AFileSystem.java:2533) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.getObjectMetadata(S3AFileSystem.java:2513) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3776) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.extractOrFetchSimpleFileStatus(S3AFileSystem.java:5401) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1465) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1441) ~[hadoop-aws-3.3.4.jar:?]
+	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:976) ~[hadoop-common-3.3.4.jar:?]
+	at org.apache.iceberg.hadoop.HadoopInputFile.newStream(HadoopInputFile.java:183) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	... 31 more
+Caused by: java.net.SocketTimeoutException: Connect timed out

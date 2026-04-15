@@ -1,10 +1,49 @@
-
-BOOTSTRAP: start reading core_flow_ing_raw.raw_bptransaction where load_date >= ...
-BOOTSTRAP: finished, emitted 0 keys, skipped 0, sending END
-
-2026-04-15 09:41:37.968322759
-2026-04-15 06:41:37,968 INFO ru.x5.parser [] - BOOTSTRAP: finished, emitted 0 keys, skipped 0, sending END
-2026-04-15 09:41:37.968239225
-2026-04-15 06:41:37,968 ERROR ru.x5.parser [] - BOOTSTRAP: failed while reading Iceberg, emitting END anyway org.apache.iceberg.exceptions.ValidationException: Cannot find field 'load_date' in struct: struct<1: rtl_txn_rk: optional binary, 2: begindatetimestamp: optional timestamp, 3: businessdaydate: optional date, 4: enddatetimestamp: optional timestamp, 5: operatorid: optional string, 6: retailstoreid: optional string, 7: transactioncurrency: optional string, 8: transactionsequencenumber: optional string, 9: transactiontypecode: optional string, 10: workstationid: optional string, 11: load_ts: optional timestamp, 12: load_date_xml: optional date, 13: load_ts_xml: optional timestamp, 14: is_aligned_tran: optional boolean> at org.apache.iceberg.exceptions.ValidationException.check(ValidationException.java:49) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.NamedReference.bind(NamedReference.java:45) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.NamedReference.bind(NamedReference.java:26) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.UnboundPredicate.bind(UnboundPredicate.java:112) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.Binder$BindVisitor.predicate(Binder.java:159) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.Binder$BindVisitor.predicate(Binder.java:118) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.ExpressionVisitors.visit(ExpressionVisitors.java:347) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.Binder.bind(Binder.java:60) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.expressions.Binder.boundReferences(Binder.java:98) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.BaseScan.lazyColumnProjection(BaseScan.java:268) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.BaseScan.schema(BaseScan.java:218) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.SnapshotScan.schema(SnapshotScan.java:52) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.data.GenericReader.<init>(GenericReader.java:57) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.data.TableScanIterable.<init>(TableScanIterable.java:33) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at org.apache.iceberg.data.IcebergGenerics$ScanBuilder.build(IcebergGenerics.java:100) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?] at ru.x5.process.IcebergBootstrapSource.run(IcebergBootstrapSource.java:84) [blob_p-28a77db27d52293ba2927b88833962db2aeb90f9-48854c4f588734dd2ad16245ffc17c04:?] at org.apache.flink.streaming.api.operators.StreamSource.run(StreamSource.java:107) [flink-runtime-2.1.0.jar:2.1.0] at org.apache.flink.streaming.api.operators.StreamSource.run(StreamSource.java:68) [flink-runtime-2.1.0.jar:2.1.0] at org.apache.flink.streaming.runtime.tasks.SourceStreamTask$LegacySourceFunctionThread.run(SourceStreamTask.java:337) [flink-runtime-2.1.0.jar:2.1.0]
-2026-04-15 09:41:37.847025667
-2026-04-15 06:41:37,845 INFO ru.x5.parser [] - BOOTSTRAP: start reading core_flow_ing_raw.raw_bptransaction where load_date >= 20557 (1 days back)
+2026-04-15 15:27:06
+java.util.concurrent.CompletionException: java.util.concurrent.CompletionException: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.
+	at org.apache.flink.runtime.scheduler.DefaultExecutionDeployer.lambda$assignResource$4(DefaultExecutionDeployer.java:226)
+	at java.base/java.util.concurrent.CompletableFuture.uniHandle(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.completeExceptionally(Unknown Source)
+	at org.apache.flink.runtime.jobmaster.slotpool.PendingRequest.failRequest(PendingRequest.java:88)
+	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.cancelPendingRequests(DeclarativeSlotPoolBridge.java:191)
+	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.failPendingRequests(DeclarativeSlotPoolBridge.java:475)
+	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.notifyNotEnoughResourcesAvailable(DeclarativeSlotPoolBridge.java:463)
+	at org.apache.flink.runtime.jobmaster.JobMaster.notifyNotEnoughResourcesAvailable(JobMaster.java:972)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.lambda$handleRpcInvocation$0(PekkoRpcActor.java:310)
+	at org.apache.flink.runtime.concurrent.ClassLoadingUtils.runWithContextClassLoader(ClassLoadingUtils.java:83)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRpcInvocation(PekkoRpcActor.java:309)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRpcMessage(PekkoRpcActor.java:229)
+	at org.apache.flink.runtime.rpc.pekko.FencedPekkoRpcActor.handleRpcMessage(FencedPekkoRpcActor.java:88)
+	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleMessage(PekkoRpcActor.java:174)
+	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:33)
+	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:29)
+	at scala.PartialFunction.applyOrElse(PartialFunction.scala:127)
+	at scala.PartialFunction.applyOrElse$(PartialFunction.scala:126)
+	at org.apache.pekko.japi.pf.UnitCaseStatement.applyOrElse(CaseStatements.scala:29)
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:175)
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
+	at org.apache.pekko.actor.Actor.aroundReceive(Actor.scala:547)
+	at org.apache.pekko.actor.Actor.aroundReceive$(Actor.scala:545)
+	at org.apache.pekko.actor.AbstractActor.aroundReceive(AbstractActor.scala:229)
+	at org.apache.pekko.actor.ActorCell.receiveMessage(ActorCell.scala:590)
+	at org.apache.pekko.actor.ActorCell.invoke(ActorCell.scala:557)
+	at org.apache.pekko.dispatch.Mailbox.processMailbox(Mailbox.scala:272)
+	at org.apache.pekko.dispatch.Mailbox.run(Mailbox.scala:233)
+	at org.apache.pekko.dispatch.Mailbox.exec(Mailbox.scala:245)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(Unknown Source)
+Caused by: java.util.concurrent.CompletionException: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniApply.tryFire(Unknown Source)
+	... 38 more
+Caused by: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.

@@ -360,6 +360,12 @@ public class RowTablePart {
             int pos = icebergSchema.columns().indexOf(loadDateXmlField);
             rowData.setField(pos, (int) dateXml.toEpochDay());
         }
+        // flag_storno — по умолчанию ставим false для всех таблиц, где есть это поле
+        Types.NestedField flagStornoField = icebergSchema.findField("flag_storno");
+        if (nonNull(flagStornoField)) {
+            int pos = icebergSchema.columns().indexOf(flagStornoField);
+            rowData.setField(pos, false);
+        }
         // // is_aligned_tran — ставим true по умолчанию, только если не задано ранее
         // Types.NestedField isAlignedField = icebergSchema.findField("is_aligned_tran");
         // if (nonNull(isAlignedField)) {

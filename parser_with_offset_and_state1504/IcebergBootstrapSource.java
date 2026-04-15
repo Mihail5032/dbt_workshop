@@ -1,6 +1,6 @@
 package ru.x5.process;
 
-import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
+import org.apache.flink.streaming.api.functions.source.legacy.RichSourceFunction;
 import org.apache.iceberg.Table;
 import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.data.IcebergGenerics;
@@ -14,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import ru.x5.model.BootstrapEvent;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -66,9 +68,12 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
         CatalogLoader catalogLoader = CatalogLoader.hive(catalogName, hadoopConf, catalogProps);
         TableIdentifier tid = TableIdentifier.of(schemaName, tableName);
 
-        int cutoffEpochDay = (int) LocalDate.now().minusDays(windowDays).toEpochDay();
-        log.info("BOOTSTRAP: start reading {}.{} where load_date >= {} ({} days back)",
-                schemaName, tableName, cutoffEpochDay, windowDays);
+        // В схеме raw_bptransaction нет load_date — фильтруем по load_ts (timestamp).
+        // Для iceberg-timestamp-without-tz сравниваем с микросекундами от epoch.
+        OffsetDateTime cutoffTs = OffsetDateTime.now(ZoneOffset.UTC).minusDays(windowDays);
+        long cutoffMicros = cutoffTs.toInstant().toEpochMilli() * 1000L;
+        log.info("BOOTSTRAP: start reading {}.{} where load_ts >= {} ({} days back)",
+                schemaName, tableName, cutoffTs, windowDays);
 
         long emitted = 0;
         long skipped = 0;
@@ -78,7 +83,7 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
             Table table = tl.loadTable();
 
             try (CloseableIterable<Record> records = IcebergGenerics.read(table)
-                    .where(Expressions.greaterThanOrEqual("load_date", cutoffEpochDay))
+                    .where(Expressions.greaterThanOrEqual("load_ts", cutoffMicros))
                     .select("retailstoreid", "businessdaydate",
                             "workstationid", "transactionsequencenumber")
                     .build()) {

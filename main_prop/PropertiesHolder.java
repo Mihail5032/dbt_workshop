@@ -1,147 +1,154 @@
-package ru.x5.config;
+package ru.x5.model;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.iceberg.CatalogProperties;
-import org.apache.iceberg.aws.s3.S3FileIOProperties;
-import org.apache.log4j.Logger;
-import ru.x5.exceptions.CommonParserException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.IOException;
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Класс для хранения конфигураций из property-файла
- */
-public class PropertiesHolder {
-    private static final Logger log = Logger.getLogger(PropertiesHolder.class);
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class TenderPstProcessor {
+    private List<BaseTransactionKey> data;
 
-    // Ключи конфигураций
-    private static final String S3_ENDPOINT = "s3.endpoint";
-    private static final String PATH_STYLE_ACCESS = "s3.path.style.access";
-    private static final String ACCESS_KEY = "s3.access.key.id";
-    private static final String SECRET_KEY = "s3.secret.access.key";
-    private static final String CONNECTIONS_SSL_ENABLED = "connection.ssl.enabled";
-    private static final String S3_IMPL = "s3.impl";
-    private static final String IO_IMPL = "io.impl";
-    private static final String AWS_CREDENTIALS_PROVIDER = "s3.aws.credentials.provider";
-    private static final String CLIENT_REGION = "client.region";
-    private static final String WAREHOUSE = "warehouse";
-    private static final String HIVE_METASTORE_URIS = "hive.metastore.uris";
-    private static final String IMPL_DIS_CACHE = "impl.disable.cache";
-
-
-    // KAFKA
-    private static final String BOOSTRAP_SERVERS = "bootstrap.servers";
-    private static final String TOPIC_NAME = "topic.name";
-    private static final String KEYTAB_LOCATION = "keytab.location";
-    private static final String KEYTAB_PRINCIPAL = "keytab.principal";
-
-    private static volatile PropertiesHolder instance;
-
-    private final Properties props;
-
-    private PropertiesHolder() {
-        try {
-            props = new Properties();
-            props.load(PropertiesHolder.class.getClassLoader().getResourceAsStream("application.properties"));
-        }
-        catch (IOException ex) {
-            log.error("Could not read properties");
-            throw new CommonParserException(ex);
-        }
+    /**
+     * Формирует ключ транзакции для группировки per-transaction.
+     */
+    private static String txnKey(BaseTransactionKey b) {
+        return (b.getRetailStoreId() == null ? "" : b.getRetailStoreId()) + "|"
+                + (b.getBusinessDayDate() == null ? "" : b.getBusinessDayDate()) + "|"
+                + (b.getWorkstationId() == null ? "" : b.getWorkstationId()) + "|"
+                + (b.getTransactionSequenceNumber() == null ? "" : b.getTransactionSequenceNumber());
     }
 
-    public static PropertiesHolder getInstance() {
-        if (instance == null) {
-            synchronized (PropertiesHolder.class) {
-                if (instance == null) {
-                    instance = new PropertiesHolder();
+    public List<Tender> prepareTenderPst() {
+        List<Transaction> tx = data.stream()
+                .filter(x -> x.getSegmentName().equals("E1BPTRANSACTION"))
+                .map(x -> (Transaction) x)
+                .collect(Collectors.toList());
+        List<Tender> te = data.stream()
+                .filter(x -> x.getSegmentName().equals("E1BPTENDER"))
+                .map(x -> (Tender) x)
+                .collect(Collectors.toList());
+        List<TenderExtension> tex = data.stream()
+                .filter(x -> x.getSegmentName().equals("E1BPTENDEREXTENSIONS"))
+                .map(x -> (TenderExtension) x)
+                .collect(Collectors.toList());
+        List<RetailLineItem> lineItems = data.stream()
+                .filter(x -> x.getSegmentName().equals("E1BPRETAILLINEITEM"))
+                .map(x -> (RetailLineItem) x)
+                .collect(Collectors.toList());
+
+        // Исключаем retailTypeCode=2020 из расчёта сумм (SAP отбрасывает эти позиции)
+        List<RetailLineItem> effectiveLineItems = lineItems.stream()
+                .filter(x -> !"2020".equals(x.getRetailTypeCode()))
+                .collect(Collectors.toList());
+
+        boolean isVprokExpress = data.stream()
+                .filter(x -> x.getSegmentName().equals("E1BPTRANSACTEXTENSIO"))
+                .map(x -> (TransactionExtension) x)
+                .filter(x -> x.getFieldName() != null && x.getFieldName().contains("SOURCE"))
+                .anyMatch(x -> x.getFieldValue() != null && x.getFieldValue().contains("vprok.express"));
+
+        // Суммы per-transaction (без позиций 2020)
+        Map<String, BigDecimal> salesByTxn = effectiveLineItems.stream()
+                .filter(x -> x.getSalesAmount() != null)
+                .collect(Collectors.groupingBy(TenderPstProcessor::txnKey,
+                        Collectors.reducing(BigDecimal.ZERO, RetailLineItem::getSalesAmount, BigDecimal::add)));
+
+        Map<String, BigDecimal> tenderByTxn = te.stream()
+                .filter(x -> x.getTenderAmount() != null)
+                .collect(Collectors.groupingBy(TenderPstProcessor::txnKey,
+                        Collectors.reducing(BigDecimal.ZERO, Tender::getTenderAmount, BigDecimal::add)));
+
+        // Ключи транзакций, у которых есть тендеры
+        Set<String> txKeysWithTenders = te.stream()
+                .map(TenderPstProcessor::txnKey)
+                .collect(Collectors.toSet());
+
+        // Ключи транзакций, у которых есть хотя бы одна не-2020 позиция
+        Set<String> txKeysWithEffectiveItems = effectiveLineItems.stream()
+                .map(TenderPstProcessor::txnKey)
+                .collect(Collectors.toSet());
+
+        List<Transaction> tx1014 = tx.stream()
+                .filter(x -> "1014".equals(x.getTransactionTypeCode()))
+                .collect(Collectors.toList());
+
+        List<Tender> tenders = new ArrayList<>();
+
+        for (Transaction x : tx1014) {
+            String key = txnKey(x);
+            BigDecimal sumSales = salesByTxn.getOrDefault(key, BigDecimal.ZERO);
+            BigDecimal sumTender = tenderByTxn.getOrDefault(key, BigDecimal.ZERO);
+            boolean hasTenders = txKeysWithTenders.contains(key);
+
+            if (hasTenders) {
+                // Part 1: есть тендеры, но суммы не совпадают → коррекция дельтой
+                // ABAP: tendernumber = '9'
+                BigDecimal delta = sumSales.subtract(sumTender);
+                if (delta.abs().compareTo(BigDecimal.ONE) >= 0) {
+                    Tender tender = createSyntheticTender(x, "3101", delta, isVprokExpress, "9");
+                    tenders.add(tender);
                 }
+            } else if (txKeysWithEffectiveItems.contains(key)) {
+                // Part 2: нет тендеров, есть не-2020 позиции → создаём оплату на сумму продаж (ABAP: даже если сумма = 0)
+                // ABAP: tendernumber = '8'
+                Tender tender = createSyntheticTender(x, "3101", sumSales, isVprokExpress, "8");
+                tenders.add(tender);
             }
+            // Если все позиции 2020 — тендер не создаём (SAP отбрасывает такие позиции)
         }
-        return instance;
+
+        // мутация 3108→3123
+        applyThirdPartMutation(te, tex);
+        return tenders;
     }
 
-    // S3
-
-    public String getS3Endpoint() {
-        return props.getProperty(S3_ENDPOINT);
-
+    private Tender createSyntheticTender(Transaction x, String tenderTypeCode,
+                                          BigDecimal amount, boolean isVprokExpress,
+                                          String tenderNumber) {
+        Tender tender = new Tender(
+                tenderNumber,
+                tenderTypeCode,
+                amount,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        tender.setTransactionSequenceNumber(x.transactionSequenceNumber);
+        tender.setWorkstationId(isVprokExpress ? "0000001002" : x.workstationId);
+        tender.setRetailStoreId(x.retailStoreId);
+        tender.setBusinessDayDate(x.businessDayDate);
+        tender.setTransactionTypeCode(x.transactionTypeCode);
+        tender.setIs_aligned_tran(x.getIs_aligned_tran());  // наследуем флаг от транзакции
+        return tender;
     }
 
-    public String getPathStyleAccess() {
-        return props.getProperty(PATH_STYLE_ACCESS);
-
+    /**
+     * Мутирует оригинальные тендеры 3108→3123 при наличии CERT_PARTY=RU02.
+     */
+    private void applyThirdPartMutation(List<Tender> te, List<TenderExtension> tex) {
+        boolean isCertParty = tex.stream()
+                .filter(x -> x.getFieldName() != null && x.getFieldName().contains("CERT_PARTY"))
+                .anyMatch(x -> x.getFieldValue() != null && x.getFieldValue().contains("RU02"));
+        if (isCertParty) {
+            te.forEach(x -> {
+                if ("3108".equals(x.getTenderTypeCode())) {
+                    x.setTenderTypeCode("3123");
+                }
+            });
+        }
     }
-
-    public String getAccessKey() {
-        return props.getProperty(ACCESS_KEY);
-
-    }
-
-    public String getSecretKey() {
-        return props.getProperty(SECRET_KEY);
-
-    }
-
-    public String getConnectionsSslEnabled() {
-        return props.getProperty(CONNECTIONS_SSL_ENABLED);
-
-    }
-
-    public String getS3Impl() {
-        return props.getProperty(S3_IMPL);
-
-    }
-
-    public String getIoImpl() {
-        return props.getProperty(IO_IMPL);
-
-    }
-
-    public String getAwsCredentialsProvider() {
-        return props.getProperty(AWS_CREDENTIALS_PROVIDER);
-
-    }
-
-    public String getClientRegion() {
-        return props.getProperty(CLIENT_REGION);
-
-    }
-
-    public String getWarehouse() {
-        return props.getProperty(WAREHOUSE);
-    }
-
-    public String getHiveMetastoreUris() {
-        return props.getProperty(HIVE_METASTORE_URIS);
-    }
-
-    public String getImplDisCache() {
-        return props.getProperty(IMPL_DIS_CACHE);
-    }
-
-    // KAFKA
-
-    public String getBoostrapServers() {
-        return props.getProperty(BOOSTRAP_SERVERS);
-    }
-
-    public String getTopicName() {
-        return props.getProperty(TOPIC_NAME);
-    }
-
-    public String getKeytabLocation() {
-        return props.getProperty(KEYTAB_LOCATION);
-    }
-
-    public String getKeytabPrincipal() {
-        return props.getProperty(KEYTAB_PRINCIPAL);
-    }
-
 
 }

@@ -1,1 +1,3 @@
 
+BOOTSTRAP: start reading core_flow_ing_raw.raw_bptransaction where load_date >= ...
+BOOTSTRAP: finished, emitted 0 keys, skipped 0, sending END

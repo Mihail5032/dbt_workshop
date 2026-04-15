@@ -1,234 +1,210 @@
-package ru.x5;
+package ru.x5.model;
 
-import org.apache.flink.api.common.eventtime.WatermarkStrategy;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.util.OutputTag;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.apache.flink.table.data.*;
 import org.apache.iceberg.Schema;
-import org.apache.iceberg.Table;
-import org.apache.iceberg.catalog.TableIdentifier;
-import org.apache.iceberg.flink.CatalogLoader;
-import org.apache.iceberg.flink.TableLoader;
-import org.apache.iceberg.flink.sink.FlinkSink;
-import ru.x5.config.PropertiesHolder;
-import ru.x5.factory.KafkaSourceFactory;
-import ru.x5.factory.StreamExecutionEnvironmentFactory;
-import ru.x5.model.TransactionBundle;
-import ru.x5.process.IdocParser;
-import ru.x5.process.StreamSideOutputTag;
-import ru.x5.process.TransactionProcessor;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Objects;
 
-/**
- * Новый пайплайн с дедупликацией на уровне транзакции (подход тим лида):
- *
- * Kafka → IdocParser (парсит XML, группирует по транзакциям)
- *       → keyBy(txnKey)
- *       → TransactionProcessor (деdup по ValueState + эмит всех сегментов)
- *       → sinks
- *
- * Один хеш на транзакцию покрывает ВСЕ сегменты разом.
- * DeduplicationFilter, PstDeduplicationFilter, PstTransactionKeySelector — убраны.
- */
-public class DataStreamJob {
-    public static final String CATALOG = "core_flow_ing_raw";
-    public static final String SCHEMA = "core_flow_ing_raw";
-    private static final String UID_SOURCE = "kafka-source";
-    private static final String UID_PARSER = "idoc-parser";
-    private static final String UID_PROCESSOR = "transaction-processor";
-    private final Map<String, TableIdentifier> tableMap = new HashMap<>();
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
+@XmlAccessorType(XmlAccessType.FIELD)
+public class RetailLineItem extends BaseTransactionKey {
+    @XmlElement(name = "RETAILSEQUENCENUMBER")
+    private String retailSequenceNumber;
+    @XmlElement(name = "RETAILTYPECODE")
+    private String retailTypeCode;
+    @XmlElement(name = "RETAILREASONCODE")
+    private String retailReasonCode;
+    @XmlElement(name = "ITEMIDQUALIFIER")
+    private String itemIdQualifier;
+    @XmlElement(name = "ITEMID")
+    private String itemId;
+    @XmlElement(name = "RETAILQUANTITY")
+    private BigDecimal retailQuantity;
+    @XmlElement(name = "SALESUNITOFMEASURE")
+    private String salesUnitOfMeasure;
+    @XmlElement(name = "SALESUNITOFMEASURE_ISO")
+    private String salesUnitOfMeasureISO;
+    @XmlElement(name = "SALESAMOUNT")
+    private BigDecimal salesAmount;
+    @XmlElement(name = "NORMALSALESAMOUNT")
+    private String normalSalesAmount;
+    @XmlElement(name = "COST")
+    private String cost;
+    @XmlElement(name = "BATCHID")
+    private String batchId;
+    @XmlElement(name = "SERIALNUMBER")
+    private String serialNumber;
+    @XmlElement(name = "PROMOTIONID")
+    private String promotionId;
+    @XmlElement(name = "ITEMIDENTRYMETHODCODE")
+    private String itemIdenTryMethodCode;
+    @XmlElement(name = "ACTUALUNITPRICE")
+    private String actualUnitPrice;
+    @XmlElement(name = "UNITS")
+    private String units;
+    @XmlElement(name = "NONEXISTENTARTICLEID")
+    private String nonExistentArticleId;
+    @XmlElement(name = "REGULARSALESAMOUNT")
+    private String regularSalesAmount;
+    @XmlElement(name = "SCANTIME")
+    private String scanTime;
+    private String umrezVal;   //поле из itemid
+    private String matnrPadded;   //поле из itemid
+    private String umrez;   //поле из справочника
+    private String matnr;   //поле из справочника
+    private String meinh;
+    private String lfnum;
+    private String ean11;
+    private Boolean hasEan;
 
-    public static void main(String[] args) throws Exception {
-        DataStreamJob job = new DataStreamJob();
-        job.run();
-    }
-
-    public void run() throws Exception {
-        StreamExecutionEnvironment env = StreamExecutionEnvironmentFactory.getStreamExecutionEnvironment();
-        DataStreamSource<String> stream = env.fromSource(
-                KafkaSourceFactory.buildKafkaSource(),
-                WatermarkStrategy.noWatermarks(),
-                "Kafka Source").setParallelism(10);
-
-        PropertiesHolder config = PropertiesHolder.getInstance();
-
-        // === Catalog config ===
-        org.apache.hadoop.conf.Configuration hadoopConf = new org.apache.hadoop.conf.Configuration();
-        hadoopConf.set("hive.metastore.client.connect.timeout", "60000");
-
-        Map<String, String> catalogProps = new HashMap<>();
-        catalogProps.put("type", "hive");
-        catalogProps.put("io-impl", config.getIoImpl());
-        catalogProps.put("warehouse", config.getWarehouse());
-        catalogProps.put("uri", config.getHiveMetastoreUris());
-        catalogProps.put("s3.endpoint", config.getS3Endpoint());
-        catalogProps.put("s3.path-style-access", config.getPathStyleAccess());
-        catalogProps.put("client.region", config.getClientRegion());
-        catalogProps.put("s3.access-key-id", config.getAccessKey());
-        catalogProps.put("s3.secret-access-key", config.getSecretKey());
-        catalogProps.put("fs.s3a.connection.maximum", "100");
-        catalogProps.put("fs.s3a.connection.timeout", "60000");
-        catalogProps.put("fs.s3a.socket.timeout", "60000");
-        catalogProps.put("fs.s3a.attempts.maximum", "5");
-
-        CatalogLoader catalogLoader = CatalogLoader.hive(CATALOG, hadoopConf, catalogProps);
-
-        // === RAW таблицы (iceberg schemas для конвертации сегментов в RowData) ===
-        Map<String, TableLoader> tableLoaders = new HashMap<>();
-        Map<String, Schema> icebergSchemas = new HashMap<>();
-
-        tableMap.put("E1BPTRANSACTION", TableIdentifier.of(SCHEMA, "raw_bptransaction"));
-        tableMap.put("E1BPSOURCEDOCUMENTLI", TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli"));
-        tableMap.put("E1BPFINACIALMOVEMENT", TableIdentifier.of(SCHEMA, "raw_bpfinacialmovement"));
-        tableMap.put("E1BPFINANCIALMOVEMEN", TableIdentifier.of(SCHEMA, "raw_bpfinancialmovemen"));
-        tableMap.put("E1BPLINEITEMDISCEXT", TableIdentifier.of(SCHEMA, "raw_bplineitemdiscext"));
-        tableMap.put("E1BPLINEITEMDISCOUNT", TableIdentifier.of(SCHEMA, "raw_bplineitemdiscount"));
-        tableMap.put("E1BPLINEITEMEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bplineitemextensio"));
-        tableMap.put("E1BPLINEITEMTAX", TableIdentifier.of(SCHEMA, "raw_bplineitemtax"));
-        tableMap.put("E1BPRETAILLINEITEM", TableIdentifier.of(SCHEMA, "raw_bpretaillineitem"));
-        tableMap.put("E1BPRETAILTOTALS", TableIdentifier.of(SCHEMA, "raw_bpretailtotals"));
-        tableMap.put("E1BPTENDER", TableIdentifier.of(SCHEMA, "raw_bptender"));
-        tableMap.put("E1BPTENDEREXTENSIONS", TableIdentifier.of(SCHEMA, "raw_bptenderextensions"));
-        tableMap.put("E1BPTENDERTOTALS", TableIdentifier.of(SCHEMA, "raw_bptendertotals"));
-        tableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco"));
-        tableMap.put("E1BPTRANSACTEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bptransactextensio"));
-        tableMap.put("E1BPTRANSACTDISCEXT", TableIdentifier.of(SCHEMA, "raw_bptransactdiscext"));
-
-        for (Map.Entry<String, TableIdentifier> entry : tableMap.entrySet()) {
-            String segment = entry.getKey();
-            TableIdentifier tableId = entry.getValue();
-            TableLoader loader = TableLoader.fromCatalog(catalogLoader, tableId);
-            tableLoaders.put(segment, loader);
-            icebergSchemas.put(segment, getIcebergSchema(loader));
-        }
-
-        // === PST таблицы ===
-        Map<String, TableIdentifier> pstTableMap = new HashMap<>();
-        pstTableMap.put("PST_BPTRANSACTION",              TableIdentifier.of(SCHEMA, "raw_bptransaction"));
-        pstTableMap.put("PST_BPFINANCIALMOVEMEN",          TableIdentifier.of(SCHEMA, "raw_bpfinancialmovemen"));
-        pstTableMap.put("PST_BPTRANSACTEXTENSIO",          TableIdentifier.of(SCHEMA, "raw_bptransactextensio"));
-        pstTableMap.put("PST_BPFINANCIALMOVEMENTEXTENSIO", TableIdentifier.of(SCHEMA, "raw_bpfinacialmovement"));
-        pstTableMap.put("PST_BPRETAILLINEITEM",            TableIdentifier.of(SCHEMA, "raw_bpretaillineitem"));
-        pstTableMap.put("PST_BPLINEITEMEXTENSIO",          TableIdentifier.of(SCHEMA, "raw_bplineitemextensio"));
-        pstTableMap.put("PST_BPLINEITEMDISCOUNT",          TableIdentifier.of(SCHEMA, "raw_bplineitemdiscount"));
-        pstTableMap.put("PST_BPLINEITEMDISCEXT",           TableIdentifier.of(SCHEMA, "raw_bplineitemdiscext"));
-        pstTableMap.put("PST_BPTRANSACTDISCEXT",           TableIdentifier.of(SCHEMA, "raw_bptransactdiscext"));
-        pstTableMap.put("PST_BPTENDER",                    TableIdentifier.of(SCHEMA, "raw_bptender"));
-        pstTableMap.put("PST_BPTENDEREXTENSIONS",          TableIdentifier.of(SCHEMA, "raw_bptenderextensions"));
-
-        Map<String, Schema> pstSchemas = new HashMap<>();
-        for (Map.Entry<String, TableIdentifier> entry : pstTableMap.entrySet()) {
-            TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
-            pstSchemas.put(entry.getKey(), getIcebergSchema(loader));
-        }
-
-        // ======================== ПАЙПЛАЙН ========================
-
-        // Этап 1: Парсинг IDOC → TransactionBundle (один на транзакцию)
-        Schema sourceDocSchema = icebergSchemas.get("E1BPSOURCEDOCUMENTLI");
-        SingleOutputStreamOperator<TransactionBundle> parsed = stream
-                .uid(UID_SOURCE)
-                .process(new IdocParser(sourceDocSchema, icebergSchemas, pstSchemas))
-                .setParallelism(10)
-                .uid(UID_PARSER);
-
-        // SourceDocument — per-IDOC, эмитится из IdocParser через side output
-        DataStream<RowData> sourceDocStream = parsed.getSideOutput(IdocParser.SOURCE_DOC_TAG);
-        TableLoader sourceDocLoader = TableLoader.fromCatalog(catalogLoader,
-                TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli"));
-        FlinkSink.forRowData(sourceDocStream)
-                .tableLoader(sourceDocLoader)
-                .writeParallelism(1)
-                .upsert(false)
-                .uidPrefix("sink-sourcedocument")
-                .set("write.target-file-size-bytes", "268435456")
-                .append();
-
-        // Этап 2: keyBy(txnKey) → TransactionProcessor (деdup + десериализация + эмит)
-        SingleOutputStreamOperator<RowData> processed = parsed
-                .keyBy(TransactionBundle::getTxnKey)
-                .process(new TransactionProcessor(icebergSchemas, pstSchemas))
-                .setParallelism(25)
-                .uid(UID_PROCESSOR);
-
-        // === RAW sinks — 4 сегмента без PST-логики ===
-        Map<String, TableIdentifier> rawOnlyTableMap = new HashMap<>();
-        rawOnlyTableMap.put("E1BPLINEITEMTAX",      TableIdentifier.of(SCHEMA, "raw_bplineitemtax"));
-        rawOnlyTableMap.put("E1BPRETAILTOTALS",     TableIdentifier.of(SCHEMA, "raw_bpretailtotals"));
-        rawOnlyTableMap.put("E1BPTENDERTOTALS",     TableIdentifier.of(SCHEMA, "raw_bptendertotals"));
-        rawOnlyTableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco"));
-
-        for (Map.Entry<String, TableIdentifier> entry : rawOnlyTableMap.entrySet()) {
-            String segment = entry.getKey();
-            OutputTag<RowData> tag = StreamSideOutputTag.getTag(segment);
-            DataStream<RowData> sideStream = processed.getSideOutput(tag);
-            TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
-
-            FlinkSink.forRowData(sideStream)
-                    .tableLoader(loader)
-                    .writeParallelism(1)
-                    .upsert(false)
-                    .uidPrefix("sink-" + segment.toLowerCase())
-                    .set("write.target-file-size-bytes", "268435456")
-                    .append();
-        }
-
-        // === PST sinks ===
-        Map<String, Integer> sinkParallelism = new HashMap<>();
-        sinkParallelism.put("PST_BPLINEITEMEXTENSIO", 3);
-        sinkParallelism.put("PST_BPTRANSACTEXTENSIO", 3);
-        sinkParallelism.put("PST_BPRETAILLINEITEM", 3);
-        sinkParallelism.put("PST_BPTENDEREXTENSIONS", 2);
-        sinkParallelism.put("PST_BPTRANSACTION", 2);
-        sinkParallelism.put("PST_BPTENDER", 2);
-
-        Map<String, TableLoader> pstSinkLoaders = new HashMap<>();
-        for (Map.Entry<String, TableIdentifier> entry : pstTableMap.entrySet()) {
-            String pstKey = entry.getKey();
-            OutputTag<RowData> tag = StreamSideOutputTag.getTag(pstKey);
-            DataStream<RowData> pstStream = processed.getSideOutput(tag);
-            TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
-            pstSinkLoaders.put(pstKey, loader);
-
-            int parallelism = sinkParallelism.getOrDefault(pstKey, 1);
-
-            FlinkSink.forRowData(pstStream)
-                    .tableLoader(loader)
-                    .writeParallelism(parallelism)
-                    .upsert(false)
-                    .uidPrefix("sink-" + pstKey.toLowerCase())
-                    .set("write.target-file-size-bytes", "268435456")
-                    .append();
-        }
-
-        env.execute("XML Parser with transaction-level dedup and pst trans before keyBy and bin serial");
-        closeTableLoaders(tableLoaders);
-        closeTableLoaders(pstSinkLoaders);
-        env.close();
-    }
-
-    private Schema getIcebergSchema(TableLoader tableLoaderDynamic) throws IOException {
-        Table icebergTableDynamic;
-        try (tableLoaderDynamic) {
-            tableLoaderDynamic.open();
-            icebergTableDynamic = tableLoaderDynamic.loadTable();
-        }
-        return icebergTableDynamic.schema();
-    }
-
-    private void closeTableLoaders(Map<String, TableLoader> tableLoaders) {
-        tableLoaders.values().forEach(loader -> {
-            try {
-                loader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+    @Override
+    public RowData toRowData(Schema icebergSchema, TimestampData timestampDataXml, LocalDate dateXml) {
+        RowTablePart basePart = super.toRowTablePart();
+        if (itemId != null && itemId.contains("UP")) {
+            String[] parts = itemId.split("UP", 2);
+            if (parts.length == 2) {
+                String partBefore = parts[0];
+                String partAfter = parts[1];
+                matnrPadded = String.format("%18s", partBefore).replace(' ', '0');
+                umrezVal = partAfter;
             }
-        });
+        }
+        return RowTablePart.fromBase(basePart).segment_name(getSegmentName()).retailsequencenumber(retailSequenceNumber)
+                .retailtypecode(retailTypeCode).retailreasoncode(retailReasonCode)
+                .itemidqualifier(itemIdQualifier).itemid(itemId).retailquantity(retailQuantity != null ? retailQuantity.toString() : null)
+                .salesunitofmeasure(salesUnitOfMeasure).salesunitofmeasure_iso(salesUnitOfMeasureISO)
+                .salesamount(salesAmount != null ? salesAmount.toString() : null).normalsalesamount(normalSalesAmount)
+                .cost(cost).batchid(batchId).serialnumber(serialNumber).promotionid(promotionId)
+                .itemidentrymethodcode(itemIdenTryMethodCode).actualunitprice(actualUnitPrice).nonexistentarticleid(nonExistentArticleId)
+                .regularsalesamount(regularSalesAmount).units(units).scantime(scanTime)
+                .matnr_padded(matnrPadded).umrez_val(umrezVal)
+                .lfnum(lfnum).ean11(ean11)
+                .is_aligned_tran(String.valueOf(super.getIs_aligned_tran()))
+                .build().toRowData(icebergSchema, timestampDataXml, dateXml);
     }
+
+    @Override
+    public String getSegmentName(){return "E1BPRETAILLINEITEM";}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RetailLineItem)) return false;
+        if (!super.equals(o)) return false;
+        RetailLineItem that = (RetailLineItem) o;
+        return Objects.equals(retailSequenceNumber, that.retailSequenceNumber)
+                && Objects.equals(retailTypeCode, that.retailTypeCode)
+                && Objects.equals(retailReasonCode, that.retailReasonCode)
+                && Objects.equals(itemIdQualifier, that.itemIdQualifier)
+                && Objects.equals(itemId, that.itemId)
+                && Objects.equals(retailQuantity, that.retailQuantity)
+                && Objects.equals(salesUnitOfMeasure, that.salesUnitOfMeasure)
+                && Objects.equals(salesUnitOfMeasureISO, that.salesUnitOfMeasureISO)
+                && Objects.equals(salesAmount, that.salesAmount)
+                && Objects.equals(normalSalesAmount, that.normalSalesAmount)
+                && Objects.equals(cost, that.cost)
+                && Objects.equals(batchId, that.batchId)
+                && Objects.equals(serialNumber, that.serialNumber)
+                && Objects.equals(promotionId, that.promotionId)
+                && Objects.equals(itemIdenTryMethodCode, that.itemIdenTryMethodCode)
+                && Objects.equals(actualUnitPrice, that.actualUnitPrice)
+                && Objects.equals(units, that.units)
+                && Objects.equals(nonExistentArticleId, that.nonExistentArticleId)
+                && Objects.equals(regularSalesAmount, that.regularSalesAmount)
+                && Objects.equals(scanTime, that.scanTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), retailSequenceNumber, retailTypeCode, retailReasonCode, itemIdQualifier,
+                itemId, retailQuantity, salesUnitOfMeasure, salesUnitOfMeasureISO, salesAmount, normalSalesAmount,
+                cost, batchId, serialNumber, promotionId, itemIdenTryMethodCode, actualUnitPrice, units, nonExistentArticleId,
+                regularSalesAmount, scanTime
+        );
+    }
+    @Override
+    public String toString() {
+        return "RetailLineItem{" +
+                "retailStoreId='" + retailStoreId + '\'' +
+                ", businessDayDate='" + businessDayDate + '\'' +
+                ", transactionTypeCode='" + transactionTypeCode + '\'' +
+                ", workstationId='" + workstationId + '\'' +
+                ", transactionSequenceNumber='" + transactionSequenceNumber + '\'' +
+                ", retailSequenceNumber='" + retailSequenceNumber + '\'' +
+                ", retailTypeCode='" + retailTypeCode + '\'' +
+                ", retailReasonCode='" + retailReasonCode + '\'' +
+                ", itemIdQualifier='" + itemIdQualifier + '\'' +
+                ", itemId='" + itemId + '\'' +
+                ", retailQuantity=" + retailQuantity +
+                ", salesUnitOfMeasure='" + salesUnitOfMeasure + '\'' +
+                ", salesUnitOfMeasureISO='" + salesUnitOfMeasureISO + '\'' +
+                ", salesAmount=" + salesAmount +
+                ", normalSalesAmount='" + normalSalesAmount + '\'' +
+                ", cost='" + cost + '\'' +
+                ", batchId='" + batchId + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", promotionId='" + promotionId + '\'' +
+                ", itemIdenTryMethodCode='" + itemIdenTryMethodCode + '\'' +
+                ", actualUnitPrice='" + actualUnitPrice + '\'' +
+                ", units='" + units + '\'' +
+                ", nonExistentArticleId='" + nonExistentArticleId + '\'' +
+                ", regularSalesAmount='" + regularSalesAmount + '\'' +
+                ", scanTime='" + scanTime + '\'' +
+                '}';
+    }
+    public String createKeyLineItem(){
+        return retailStoreId+businessDayDate+transactionTypeCode+workstationId
+                +transactionSequenceNumber+retailSequenceNumber;
+    }
+
+    public RowData toRowDataPst(Schema pstSchema, TimestampData timestampDataXml, LocalDate dateXml,
+                               boolean isAutoMd, boolean chkFixes2525942, boolean chkFixes2525942_2){
+        if (isAutoMd) retailTypeCode="2043";
+
+        // ABAP стр. 292-305: подмена кодов при workstationId='0000001000' и наличии записей в CHK_FIXES
+        if (chkFixes2525942 && Objects.equals(workstationId, "0000001000")) {
+            if (Objects.equals(retailTypeCode, "2804")) {
+                retailTypeCode = "2826";
+            }
+            if (chkFixes2525942_2 && Objects.equals(itemId, "S003147") && Objects.equals(transactionTypeCode, "1016")) {
+                retailTypeCode = "2044";
+            } else if (chkFixes2525942_2 && Objects.equals(itemId, "S003147") && Objects.equals(transactionTypeCode, "1017")) {
+                retailTypeCode = "2831";
+            }
+        }
+
+        //itemid
+        String eanItemId = Boolean.TRUE.equals(hasEan) ? ean11 : null;
+        String finalItemId = eanItemId != null ? eanItemId : itemId;
+        if (Objects.equals(transactionTypeCode,"1014") && finalItemId == null){
+            itemId = "0";
+        }
+        else {
+            itemId = finalItemId;
+        }
+        //itemidqualifier
+        if (Objects.equals(transactionTypeCode,"1014") && finalItemId == null) {
+            itemIdQualifier = "";
+        }
+        else if (Boolean.TRUE.equals(hasEan)) {
+            itemIdQualifier = "1";
+        }
+        //salesunitofmeasure
+        if (Boolean.TRUE.equals(hasEan) && meinh!=null){
+            salesUnitOfMeasure = meinh;
+        }
+        return toRowData(pstSchema, timestampDataXml, dateXml);
+    }
+
 }

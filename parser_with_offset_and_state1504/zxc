@@ -72,4 +72,4 @@ ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactiondisco_2   EXECUTE remove
 ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_test_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
 
 ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_2        EXECUTE remove_orphan_files(retention_threshold => '1m');
-
+https://wiki.x5.ru/spaces/BDPP/pages/1420065026/WPUFIB01

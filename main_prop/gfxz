@@ -1,4 +1,34 @@
-CREATE TABLE core_flow_ing_raw.raw_bptransaction_2_small AS
-SELECT * 
-FROM core_flow_ing_raw.raw_bptransaction_2
-LIMIT 1000;
+SELECT
+    -- Контекст
+    (SELECT COUNT(*) FROM core_flow_ing_raw.raw_bptransaction_2_small) AS source_total,
+    (SELECT COUNT(*) FROM core_flow_ing_raw.raw_bptransaction_test_2) AS target_total,
+    
+    -- ГЛАВНАЯ МЕТРИКА: сколько транзакций из source просочилось в target
+    (SELECT COUNT(*) FROM core_flow_ing_raw.raw_bptransaction_test_2 t
+     WHERE EXISTS (
+         SELECT 1 FROM core_flow_ing_raw.raw_bptransaction_2_small s
+         WHERE s.retailstoreid = t.retailstoreid
+           AND s.businessdaydate = t.businessdaydate
+           AND s.workstationid = t.workstationid
+           AND s.transactionsequencenumber = t.transactionsequencenumber
+     )) AS preload_leaks,
+    
+    -- Сколько из source было "поймано" preload-ом (нет в target, но есть в source)
+    (SELECT COUNT(*) FROM core_flow_ing_raw.raw_bptransaction_2_small s
+     WHERE NOT EXISTS (
+         SELECT 1 FROM core_flow_ing_raw.raw_bptransaction_test_2 t
+         WHERE t.retailstoreid = s.retailstoreid
+           AND t.businessdaydate = s.businessdaydate
+           AND t.workstationid = s.workstationid
+           AND t.transactionsequencenumber = s.transactionsequencenumber
+     )) AS preload_filtered,
+    
+    -- Сколько в target пришло новых транзакций (не из source)
+    (SELECT COUNT(*) FROM core_flow_ing_raw.raw_bptransaction_test_2 t
+     WHERE NOT EXISTS (
+         SELECT 1 FROM core_flow_ing_raw.raw_bptransaction_2_small s
+         WHERE s.retailstoreid = t.retailstoreid
+           AND s.businessdaydate = t.businessdaydate
+           AND s.workstationid = t.workstationid
+           AND s.transactionsequencenumber = t.transactionsequencenumber
+     )) AS new_in_target;

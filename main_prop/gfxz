@@ -1,1 +1,4 @@
-
+CREATE TABLE core_flow_ing_raw.raw_bptransaction_2_small AS
+SELECT * 
+FROM core_flow_ing_raw.raw_bptransaction_2
+LIMIT 1000;

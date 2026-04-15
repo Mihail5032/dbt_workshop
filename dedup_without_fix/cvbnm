@@ -1,1 +1,17 @@
 
+ALTER TABLE core_flow_ing_raw.raw_bpfinacialmovement     ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bpfinancialmovemen     ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bplineitemdiscext      ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bplineitemdiscount     ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bplineitemextensio     ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bplineitemtax          ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bpretaillineitem       ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bpretailtotals         ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bpsourcedocumentli     ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bptender               ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bptenderextensions     ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bptendertotals         ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bptransactdiscext      ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bptransactextensio     ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bptransaction          ADD COLUMN flag_storno boolean;
+ALTER TABLE core_flow_ing_raw.raw_bptransactiondisco     ADD COLUMN flag_storno boolean;

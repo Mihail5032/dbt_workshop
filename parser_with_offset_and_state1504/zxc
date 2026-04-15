@@ -70,3 +70,6 @@ ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpretailtotals_2       EXECUTE remove
 ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptendertotals_2       EXECUTE remove_orphan_files(retention_threshold => '0d');
 ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactiondisco_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
 ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_test_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_2        EXECUTE remove_orphan_files(retention_threshold => '1m');
+

@@ -1,2 +1,21 @@
-
-Add Iceberg bootstrap for dedup state and Kafka timestamp start
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  15.126 s
+[INFO] Finished at: 2026-04-15T08:48:33+03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project xml-parser-correction: Compilation failure: Compilation failure:
+[ERROR] /C:/Users/Mikha.Shishkanov/flink-jobs/xml-parser-correction/src/main/java/ru/x5/process/IcebergBootstrapSource.java:[3,55] cannot find symbol
+[ERROR]   symbol:   class RichSourceFunction
+[ERROR]   location: package org.apache.flink.streaming.api.functions.source
+[ERROR] /C:/Users/Mikha.Shishkanov/flink-jobs/xml-parser-correction/src/main/java/ru/x5/process/IcebergBootstrapSource.java:[34,45] cannot find symbol
+[ERROR]   symbol: class RichSourceFunction
+[ERROR] /C:/Users/Mikha.Shishkanov/flink-jobs/xml-parser-correction/src/main/java/ru/x5/process/IcebergBootstrapSource.java:[60,21] cannot find symbol
+[ERROR]   symbol:   class SourceContext
+[ERROR]   location: class ru.x5.process.IcebergBootstrapSource
+[ERROR] -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

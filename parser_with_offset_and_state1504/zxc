@@ -1,3 +1,1 @@
-SELECT made_current_at, snapshot_id, parent_id, is_current_ancestor
-FROM ice_baby.core_flow_ing_raw."raw_bptransaction$history"
-ORDER BY made_current_at DESC;
+возможность стартовать чтение Kafka не с начала топика, а с произвольной временной метки и фичу выпуливания дедуп-стейта из уже записанных данных айсберга

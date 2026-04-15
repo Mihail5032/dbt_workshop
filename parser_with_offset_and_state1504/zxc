@@ -1,1 +1,72 @@
-возможность стартовать чтение Kafka не с начала топика, а с произвольной временной метки и фичу выпуливания дедуп-стейта из уже записанных данных айсберга
+-- =================================================================
+-- ШАГ 0: разрешаем агрессивную чистку (по дефолту Trino требует 7d)
+-- =================================================================
+SET SESSION ice_baby.expire_snapshots_min_retention = '0d';
+SET SESSION ice_baby.remove_orphan_files_min_retention = '0d';
+
+
+-- =================================================================
+-- ШАГ 1: удаляем все данные из тестовых таблиц
+-- =================================================================
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bpsourcedocumentli_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptransaction_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bpfinancialmovemen_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bpfinacialmovement_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptransactextensio_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bplineitemextensio_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bplineitemdiscount_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bplineitemdiscext_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptransactdiscext_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptender_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptenderextensions_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bplineitemtax_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bpretailtotals_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptendertotals_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco_2;
+DELETE FROM ice_baby.core_flow_ing_raw.raw_bptransaction_test_2;
+
+
+-- =================================================================
+-- ШАГ 2: expire_snapshots — убираем старые снапшоты и их файлы
+-- retention_threshold = '0d' вместе с SET SESSION сверху = убрать всё кроме текущего
+-- =================================================================
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpsourcedocumentli_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_2        EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpfinancialmovemen_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpfinacialmovement_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactextensio_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpretaillineitem_2     EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemextensio_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscount_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscext_2    EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactdiscext_2    EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptender_2             EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptenderextensions_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemtax_2        EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpretailtotals_2       EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptendertotals_2       EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactiondisco_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_test_2   EXECUTE expire_snapshots(retention_threshold => '0d');
+
+
+-- =================================================================
+-- ШАГ 3: remove_orphan_files — удаляет файлы, не ссылающиеся ни одним снапшотом
+-- =================================================================
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpsourcedocumentli_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_2        EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpfinancialmovemen_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpfinacialmovement_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactextensio_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpretaillineitem_2     EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemextensio_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscount_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemdiscext_2    EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactdiscext_2    EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptender_2             EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptenderextensions_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bplineitemtax_2        EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bpretailtotals_2       EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptendertotals_2       EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransactiondisco_2   EXECUTE remove_orphan_files(retention_threshold => '0d');
+ALTER TABLE ice_baby.core_flow_ing_raw.raw_bptransaction_test_2   EXECUTE remove_orphan_files(retention_threshold => '0d');

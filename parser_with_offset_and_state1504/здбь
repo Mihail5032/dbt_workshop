@@ -1,49 +1,175 @@
-2026-04-15 15:27:06
-java.util.concurrent.CompletionException: java.util.concurrent.CompletionException: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.
-	at org.apache.flink.runtime.scheduler.DefaultExecutionDeployer.lambda$assignResource$4(DefaultExecutionDeployer.java:226)
+Apache Flink Dashboard
+Overview
+Jobs
+Running Jobs
+Completed Jobs
+Task Managers
+Job Manager
+Submit New Job
+Version: 2.1.0 Commit: 4cb6bd3 @ 2025-07-21T13:23:51+02:00 Message:
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+9
+
+Uploaded Jars
+Файл не выбран
+Name	Upload Time	Entry Class	
+original-xml-parser-correction-1.0.6.jar	2026-04-15, 15:36:48	
+-
+Delete
+ru.x5.DataStreamJob
+s3a://flink-operator-data/flink-checkpoints-dev2/3c1af98b96b7fa765f4b7a4b56be64f7/chk-421
+
+Allow Non Restored State
+original-xml-parser-correction-1.0.6.jar	2026-04-15, 15:20:50	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-15, 15:00:48	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-15, 14:57:49	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-15, 09:40:30	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-15, 09:25:45	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-14, 02:36:50	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-13, 22:31:45	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-12, 03:55:27	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-11, 01:44:51	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-10, 11:09:35	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-09, 13:52:44	
+-
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-09, 01:24:09	
+-
+Delete
+nspk-output-adapter-1.0.jar	2026-04-08, 21:41:34	
+ru.x5.NspkJobRun
+Delete
+nspk-output-adapter-1.0.jar	2026-04-08, 21:18:01	
+ru.x5.NspkJobRun
+Delete
+nspk-output-adapter-1.0.jar	2026-04-08, 18:08:14	
+ru.x5.NspkJobRun
+Delete
+original-xml-parser-correction-1.0.6.jar	2026-04-08, 17:29:58	
+-
+Delete
+original-nspk-output-adapter-1.0.jar	2026-04-08, 17:28:50	
+-
+Delete
+
+Server Response Message List
+
+Plan Visualization
+Server Response Message:
+org.apache.flink.runtime.rest.handler.RestHandlerException: Could not execute application.
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.lambda$handleRequest$1(JarRunHandler.java:114)
 	at java.base/java.util.concurrent.CompletableFuture.uniHandle(Unknown Source)
 	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(Unknown Source)
 	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
-	at java.base/java.util.concurrent.CompletableFuture.completeExceptionally(Unknown Source)
-	at org.apache.flink.runtime.jobmaster.slotpool.PendingRequest.failRequest(PendingRequest.java:88)
-	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.cancelPendingRequests(DeclarativeSlotPoolBridge.java:191)
-	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.failPendingRequests(DeclarativeSlotPoolBridge.java:475)
-	at org.apache.flink.runtime.jobmaster.slotpool.DeclarativeSlotPoolBridge.notifyNotEnoughResourcesAvailable(DeclarativeSlotPoolBridge.java:463)
-	at org.apache.flink.runtime.jobmaster.JobMaster.notifyNotEnoughResourcesAvailable(JobMaster.java:972)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.util.concurrent.CompletionException: org.apache.flink.util.FlinkRuntimeException: Could not execute application.
+	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(Unknown Source)
+	... 2 more
+Caused by: org.apache.flink.util.FlinkRuntimeException: Could not execute application.
+	at org.apache.flink.client.deployment.application.DetachedApplicationRunner.tryExecuteJobs(DetachedApplicationRunner.java:88)
+	at org.apache.flink.client.deployment.application.DetachedApplicationRunner.run(DetachedApplicationRunner.java:70)
+	at org.apache.flink.runtime.webmonitor.handlers.JarRunHandler.lambda$handleRequest$0(JarRunHandler.java:108)
+	... 2 more
+Caused by: org.apache.flink.client.program.ProgramInvocationException: The main method caused an error: Failed to execute job 'XML Parser with transaction-level dedup and pst trans before keyBy and bin serial'.
+	at org.apache.flink.client.program.PackagedProgram.callMainMethod(PackagedProgram.java:360)
+	at org.apache.flink.client.program.PackagedProgram.invokeInteractiveModeForExecution(PackagedProgram.java:223)
+	at org.apache.flink.client.ClientUtils.executeProgram(ClientUtils.java:105)
+	at org.apache.flink.client.deployment.application.DetachedApplicationRunner.tryExecuteJobs(DetachedApplicationRunner.java:84)
+	... 4 more
+Caused by: org.apache.flink.util.FlinkException: Failed to execute job 'XML Parser with transaction-level dedup and pst trans before keyBy and bin serial'.
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.executeAsync(StreamExecutionEnvironment.java:2008)
+	at org.apache.flink.client.program.StreamContextEnvironment.executeAsync(StreamContextEnvironment.java:188)
+	at org.apache.flink.client.program.StreamContextEnvironment.execute(StreamContextEnvironment.java:113)
+	at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:1846)
+	at ru.x5.DataStreamJob.run(DataStreamJob.java:210)
+	at ru.x5.DataStreamJob.main(DataStreamJob.java:49)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
 	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
-	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.lambda$handleRpcInvocation$0(PekkoRpcActor.java:310)
-	at org.apache.flink.runtime.concurrent.ClassLoadingUtils.runWithContextClassLoader(ClassLoadingUtils.java:83)
-	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRpcInvocation(PekkoRpcActor.java:309)
-	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleRpcMessage(PekkoRpcActor.java:229)
-	at org.apache.flink.runtime.rpc.pekko.FencedPekkoRpcActor.handleRpcMessage(FencedPekkoRpcActor.java:88)
-	at org.apache.flink.runtime.rpc.pekko.PekkoRpcActor.handleMessage(PekkoRpcActor.java:174)
-	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:33)
-	at org.apache.pekko.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:29)
-	at scala.PartialFunction.applyOrElse(PartialFunction.scala:127)
-	at scala.PartialFunction.applyOrElse$(PartialFunction.scala:126)
-	at org.apache.pekko.japi.pf.UnitCaseStatement.applyOrElse(CaseStatements.scala:29)
-	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:175)
-	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
-	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:176)
-	at org.apache.pekko.actor.Actor.aroundReceive(Actor.scala:547)
-	at org.apache.pekko.actor.Actor.aroundReceive$(Actor.scala:545)
-	at org.apache.pekko.actor.AbstractActor.aroundReceive(AbstractActor.scala:229)
-	at org.apache.pekko.actor.ActorCell.receiveMessage(ActorCell.scala:590)
-	at org.apache.pekko.actor.ActorCell.invoke(ActorCell.scala:557)
-	at org.apache.pekko.dispatch.Mailbox.processMailbox(Mailbox.scala:272)
-	at org.apache.pekko.dispatch.Mailbox.run(Mailbox.scala:233)
-	at org.apache.pekko.dispatch.Mailbox.exec(Mailbox.scala:245)
+	at org.apache.flink.client.program.PackagedProgram.callMainMethod(PackagedProgram.java:343)
+	... 7 more
+Caused by: java.lang.RuntimeException: org.apache.flink.runtime.client.JobInitializationException: Could not start the JobMaster.
+	at org.apache.flink.util.ExceptionUtils.rethrow(ExceptionUtils.java:321)
+	at org.apache.flink.util.function.FunctionUtils.lambda$uncheckedFunction$2(FunctionUtils.java:75)
+	at java.base/java.util.concurrent.CompletableFuture$UniApply.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$Completion.exec(Unknown Source)
 	at java.base/java.util.concurrent.ForkJoinTask.doExec(Unknown Source)
 	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(Unknown Source)
 	at java.base/java.util.concurrent.ForkJoinPool.scan(Unknown Source)
 	at java.base/java.util.concurrent.ForkJoinPool.runWorker(Unknown Source)
 	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(Unknown Source)
-Caused by: java.util.concurrent.CompletionException: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.
+Caused by: org.apache.flink.runtime.client.JobInitializationException: Could not start the JobMaster.
+	at org.apache.flink.runtime.jobmaster.DefaultJobMasterServiceProcess.lambda$new$0(DefaultJobMasterServiceProcess.java:97)
+	at java.base/java.util.concurrent.CompletableFuture.uniWhenComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(Unknown Source)
+	at org.apache.flink.util.MdcUtils.lambda$wrapRunnable$1(MdcUtils.java:70)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.util.concurrent.CompletionException: java.lang.RuntimeException: java.io.FileNotFoundException: Cannot find checkpoint or savepoint file/directory 's3a://flink-operator-data/flink-checkpoints-dev2/3c1af98b96b7fa765f4b7a4b56be64f7/chk-421' on file system 's3a'.
 	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(Unknown Source)
 	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(Unknown Source)
-	at java.base/java.util.concurrent.CompletableFuture$UniApply.tryFire(Unknown Source)
-	... 38 more
-Caused by: org.apache.flink.runtime.jobmanager.scheduler.NoResourceAvailableException: Could not acquire the minimum required resources.
+	... 5 more
+Caused by: java.lang.RuntimeException: java.io.FileNotFoundException: Cannot find checkpoint or savepoint file/directory 's3a://flink-operator-data/flink-checkpoints-dev2/3c1af98b96b7fa765f4b7a4b56be64f7/chk-421' on file system 's3a'.
+	at org.apache.flink.util.ExceptionUtils.rethrow(ExceptionUtils.java:321)
+	at org.apache.flink.util.function.FunctionUtils.lambda$uncheckedSupplier$4(FunctionUtils.java:114)
+	... 5 more
+Caused by: java.io.FileNotFoundException: Cannot find checkpoint or savepoint file/directory 's3a://flink-operator-data/flink-checkpoints-dev2/3c1af98b96b7fa765f4b7a4b56be64f7/chk-421' on file system 's3a'.
+	at org.apache.flink.runtime.state.filesystem.AbstractFsCheckpointStorageAccess.resolveCheckpointPointer(AbstractFsCheckpointStorageAccess.java:275)
+	at org.apache.flink.runtime.state.filesystem.AbstractFsCheckpointStorageAccess.resolveCheckpoint(AbstractFsCheckpointStorageAccess.java:136)
+	at org.apache.flink.runtime.checkpoint.CheckpointCoordinator.restoreSavepoint(CheckpointCoordinator.java:1889)
+	at org.apache.flink.runtime.scheduler.DefaultExecutionGraphFactory.tryRestoreExecutionGraphFromSavepoint(DefaultExecutionGraphFactory.java:217)
+	at org.apache.flink.runtime.scheduler.DefaultExecutionGraphFactory.createAndRestoreExecutionGraph(DefaultExecutionGraphFactory.java:192)
+	at org.apache.flink.runtime.scheduler.SchedulerBase.createAndRestoreExecutionGraph(SchedulerBase.java:402)
+	at org.apache.flink.runtime.scheduler.SchedulerBase.(SchedulerBase.java:237)
+	at org.apache.flink.runtime.scheduler.DefaultScheduler.(DefaultScheduler.java:144)
+	at org.apache.flink.runtime.scheduler.DefaultSchedulerFactory.createInstance(DefaultSchedulerFactory.java:173)
+	at org.apache.flink.runtime.jobmaster.DefaultSlotPoolServiceSchedulerFactory.createScheduler(DefaultSlotPoolServiceSchedulerFactory.java:128)
+	at org.apache.flink.runtime.jobmaster.JobMaster.createScheduler(JobMaster.java:407)
+	at org.apache.flink.runtime.jobmaster.JobMaster.(JobMaster.java:384)
+	at org.apache.flink.runtime.jobmaster.factories.DefaultJobMasterServiceFactory.internalCreateJobMasterService(DefaultJobMasterServiceFactory.java:128)
+	at org.apache.flink.runtime.jobmaster.factories.DefaultJobMasterServiceFactory.lambda$createJobMasterService$0(DefaultJobMasterServiceFactory.java:100)
+	at org.apache.flink.util.function.FunctionUtils.lambda$uncheckedSupplier$4(FunctionUtils.java:112)
+	... 5 more

@@ -1,11 +1,1 @@
-SELECT DISTINCT workstationid
-FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-WHERE businessdaydate = DATE '2026-04-06'
-  AND transactiontypecode IN ('1001','1002','1003','1016','1017',
-                               '1011','1024','1006','1019',
-                               '1010','1012','1015','1025','1027','1028')
-ORDER BY workstationid;
-
-        <OPERATORID>2453519</OPERATORID>
-
-
+kafka.start.timestamp.ms=1744632000000

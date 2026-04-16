@@ -1,14 +1,16 @@
 select 
+    retailstoreid,
+    workstationid,
+    transactionsequencenumber,
     retailsequencenumber,
     salesamount,
     normalsalesamount,
-    salesamount - normalsalesamount as diff,
-    retailtypecode,
-    itemid
-from ice_baby.core_flow_ing_raw.raw_bpretaillineitem r
-where 1=1
-    and businessdaydate = date '2026-04-08'
-    and retailstoreid = '37TZ'
-    and workstationid = '72'
-    and transactionsequencenumber in ('10000000000791176')
-order by retailsequencenumber;
+    cast(salesamount as double) - cast(normalsalesamount as double) as diff,
+    retailtypecode
+from ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+where businessdaydate = date '2026-04-09'
+    and salesamount is not null
+    and normalsalesamount is not null
+    and salesamount <> normalsalesamount
+order by diff
+limit 20;

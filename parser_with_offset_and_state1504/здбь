@@ -1,1 +1,10 @@
-SAP всегда приравнивает salesamount = normalsalesamount для всех retailtypecode, или только для определённых? Потому что если для ВСЕХ — фикс простой (писать normalsalesamount вместо salesamount). Если только для некоторых — нужен список типов.
+select 
+    salesamount,
+    normalsalesamount,
+    cast(salesamount as double) - cast(normalsalesamount as double) as diff
+from ice_baby.core_flow_ing_raw.raw_bpretaillineitem
+where businessdaydate = date '2026-04-09'
+    and salesamount is not null
+    and normalsalesamount is not null
+    and cast(salesamount as double) - cast(normalsalesamount as double) between -0.02 and -0.001
+limit 20;

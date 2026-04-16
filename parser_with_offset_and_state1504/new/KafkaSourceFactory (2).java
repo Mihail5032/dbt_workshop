@@ -35,18 +35,18 @@ public class KafkaSourceFactory {
         log.info("JAAS FILE: " + jaas);
 
         // === Стартовые оффсеты ===
-        // Если задан kafka.start.timestamp.ms — стартуем с timestamp (миграционный режим).
-        // Иначе — сохраняем текущее поведение (earliest).
-        // При restore из чекпоинта Flink автоматически игнорирует startingOffsets
-        // и использует оффсеты из state — ничего дополнительно не требуется.
         org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer
                 startOffsets;
         Long startTsMs = pros.getKafkaStartTimestampMs();
+        log.info("KAFKA_OFFSET_DEBUG: kafka.start.timestamp.ms raw value = ["
+                + pros.getKafkaStartTimestampMs() + "]");
+        log.info("KAFKA_OFFSET_DEBUG: startTsMs = " + startTsMs
+                + ", isNull = " + (startTsMs == null));
         if (startTsMs != null) {
-            log.info("Kafka start offsets: TIMESTAMP " + startTsMs);
+            log.info("KAFKA_OFFSET_DEBUG: using TIMESTAMP offsets = " + startTsMs);
             startOffsets = OffsetsInitializer.timestamp(startTsMs);
         } else {
-            log.info("Kafka start offsets: COMMITTED (group offsets), fallback EARLIEST");
+            log.info("KAFKA_OFFSET_DEBUG: using COMMITTED offsets, fallback EARLIEST");
             startOffsets = OffsetsInitializer.committedOffsets(
                     org.apache.kafka.clients.consumer.OffsetResetStrategy.EARLIEST);
         }

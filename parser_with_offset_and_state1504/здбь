@@ -1,54 +1,14 @@
-Отсутствуют некоторые workstationid и operatorid в скидках на уровне заголовка транзакции	bptransaction, bptransactiondisco	
-
-
-SELECT DISTINCT
-
-tx.workstationid as bptransaction_workstationid,
-
-d.workstationid as bptransactiondisco_workstationid
-
-FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco d
-
-JOIN ice_baby.core_flow_ing_raw.raw_bptransaction tx
-
-ON tx.rtl_txn_rk = d.rtl_txn_rk
-
-WHERE d.reductionamount IS NOT NULL
-
-AND d.reductionamount <> 0
-
-AND tx.transactiontypecode IN (
-
-'1001','1002','1003','1016','1017',
-
-'1011','1024','1006','1019',
-
-'1010','1012','1015','1025','1027','1028'
-
-)
-
-
-
-SELECT DISTINCT tx.operatorid as bptransaction_operatorid
-
-FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco d
-
-JOIN ice_baby.core_flow_ing_raw.raw_bptransaction tx
-
-ON tx.rtl_txn_rk = d.rtl_txn_rk
-
-WHERE tx.businessdaydate = DATE '2026-04-06'
-
-AND d.reductionamount IS NOT NULL
-
-AND d.reductionamount <> 0
-
-AND tx.transactiontypecode IN (
-
-'1001','1002','1003','1016','1017',
-
-'1011','1024','1006','1019',
-
-'1010','1012','1015','1025','1027','1028'
-
-)
+select 
+    retailsequencenumber,
+    salesamount,
+    normalsalesamount,
+    salesamount - normalsalesamount as diff,
+    retailtypecode,
+    itemid
+from ice_baby.core_flow_ing_raw.raw_bpretaillineitem r
+where 1=1
+    and businessdaydate = date '2026-04-08'
+    and retailstoreid = '37TZ'
+    and workstationid = '72'
+    and transactionsequencenumber in ('10000000000791176')
+order by retailsequencenumber;

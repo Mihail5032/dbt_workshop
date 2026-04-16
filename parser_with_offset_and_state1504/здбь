@@ -1,12 +1,1 @@
-select 
-    retailtypecode,
-    count(*) as cnt,
-    min(cast(salesamount as double) - cast(normalsalesamount as double)) as min_diff,
-    max(cast(salesamount as double) - cast(normalsalesamount as double)) as max_diff
-from ice_baby.core_flow_ing_raw.raw_bpretaillineitem
-where businessdaydate = date '2026-04-09'
-    and salesamount is not null
-    and normalsalesamount is not null
-    and salesamount <> normalsalesamount
-group by retailtypecode
-order by cnt desc;
+SAP всегда приравнивает salesamount = normalsalesamount для всех retailtypecode, или только для определённых? Потому что если для ВСЕХ — фикс простой (писать normalsalesamount вместо salesamount). Если только для некоторых — нужен список типов.

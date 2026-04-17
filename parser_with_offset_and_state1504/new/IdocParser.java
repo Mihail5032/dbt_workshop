@@ -61,6 +61,8 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
     private final HashMap<String, List<MarmFm>> marmFmMap = new HashMap<>();
     private final HashMap<String, List<MeanFm>> meanFmMap = new HashMap<>();
     private final Set<String> chkFixesSet = new HashSet<>();  // значения low из tvarvc WHERE name='CHK_FIXES' AND type='S'
+    private final HashMap<Integer, String> exportMap = new HashMap<>();  // reasoncode -> description из dictionaries.export (Расхождение #11)
+    private boolean exportLoaded = false;
     private Long lastSnapshotMean = -1L;
     private Long lastSnapshotMarm = -1L;
     private Long lastSnapshotTvarvc = -1L;
@@ -70,6 +72,7 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
     private transient TableIdentifier tableIdentifierMean;
     private transient TableIdentifier tableIdentifierMarm;
     private transient TableIdentifier tableIdentifierTvarvc;
+    private transient TableIdentifier tableIdentifierExport;
 
     private transient long processedCount = 0;
     private static final long LOG_INTERVAL = 100_000L;
@@ -127,6 +130,7 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
         this.tableIdentifierMean = TableIdentifier.of(SCHEMA_DICT, "mean_fm");
         this.tableIdentifierMarm = TableIdentifier.of(SCHEMA_DICT, "marm_fm");
         this.tableIdentifierTvarvc = TableIdentifier.of(SCHEMA_DICT, "tvarvc");
+        this.tableIdentifierExport = TableIdentifier.of(SCHEMA_DICT, "export");
 
         // Reuse unmarshaller — safe in single-threaded Flink operator
         this.unmarshaller = contextJAXB.createUnmarshaller();
@@ -213,6 +217,11 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
             } catch (Exception e) {
                 log.error("Failed to update tvarvc dictionary", e);
             }
+            try {
+                loadDictExport();  //одноразовая загрузка справочника export для подмены CH_SOURCE (Расхождение #11)
+            } catch (Exception e) {
+                log.error("Failed to load export dictionary", e);
+            }
 
             // === Group by transaction key ===
             Map<String, List<BaseTransactionKey>> txnGroups = new LinkedHashMap<>();
@@ -271,6 +280,28 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
             for (BaseTransactionKey btk : groupSegments) {
                 if (btk instanceof TransactionDiscount) {
                     ((TransactionDiscount) btk).setOperatorId(transactionOperatorId);
+                }
+            }
+        }
+
+        // Расхождение #11: подмена fieldvalue на description из dictionaries.export
+        // для TransactionExtension с fieldname='CH_SOURCE' (только если код парсится в int и найден в справочнике)
+        if (!exportMap.isEmpty()) {
+            for (BaseTransactionKey btk : groupSegments) {
+                if (btk instanceof TransactionExtension) {
+                    TransactionExtension ext = (TransactionExtension) btk;
+                    if (ext.getFieldName() != null && ext.getFieldName().contains("CH_SOURCE")
+                            && ext.getFieldValue() != null) {
+                        try {
+                            int code = Integer.parseInt(ext.getFieldValue().trim());
+                            String desc = exportMap.get(code);
+                            if (desc != null) {
+                                ext.setFieldValue(desc);
+                            }
+                        } catch (NumberFormatException ignored) {
+                            // fieldvalue не число — оставляем как есть
+                        }
+                    }
                 }
             }
         }
@@ -673,6 +704,42 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
             }
         } catch (Exception e) {
             log.warn("Error updating dictionary 'tvarvc': ", e);
+        }
+    }
+
+    /**
+     * Расхождение #11: одноразовая загрузка справочника dictionaries.export
+     * (reasoncode -> description) для подмены fieldvalue при fieldname='CH_SOURCE'
+     * в сегменте TransactionExtension. Справочник не обновляется.
+     */
+    public void loadDictExport() {
+        if (exportLoaded) return;
+        try (TableLoader loader = TableLoader.fromCatalog(catalogLoaderDict, tableIdentifierExport)) {
+            loader.open();
+            Table table = loader.loadTable();
+            try (CloseableIterable<Record> records = IcebergGenerics.read(table).build()) {
+                exportMap.clear();
+                for (Record record : records) {
+                    Object rc = record.getField("reasoncode");
+                    Object desc = record.getField("description");
+                    if (rc == null || desc == null) continue;
+                    Integer code;
+                    if (rc instanceof Integer) {
+                        code = (Integer) rc;
+                    } else {
+                        try {
+                            code = Integer.parseInt(rc.toString().trim());
+                        } catch (NumberFormatException e) {
+                            continue;
+                        }
+                    }
+                    exportMap.put(code, desc.toString());
+                }
+            }
+            exportLoaded = true;
+            log.info("Dictionary 'export' loaded, entries: " + exportMap.size());
+        } catch (Exception e) {
+            log.warn("Error loading dictionary 'export': ", e);
         }
     }
 }

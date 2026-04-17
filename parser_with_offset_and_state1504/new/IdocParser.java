@@ -259,6 +259,22 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
         boolean isCertParty = checkIsCertParty(groupSegments);
         Map<String, String> noteFieldValueMap = buildNoteFieldValueMap(groupSegments);
 
+        // Расхождение #2: propagate operatorId из Transaction в TransactionDiscount
+        String transactionOperatorId = null;
+        for (BaseTransactionKey btk : groupSegments) {
+            if (btk instanceof Transaction) {
+                transactionOperatorId = ((Transaction) btk).getOperatorId();
+                break;
+            }
+        }
+        if (transactionOperatorId != null) {
+            for (BaseTransactionKey btk : groupSegments) {
+                if (btk instanceof TransactionDiscount) {
+                    ((TransactionDiscount) btk).setOperatorId(transactionOperatorId);
+                }
+            }
+        }
+
         List<SegmentEntry> result = new ArrayList<>();
 
         for (BaseTransactionKey btk : groupSegments) {

@@ -147,18 +147,17 @@ public class DataStreamJob {
                 .setParallelism(10)
                 .uid(UID_PARSER);
 
-        // ===== TEST MODE: пишем только raw_bptransaction в raw_bptransaction_test_2 =====
-        // SourceDocument sink отключён.
-        // DataStream<RowData> sourceDocStream = parsed.getSideOutput(IdocParser.SOURCE_DOC_TAG);
-        // TableLoader sourceDocLoader = TableLoader.fromCatalog(catalogLoader,
-        //         TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli_2"));
-        // FlinkSink.forRowData(sourceDocStream)
-        //         .tableLoader(sourceDocLoader)
-        //         .writeParallelism(1)
-        //         .upsert(false)
-        //         .uidPrefix("sink-sourcedocument")
-        //         .set("write.target-file-size-bytes", "268435456")
-        //         .append();
+        // SourceDocument — per-IDOC, эмитится из IdocParser через side output
+        DataStream<RowData> sourceDocStream = parsed.getSideOutput(IdocParser.SOURCE_DOC_TAG);
+        TableLoader sourceDocLoader = TableLoader.fromCatalog(catalogLoader,
+                TableIdentifier.of(SCHEMA, "raw_bpsourcedocumentli_2"));
+        FlinkSink.forRowData(sourceDocStream)
+                .tableLoader(sourceDocLoader)
+                .writeParallelism(1)
+                .upsert(false)
+                .uidPrefix("sink-sourcedocument")
+                .set("write.target-file-size-bytes", "268435456")
+                .append();
 
         // ======================== Этап 2: TransactionProcessor ========================
         SingleOutputStreamOperator<RowData> processed;
@@ -234,66 +233,55 @@ public class DataStreamJob {
                     .uid(UID_PROCESSOR);
         }
 
-        // ============ TEST MODE: единственный sink — raw_bptransaction → raw_bptransaction_test_2 ============
-        OutputTag<RowData> txnTag = StreamSideOutputTag.getTag("E1BPTRANSACTION");
-        DataStream<RowData> txnStream = processed.getSideOutput(txnTag);
-        TableLoader txnTestLoader = TableLoader.fromCatalog(catalogLoader,
-                TableIdentifier.of(SCHEMA, "raw_bptransaction_test_2"));
-        FlinkSink.forRowData(txnStream)
-                .tableLoader(txnTestLoader)
-                .writeParallelism(1)
-                .upsert(false)
-                .uidPrefix("sink-raw-transaction-test")
-                .set("write.target-file-size-bytes", "268435456")
-                .append();
+        // ============ RAW sinks — 4 сегмента без PST-логики ============
+        Map<String, TableIdentifier> rawOnlyTableMap = new HashMap<>();
+        rawOnlyTableMap.put("E1BPLINEITEMTAX",      TableIdentifier.of(SCHEMA, "raw_bplineitemtax_2"));
+        rawOnlyTableMap.put("E1BPRETAILTOTALS",     TableIdentifier.of(SCHEMA, "raw_bpretailtotals_2"));
+        rawOnlyTableMap.put("E1BPTENDERTOTALS",     TableIdentifier.of(SCHEMA, "raw_bptendertotals_2"));
+        rawOnlyTableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco_2"));
 
-        // ============ RAW sinks (4 сегмента без PST) — DISABLED FOR TEST ============
-        // Map<String, TableIdentifier> rawOnlyTableMap = new HashMap<>();
-        // rawOnlyTableMap.put("E1BPLINEITEMTAX",      TableIdentifier.of(SCHEMA, "raw_bplineitemtax_2"));
-        // rawOnlyTableMap.put("E1BPRETAILTOTALS",     TableIdentifier.of(SCHEMA, "raw_bpretailtotals_2"));
-        // rawOnlyTableMap.put("E1BPTENDERTOTALS",     TableIdentifier.of(SCHEMA, "raw_bptendertotals_2"));
-        // rawOnlyTableMap.put("E1BPTRANSACTIONDISCO", TableIdentifier.of(SCHEMA, "raw_bptransactiondisco_2"));
-        //
-        // for (Map.Entry<String, TableIdentifier> entry : rawOnlyTableMap.entrySet()) {
-        //     String segment = entry.getKey();
-        //     OutputTag<RowData> tag = StreamSideOutputTag.getTag(segment);
-        //     DataStream<RowData> sideStream = processed.getSideOutput(tag);
-        //     TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
-        //     FlinkSink.forRowData(sideStream)
-        //             .tableLoader(loader)
-        //             .writeParallelism(1)
-        //             .upsert(false)
-        //             .uidPrefix("sink-" + segment.toLowerCase())
-        //             .set("write.target-file-size-bytes", "268435456")
-        //             .append();
-        // }
+        for (Map.Entry<String, TableIdentifier> entry : rawOnlyTableMap.entrySet()) {
+            String segment = entry.getKey();
+            OutputTag<RowData> tag = StreamSideOutputTag.getTag(segment);
+            DataStream<RowData> sideStream = processed.getSideOutput(tag);
+            TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
 
-        // ============ PST sinks — DISABLED FOR TEST ============
-        // Map<String, Integer> sinkParallelism = new HashMap<>();
-        // sinkParallelism.put("PST_BPLINEITEMEXTENSIO", 3);
-        // sinkParallelism.put("PST_BPTRANSACTEXTENSIO", 3);
-        // sinkParallelism.put("PST_BPRETAILLINEITEM", 3);
-        // sinkParallelism.put("PST_BPTENDEREXTENSIONS", 2);
-        // sinkParallelism.put("PST_BPTRANSACTION", 2);
-        // sinkParallelism.put("PST_BPTENDER", 2);
-        //
+            FlinkSink.forRowData(sideStream)
+                    .tableLoader(loader)
+                    .writeParallelism(1)
+                    .upsert(false)
+                    .uidPrefix("sink-" + segment.toLowerCase())
+                    .set("write.target-file-size-bytes", "268435456")
+                    .append();
+        }
+
+        // ============ PST sinks ============
+        Map<String, Integer> sinkParallelism = new HashMap<>();
+        sinkParallelism.put("PST_BPLINEITEMEXTENSIO", 3);
+        sinkParallelism.put("PST_BPTRANSACTEXTENSIO", 3);
+        sinkParallelism.put("PST_BPRETAILLINEITEM", 3);
+        sinkParallelism.put("PST_BPTENDEREXTENSIONS", 2);
+        sinkParallelism.put("PST_BPTRANSACTION", 2);
+        sinkParallelism.put("PST_BPTENDER", 2);
+
         Map<String, TableLoader> pstSinkLoaders = new HashMap<>();
-        // for (Map.Entry<String, TableIdentifier> entry : pstTableMap.entrySet()) {
-        //     String pstKey = entry.getKey();
-        //     OutputTag<RowData> tag = StreamSideOutputTag.getTag(pstKey);
-        //     DataStream<RowData> pstStream = processed.getSideOutput(tag);
-        //     TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
-        //     pstSinkLoaders.put(pstKey, loader);
-        //
-        //     int parallelism = sinkParallelism.getOrDefault(pstKey, 1);
-        //     FlinkSink.forRowData(pstStream)
-        //             .tableLoader(loader)
-        //             .writeParallelism(parallelism)
-        //             .upsert(false)
-        //             .uidPrefix("sink-" + pstKey.toLowerCase())
-        //             .set("write.target-file-size-bytes", "268435456")
-        //             .append();
-        // }
+        for (Map.Entry<String, TableIdentifier> entry : pstTableMap.entrySet()) {
+            String pstKey = entry.getKey();
+            OutputTag<RowData> tag = StreamSideOutputTag.getTag(pstKey);
+            DataStream<RowData> pstStream = processed.getSideOutput(tag);
+            TableLoader loader = TableLoader.fromCatalog(catalogLoader, entry.getValue());
+            pstSinkLoaders.put(pstKey, loader);
+
+            int parallelism = sinkParallelism.getOrDefault(pstKey, 1);
+
+            FlinkSink.forRowData(pstStream)
+                    .tableLoader(loader)
+                    .writeParallelism(parallelism)
+                    .upsert(false)
+                    .uidPrefix("sink-" + pstKey.toLowerCase())
+                    .set("write.target-file-size-bytes", "268435456")
+                    .append();
+        }
 
         env.execute("XML Parser with transaction-level dedup + optional Iceberg bootstrap");
         closeTableLoaders(tableLoaders);

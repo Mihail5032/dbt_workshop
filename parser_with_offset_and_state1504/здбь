@@ -1,10 +1,56 @@
-select 
-    salesamount,
-    normalsalesamount,
-    cast(salesamount as double) - cast(normalsalesamount as double) as diff
-from ice_baby.core_flow_ing_raw.raw_bpretaillineitem
-where businessdaydate = date '2026-04-09'
-    and salesamount is not null
-    and normalsalesamount is not null
-    and cast(salesamount as double) - cast(normalsalesamount as double) between -0.02 and -0.001
-limit 20;
+13	Отсутствуют некоторые workstationid и operatorid в скидках на уровне заголовка транзакции	bptransaction, bptransactiondisco	
+
+
+SELECT DISTINCT
+
+tx.workstationid as bptransaction_workstationid,
+
+d.workstationid as bptransactiondisco_workstationid
+
+FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco d
+
+JOIN ice_baby.core_flow_ing_raw.raw_bptransaction tx
+
+ON tx.rtl_txn_rk = d.rtl_txn_rk
+
+WHERE d.reductionamount IS NOT NULL
+
+AND d.reductionamount <> 0
+
+AND tx.transactiontypecode IN (
+
+'1001','1002','1003','1016','1017',
+
+'1011','1024','1006','1019',
+
+'1010','1012','1015','1025','1027','1028'
+
+)
+
+
+
+SELECT DISTINCT tx.operatorid as bptransaction_operatorid
+
+FROM ice_baby.core_flow_ing_raw.raw_bptransactiondisco d
+
+JOIN ice_baby.core_flow_ing_raw.raw_bptransaction tx
+
+ON tx.rtl_txn_rk = d.rtl_txn_rk
+
+WHERE tx.businessdaydate = DATE '2026-04-06'
+
+AND d.reductionamount IS NOT NULL
+
+AND d.reductionamount <> 0
+
+AND tx.transactiontypecode IN (
+
+'1001','1002','1003','1016','1017',
+
+'1011','1024','1006','1019',
+
+'1010','1012','1015','1025','1027','1028'
+
+)
+
+1) отсутствуют workstationid > 7 для скидок на уровне заголовка транзакции в bptransactiondisco и bptransactiondisco

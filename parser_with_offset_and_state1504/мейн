@@ -1,5 +1,11 @@
-
-select distinct workstationid
-from ice_baby.core_flow_ing_raw.raw_bptransaction
-where businessdaydate = date '2026-04-06'
-order by workstationid;
+select 
+    tx.workstationid as tx_ws,
+    count(distinct tx.rtl_txn_rk) as transactions_cnt,
+    count(distinct case when d.reductionamount is not null and d.reductionamount <> 0 
+                        then d.rtl_txn_rk end) as transactions_with_head_discount
+from ice_baby.core_flow_ing_raw.raw_bptransaction tx
+left join ice_baby.core_flow_ing_raw.raw_bptransactiondisco d 
+    on tx.rtl_txn_rk = d.rtl_txn_rk
+where tx.businessdaydate = date '2026-04-10'
+group by tx.workstationid
+order by tx.workstationid;

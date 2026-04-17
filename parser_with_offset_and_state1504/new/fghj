@@ -1,1 +1,1 @@
-Где взять полный справочник маппинга код → текстовое описание для CH_SOURCE? 
+mvn clean package -DskipTests

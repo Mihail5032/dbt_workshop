@@ -284,6 +284,38 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
             }
         }
 
+        // === Расхождение #17: синтетические STORNO-расширения для сторнированных ПКО/РКО ===
+        // ABAP: LOOP AT ct_financialmovement WHERE financialtypecode NOT IN ('3169','3170')
+        //       IF matching NOTE ext exists AND length(fieldvalue)>=2 AND fieldvalue+1(1)='2':
+        //           add_ext 'STORNO' <fieldvalue с заменой 2-го символа на '1'>
+        // amount и refererenceid уже инвертируются в FinancialMovemen.toRowDataPst —
+        // здесь добавляем только саму STORNO-запись в bptransactextensio.
+        List<TransactionExtension> stornoToAdd = new ArrayList<>();
+        for (BaseTransactionKey btk : groupSegments) {
+            if (!(btk instanceof FinancialMovemen)) continue;
+            FinancialMovemen fin = (FinancialMovemen) btk;
+            String ftc = fin.getFinancialTypeCode();
+            if (ftc == null || "3169".equals(ftc) || "3170".equals(ftc)) continue;
+
+            String noteFv = noteFieldValueMap.get(buildTxnKey(fin));
+            if (noteFv == null || noteFv.length() < 2 || noteFv.charAt(1) != '2') continue;
+            if (fin.getTransactionTypeCode() == null) continue;  // иначе главный цикл отбросит (line ~283)
+
+            String stornoValue = noteFv.charAt(0) + "1" + noteFv.substring(2);
+
+            TransactionExtension storno = new TransactionExtension();
+            storno.setRetailStoreId(fin.getRetailStoreId());
+            storno.setBusinessDayDate(fin.getBusinessDayDate());
+            storno.setWorkstationId(fin.getWorkstationId());
+            storno.setTransactionSequenceNumber(fin.getTransactionSequenceNumber());
+            storno.setTransactionTypeCode(fin.getTransactionTypeCode());
+            storno.setFieldGroup(null);       // в SAP UI префикса нет — fieldgroup пустой
+            storno.setFieldName("STORNO");
+            storno.setFieldValue(stornoValue);
+            stornoToAdd.add(storno);
+        }
+        groupSegments.addAll(stornoToAdd);
+
         // Расхождение #11: подмена fieldvalue на description из dictionaries.export
         // для TransactionExtension с fieldname='CH_SOURCE' (только если код парсится в int и найден в справочнике)
         if (!exportMap.isEmpty()) {

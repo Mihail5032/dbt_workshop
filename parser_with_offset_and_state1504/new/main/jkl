@@ -1,11 +1,29 @@
-WITH cte AS (
-    SELECT retailstoreid, businessdaydate, COUNT(*) AS cnt
-    FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-    WHERE businessdaydate >= date '2026-04-15'
-    GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
-    HAVING COUNT(*) > 1
-)
-SELECT retailstoreid, businessdaydate, SUM(cnt) AS total_dupes
-FROM cte
-GROUP BY retailstoreid, businessdaydate
-ORDER BY businessdaydate, retailstoreid;
+# 2. Создать резервную ветку на ТЕКУЩЕМ коммите (просто закладка, ничего не переключает)
+git branch backup-before-reset
+
+# 3. Убедиться что ветка создалась
+git branch
+#   main                      ← я здесь (звёздочка)
+#   backup-before-reset       ← закладка на текущем HEAD
+
+# 4. Откатиться на 5 коммитов назад (ТЕКУЩАЯ ветка, напр. main, сдвинется)
+git reset --hard HEAD~5
+
+# 5. Проверить, что откат произошёл
+git log --oneline -10
+#    видим историю без последних 5 коммитов
+
+# ───────────────── ЕСЛИ ПЕРЕДУМАЛ И ХОЧУ ВЕРНУТЬСЯ ─────────────────
+
+# 6a. Вариант 1: просто переключиться на резервную ветку
+git checkout backup-before-reset
+#    теперь я на резервной ветке, все 5 коммитов на месте
+
+# 6b. Вариант 2: остаться на main, но вернуть на неё все коммиты
+git checkout main
+git reset --hard backup-before-reset
+#    main снова указывает туда же, где была закладка
+
+# 7. Когда уверен, что всё ок — удалить резервную ветку
+git branch -d backup-before-reset
+#    (используй -D вместо -d, если git ругается, что она «не смержена»)

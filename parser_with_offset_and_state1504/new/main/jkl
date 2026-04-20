@@ -1,8 +1,1 @@
-        long startupDelayMs = config.getStartupDelayMs();
-        if (startupDelayMs > 0) {
-            log.info("PARSER_STARTUP_DELAY: sleeping {} ms before first record to let bootstrap warm up state, subtask={}",
-                    startupDelayMs, getRuntimeContext().getTaskInfo().getIndexOfThisSubtask());
-            Thread.sleep(startupDelayMs);
-            log.info("PARSER_STARTUP_DELAY: woke up, starting parsing, subtask={}",
-                    getRuntimeContext().getTaskInfo().getIndexOfThisSubtask());
-        }
+1776718800000

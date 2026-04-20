@@ -1,1 +1,7 @@
 
+SELECT *
+FROM ice_baby.core_flow_ing_raw.raw_bpretailtotals
+WHERE businessdaydate = date '2026-04-15'
+  AND retailstoreid = 'H763'
+ORDER BY workstationid, transactionsequencenumber, retailtypecode,
+         load_ts, load_ts_xml;

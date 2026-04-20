@@ -14,14 +14,14 @@ import org.apache.logging.log4j.Logger;
 import ru.x5.model.BootstrapEvent;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
  * Bounded SourceFunction, который читает txnKey из Iceberg-таблицы raw_bptransaction
- * за последние windowDays дней и эмитит их как BootstrapEvent.KEY.
+ * за последние windowDays бизнес-дней (фильтр по businessdaydate, не по load_ts)
+ * и эмитит их как BootstrapEvent.KEY.
  *
  * После прохода по всем записям эмитит один BootstrapEvent.END — именно он используется
  * в TransactionProcessor как broadcast-сигнал, что bootstrap завершён и буфер можно флашить.
@@ -68,12 +68,13 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
         CatalogLoader catalogLoader = CatalogLoader.hive(catalogName, hadoopConf, catalogProps);
         TableIdentifier tid = TableIdentifier.of(schemaName, tableName);
 
-        // В схеме raw_bptransaction нет load_date — фильтруем по load_ts (timestamp).
-        // Для iceberg-timestamp-without-tz сравниваем с микросекундами от epoch.
-        OffsetDateTime cutoffTs = OffsetDateTime.now(ZoneOffset.UTC).minusDays(windowDays);
-        long cutoffMicros = cutoffTs.toInstant().toEpochMilli() * 1000L;
-        log.info("BOOTSTRAP: start reading {}.{} where load_ts >= {} ({} days back)",
-                schemaName, tableName, cutoffTs, windowDays);
+        // Фильтруем по businessdaydate (день продаж), а не по load_ts.
+        // Это защищает от дублей даже если запись была записана в Iceberg давно
+        // (back-fill / late IDOC), но её бизнес-день ещё попадает в окно.
+        // businessdaydate в Iceberg хранится как DATE (epoch day), фильтр — по LocalDate.
+        LocalDate cutoffDate = LocalDate.now(ZoneOffset.UTC).minusDays(windowDays);
+        log.info("BOOTSTRAP: start reading {}.{} where businessdaydate >= {} ({} days back)",
+                schemaName, tableName, cutoffDate, windowDays);
 
         long emitted = 0;
         long skipped = 0;
@@ -83,7 +84,7 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
             Table table = tl.loadTable();
 
             try (CloseableIterable<Record> records = IcebergGenerics.read(table)
-                    .where(Expressions.greaterThanOrEqual("load_ts", cutoffMicros))
+                    .where(Expressions.greaterThanOrEqual("businessdaydate", cutoffDate.toString()))
                     .select("retailstoreid", "businessdaydate",
                             "workstationid", "transactionsequencenumber")
                     .build()) {

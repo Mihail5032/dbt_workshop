@@ -1,7 +1,33 @@
-
-SELECT *
+-- (A) Ключ дубля — есть ли он в raw_bptransaction?
+SELECT COUNT(*) AS cnt,
+       MIN(load_ts) AS first_ts, MAX(load_ts) AS last_ts
+FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+WHERE businessdaydate = date '2026-04-15'
+  AND retailstoreid = 'H763'
+  AND transactionsequencenumber = '100000000007795641';
+-- (B) Разница по времени между двумя дублями в bpretailtotals
+SELECT workstationid, retailtypecode,
+       load_ts, load_ts_xml,
+       LAG(load_ts)     OVER (PARTITION BY retailstoreid, businessdaydate,
+                                            workstationid, transactionsequencenumber, retailtypecode
+                              ORDER BY load_ts)     AS prev_load_ts,
+       LAG(load_ts_xml) OVER (PARTITION BY retailstoreid, businessdaydate,
+                                            workstationid, transactionsequencenumber, retailtypecode
+                              ORDER BY load_ts)     AS prev_load_ts_xml
 FROM ice_baby.core_flow_ing_raw.raw_bpretailtotals
 WHERE businessdaydate = date '2026-04-15'
   AND retailstoreid = 'H763'
-ORDER BY workstationid, transactionsequencenumber, retailtypecode,
-         load_ts, load_ts_xml;
+  AND transactionsequencenumber = '100000000007795641'
+ORDER BY workstationid, retailtypecode, load_ts;
+-- (C) В тех же дате+магазине — все три таблицы по этому txnKey
+SELECT 'bptransaction'   AS tbl, COUNT(*) AS cnt FROM ice_baby.core_flow_ing_raw.raw_bptransaction
+  WHERE businessdaydate = date '2026-04-15' AND retailstoreid='H763'
+    AND transactionsequencenumber='100000000007795641'
+UNION ALL
+SELECT 'bpretailtotals',  COUNT(*) FROM ice_baby.core_flow_ing_raw.raw_bpretailtotals
+  WHERE businessdaydate = date '2026-04-15' AND retailstoreid='H763'
+    AND transactionsequencenumber='100000000007795641'
+UNION ALL
+SELECT 'bptendertotals',  COUNT(*) FROM ice_baby.core_flow_ing_raw.raw_bptendertotals
+  WHERE businessdaydate = date '2026-04-15' AND retailstoreid='H763'
+    AND transactionsequencenumber='100000000007795641';

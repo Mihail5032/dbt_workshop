@@ -37,7 +37,7 @@ public class TransactionExtension extends BaseTransactionKey {
                 .segment_name(getSegmentName())
                 .fieldgroup(fieldGroupStr)
                 .fieldname(prepareFieldName())
-                .fieldvalue(fieldValue)
+                .fieldvalue(prepareFieldValue())
                 .is_head_bonid(prepareIsHeadBonid())
                 .is_aligned_tran(String.valueOf(super.getIs_aligned_tran()))
                 .build().toRowData(icebergSchema, timestampDataXml, dateXml);
@@ -57,6 +57,23 @@ public class TransactionExtension extends BaseTransactionKey {
             return "DOCNUMBER";
         }
         return fieldName.substring(0, Math.min(fieldName.length(), 10));
+    }
+
+    /**
+     * Расхождение #16: для fieldname = 'DOCNUMBER' (в XML это ReceiptNum) обрезаем до 10
+     *                  символов — в SAP поле ZCHECKNO из TLOGF_X имеет длину 10.
+     * Расхождение #23: для всех остальных fieldvalue применяем дефолтный лимит TLOGF_EXT = 40
+     *                  (в нашей raw-таблице ограничения по длине нет, значения > 40 должны
+     *                  обрезаться, как это происходит в SAP /POSDW/TLOGF_EXT.fieldvalue).
+     */
+    private String prepareFieldValue() {
+        if (fieldValue == null) return null;
+        // #16: ReceiptNum → ZCHECKNO CHAR(10)
+        if (fieldName != null && fieldName.contains("ReceiptNum")) {
+            return fieldValue.length() > 10 ? fieldValue.substring(0, 10) : fieldValue;
+        }
+        // #23: общий лимит TLOGF_EXT
+        return fieldValue.length() > 40 ? fieldValue.substring(0, 40) : fieldValue;
     }
 
     private String prepareIsHeadBonid() {

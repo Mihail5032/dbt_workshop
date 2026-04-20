@@ -1,9 +1,6 @@
-SELECT businessdaydate,
-       retailstoreid,
-       workstationid,
-       transactionsequencenumber,
-       COUNT(*) AS cnt
+SELECT retailstoreid, businessdaydate, COUNT(*) AS cnt
 FROM ice_baby.core_flow_ing_raw.raw_bptransaction
-GROUP BY businessdaydate, retailstoreid, workstationid, transactionsequencenumber
+WHERE businessdaydate >= date '2026-04-15'
+GROUP BY retailstoreid, businessdaydate, workstationid, transactionsequencenumber
 HAVING COUNT(*) > 1
 ORDER BY businessdaydate, retailstoreid;

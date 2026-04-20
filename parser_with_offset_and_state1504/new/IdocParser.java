@@ -290,31 +290,38 @@ public class IdocParser extends ProcessFunction<String, TransactionBundle> {
         //           add_ext 'STORNO' <fieldvalue с заменой 2-го символа на '1'>
         // amount и refererenceid уже инвертируются в FinancialMovemen.toRowDataPst —
         // здесь добавляем только саму STORNO-запись в bptransactextensio.
-        List<TransactionExtension> stornoToAdd = new ArrayList<>();
-        for (BaseTransactionKey btk : groupSegments) {
-            if (!(btk instanceof FinancialMovemen)) continue;
-            FinancialMovemen fin = (FinancialMovemen) btk;
-            String ftc = fin.getFinancialTypeCode();
-            if (ftc == null || "3169".equals(ftc) || "3170".equals(ftc)) continue;
+        //
+        // Fast-path: все сегменты в groupSegments имеют один ключ транзакции (они так и сгруппированы),
+        // поэтому NOTE-значение ищем один раз. Для нешторно-транзакций (подавляющее большинство)
+        // весь блок отваливается после одной проверки.
+        if (!groupSegments.isEmpty()) {
+            String txnKey = buildTxnKey(groupSegments.get(0));
+            String noteFv = noteFieldValueMap.get(txnKey);
+            if (noteFv != null && noteFv.length() >= 2 && noteFv.charAt(1) == '2') {
+                String stornoValue = noteFv.charAt(0) + "1" + noteFv.substring(2);
+                List<TransactionExtension> stornoToAdd = null;
+                for (BaseTransactionKey btk : groupSegments) {
+                    if (!(btk instanceof FinancialMovemen)) continue;
+                    FinancialMovemen fin = (FinancialMovemen) btk;
+                    String ftc = fin.getFinancialTypeCode();
+                    if (ftc == null || "3169".equals(ftc) || "3170".equals(ftc)) continue;
+                    if (fin.getTransactionTypeCode() == null) continue;  // иначе главный цикл отбросит
 
-            String noteFv = noteFieldValueMap.get(buildTxnKey(fin));
-            if (noteFv == null || noteFv.length() < 2 || noteFv.charAt(1) != '2') continue;
-            if (fin.getTransactionTypeCode() == null) continue;  // иначе главный цикл отбросит (line ~283)
-
-            String stornoValue = noteFv.charAt(0) + "1" + noteFv.substring(2);
-
-            TransactionExtension storno = new TransactionExtension();
-            storno.setRetailStoreId(fin.getRetailStoreId());
-            storno.setBusinessDayDate(fin.getBusinessDayDate());
-            storno.setWorkstationId(fin.getWorkstationId());
-            storno.setTransactionSequenceNumber(fin.getTransactionSequenceNumber());
-            storno.setTransactionTypeCode(fin.getTransactionTypeCode());
-            storno.setFieldGroup(null);       // в SAP UI префикса нет — fieldgroup пустой
-            storno.setFieldName("STORNO");
-            storno.setFieldValue(stornoValue);
-            stornoToAdd.add(storno);
+                    TransactionExtension storno = new TransactionExtension();
+                    storno.setRetailStoreId(fin.getRetailStoreId());
+                    storno.setBusinessDayDate(fin.getBusinessDayDate());
+                    storno.setWorkstationId(fin.getWorkstationId());
+                    storno.setTransactionSequenceNumber(fin.getTransactionSequenceNumber());
+                    storno.setTransactionTypeCode(fin.getTransactionTypeCode());
+                    storno.setFieldGroup(null);
+                    storno.setFieldName("STORNO");
+                    storno.setFieldValue(stornoValue);
+                    if (stornoToAdd == null) stornoToAdd = new ArrayList<>(2);
+                    stornoToAdd.add(storno);
+                }
+                if (stornoToAdd != null) groupSegments.addAll(stornoToAdd);
+            }
         }
-        groupSegments.addAll(stornoToAdd);
 
         // Расхождение #11: подмена fieldvalue на description из dictionaries.export
         // для TransactionExtension с fieldname='CH_SOURCE' (только если код парсится в int и найден в справочнике)

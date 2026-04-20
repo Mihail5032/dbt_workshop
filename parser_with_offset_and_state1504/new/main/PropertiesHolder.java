@@ -53,6 +53,7 @@ public class PropertiesHolder {
     private static final String BOOTSTRAP_SCHEMA        = "bootstrap.schema";         // default "core_flow_ing_raw"
     private static final String BOOTSTRAP_TABLE         = "bootstrap.table";          // default "raw_bptransaction"
     private static final String BOOTSTRAP_WAIT_MS       = "bootstrap.wait.ms";        // default 600000 (10 мин)
+    private static final String PARSER_STARTUP_DELAY_MS = "parser.startup.delay.ms";  // default 0 (выкл)
 
     private static volatile PropertiesHolder instance;
 
@@ -202,6 +203,19 @@ public class PropertiesHolder {
             return Long.parseLong(props.getProperty(BOOTSTRAP_WAIT_MS, "600000"));
         } catch (NumberFormatException e) {
             return 600_000L;
+        }
+    }
+
+    /**
+     * Задержка старта парсера в мс. Пока IdocParser.open() спит, KafkaSource
+     * заполняет сетевые буферы и уходит в backpressure, а IcebergBootstrapSource
+     * успевает прогреть seenState. Default = 0 (выкл).
+     */
+    public long getStartupDelayMs() {
+        try {
+            return Long.parseLong(props.getProperty(PARSER_STARTUP_DELAY_MS, "0"));
+        } catch (NumberFormatException e) {
+            return 0L;
         }
     }
 }

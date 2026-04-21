@@ -1,4 +1,1 @@
-
-C:\Users\Mikha.Shishkanov\.m2
-
-C:\Users\Mikha.Shishkanov\flink-jobs\wpufib-output-adapter
+mvn exec:java -Dexec.mainClass=ru.OutputAdapterRun

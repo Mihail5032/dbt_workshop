@@ -1,2 +1,19 @@
-dir C:\ /s /b 2>nul | findstr winutils.exe
-mvn clean package -DskipTests
+CREATE TABLE IF NOT EXISTS ice_baby.wpufib.final_table_with_ref (
+    rtl_txn_rk               BINARY,
+    rtl_txn_fin_rk           BINARY,
+    retailstoreid            STRING,
+    transactiontypecode      STRING,
+    transactionsequencenumber STRING,
+    workstationid            STRING,
+    refererenceid            STRING,
+    financialtypecode        STRING,
+    businessdaydate          DATE,
+    financialsequencenumber  INT,
+    amount                   DECIMAL(18,2),
+    turnover                 DECIMAL(18,2),
+    financialcurrency        STRING,
+    plant                    STRING,
+    fieldgroup               STRING,
+    fieldname                STRING,
+    fieldvalue               STRING
+)

@@ -1,1 +1,3 @@
-findstr /n "hive.metastore.uris" src\main\java\ru\Utils\AwsUtils.java
+C:\Users\Mikha.Shishkanov\flink-jobs\wpufib-output-adapter>findstr /n "hive.metastore.uris" src\main\java\ru\Utils\AwsUtils.java
+14:        conf.set("hive.metastore.uris", "thrift://hms.k8s.data-transfer-dev-1.salt.x5.ru:9083");
+15://        conf.set("hive.metastore.uris", "thrift://hive-metastore.hive-metastore:9083");

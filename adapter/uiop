@@ -1,19 +1,276 @@
-CREATE TABLE IF NOT EXISTS ice_baby.wpufib.final_table_with_ref (
-    rtl_txn_rk               VARBINARY,
-    rtl_txn_fin_rk           VARBINARY,
-    retailstoreid            VARCHAR,
-    transactiontypecode      VARCHAR,
-    transactionsequencenumber VARCHAR,
-    workstationid            VARCHAR,
-    refererenceid            VARCHAR,
-    financialtypecode        VARCHAR,
-    businessdaydate          DATE,
-    financialsequencenumber  INTEGER,
-    amount                   DECIMAL(18,2),
-    turnover                 DECIMAL(18,2),
-    financialcurrency        VARCHAR,
-    plant                    VARCHAR,
-    fieldgroup               VARCHAR,
-    fieldname                VARCHAR,
-    fieldvalue               VARCHAR
-);
+Caused by: java.io.IOException: software.amazon.awssdk.services.s3.model.S3Exception: The request signature we calculated does not match the signature you provided. Check your AWS Secret Access Key and signing method. For more information, see REST Authentication and SOAP Authentication for details. (Service: S3, Status Code: 403, Request ID: 27e3e3be-d1ed-1f81-a123-303ea72de65c) (SDK Attempt Count: 1)
+	at org.apache.iceberg.shaded.org.apache.parquet.io.DelegatingPositionOutputStream.close(DelegatingPositionOutputStream.java:41) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.shaded.org.apache.parquet.hadoop.ParquetFileWriter.close(ParquetFileWriter.java:1830) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.shaded.org.apache.parquet.hadoop.ParquetFileWriter.end(ParquetFileWriter.java:1816) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.parquet.ParquetWriter.close(ParquetWriter.java:261) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.DataWriter.close(DataWriter.java:82) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.BaseTaskWriter$BaseRollingWriter.closeCurrent(BaseTaskWriter.java:348) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.BaseTaskWriter$BaseRollingWriter.close(BaseTaskWriter.java:380) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.PartitionedFanoutWriter.close(PartitionedFanoutWriter.java:70) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.BaseTaskWriter.complete(BaseTaskWriter.java:103) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.flink.sink.IcebergStreamWriter.flush(IcebergStreamWriter.java:110) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.flink.sink.IcebergStreamWriter.prepareSnapshotPreBarrier(IcebergStreamWriter.java:65) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.flink.streaming.runtime.tasks.RegularOperatorChain.prepareSnapshotPreBarrier(RegularOperatorChain.java:89) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.SubtaskCheckpointCoordinatorImpl.checkpointState(SubtaskCheckpointCoordinatorImpl.java:333) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.lambda$performCheckpoint$18(StreamTask.java:1450) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTaskActionExecutor$1.runThrowing(StreamTaskActionExecutor.java:50) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.performCheckpoint(StreamTask.java:1438) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.triggerCheckpointAsyncInMailbox(StreamTask.java:1323) ~[flink-runtime-2.1.0.jar:2.1.0]
+	... 14 more
+Caused by: software.amazon.awssdk.services.s3.model.S3Exception: The request signature we calculated does not match the signature you provided. Check your AWS Secret Access Key and signing method. For more information, see REST Authentication and SOAP Authentication for details. (Service: S3, Status Code: 403, Request ID: 27e3e3be-d1ed-1f81-a123-303ea72de65c) (SDK Attempt Count: 1)
+	at software.amazon.awssdk.services.s3.model.S3Exception$BuilderImpl.build(S3Exception.java:113) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.services.s3.model.S3Exception$BuilderImpl.build(S3Exception.java:61) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.utils.RetryableStageHelper.retryPolicyDisallowedRetryException(RetryableStageHelper.java:168) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage.execute(RetryableStage.java:73) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage.execute(RetryableStage.java:36) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.StreamManagingStage.execute(StreamManagingStage.java:53) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.StreamManagingStage.execute(StreamManagingStage.java:35) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallTimeoutTrackingStage.executeWithTimer(ApiCallTimeoutTrackingStage.java:82) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallTimeoutTrackingStage.execute(ApiCallTimeoutTrackingStage.java:62) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallTimeoutTrackingStage.execute(ApiCallTimeoutTrackingStage.java:43) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallMetricCollectionStage.execute(ApiCallMetricCollectionStage.java:50) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallMetricCollectionStage.execute(ApiCallMetricCollectionStage.java:32) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ExecutionFailureExceptionReportingStage.execute(ExecutionFailureExceptionReportingStage.java:37) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ExecutionFailureExceptionReportingStage.execute(ExecutionFailureExceptionReportingStage.java:26) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.http.AmazonSyncHttpClient$RequestExecutionBuilderImpl.execute(AmazonSyncHttpClient.java:210) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.handler.BaseSyncClientHandler.invoke(BaseSyncClientHandler.java:103) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.handler.BaseSyncClientHandler.doExecute(BaseSyncClientHandler.java:173) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.handler.BaseSyncClientHandler.lambda$execute$1(BaseSyncClientHandler.java:80) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.handler.BaseSyncClientHandler.measureApiCallSuccess(BaseSyncClientHandler.java:182) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.internal.handler.BaseSyncClientHandler.execute(BaseSyncClientHandler.java:74) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.core.client.handler.SdkSyncClientHandler.execute(SdkSyncClientHandler.java:45) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.awscore.client.handler.AwsSyncClientHandler.execute(AwsSyncClientHandler.java:53) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at software.amazon.awssdk.services.s3.DefaultS3Client.putObject(DefaultS3Client.java:11883) ~[iceberg-aws-bundle-1.10.0.jar:?]
+	at org.apache.iceberg.aws.s3.S3OutputStream.completeUploads(S3OutputStream.java:443) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.aws.s3.S3OutputStream.close(S3OutputStream.java:269) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.aws.s3.S3OutputStream.close(S3OutputStream.java:255) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.shaded.org.apache.parquet.io.DelegatingPositionOutputStream.close(DelegatingPositionOutputStream.java:40) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.shaded.org.apache.parquet.hadoop.ParquetFileWriter.close(ParquetFileWriter.java:1830) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.shaded.org.apache.parquet.hadoop.ParquetFileWriter.end(ParquetFileWriter.java:1816) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.parquet.ParquetWriter.close(ParquetWriter.java:261) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.DataWriter.close(DataWriter.java:82) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.BaseTaskWriter$BaseRollingWriter.closeCurrent(BaseTaskWriter.java:348) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.BaseTaskWriter$BaseRollingWriter.close(BaseTaskWriter.java:380) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.PartitionedFanoutWriter.close(PartitionedFanoutWriter.java:70) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.io.BaseTaskWriter.complete(BaseTaskWriter.java:103) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.flink.sink.IcebergStreamWriter.flush(IcebergStreamWriter.java:110) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.iceberg.flink.sink.IcebergStreamWriter.prepareSnapshotPreBarrier(IcebergStreamWriter.java:65) ~[iceberg-flink-runtime-2.0-1.10.0.jar:?]
+	at org.apache.flink.streaming.runtime.tasks.RegularOperatorChain.prepareSnapshotPreBarrier(RegularOperatorChain.java:89) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.SubtaskCheckpointCoordinatorImpl.checkpointState(SubtaskCheckpointCoordinatorImpl.java:333) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.lambda$performCheckpoint$18(StreamTask.java:1450) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTaskActionExecutor$1.runThrowing(StreamTaskActionExecutor.java:50) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.performCheckpoint(StreamTask.java:1438) ~[flink-runtime-2.1.0.jar:2.1.0]
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.triggerCheckpointAsyncInMailbox(StreamTask.java:1323) ~[flink-runtime-2.1.0.jar:2.1.0]
+	... 14 more
+2026-04-21 23:32:03,677 INFO  org.apache.flink.runtime.source.coordinator.SourceCoordinator [] - Removing registered reader after failure for subtask 0 (#396) of source Source: Kafka Source.
+2026-04-21 23:32:03,677 INFO  org.apache.flink.runtime.jobmaster.JobMaster                 [] - 1 tasks will be restarted to recover the failed task 2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_396.
+2026-04-21 23:32:03,677 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Job XML Parser <raw_table_test> (620c48763301ae63ae343c782c6b5183) switched from state RUNNING to RESTARTING.
+2026-04-21 23:32:03,696 INFO  org.apache.flink.runtime.resourcemanager.slotmanager.FineGrainedSlotManager [] - Clearing resource requirements of job 620c48763301ae63ae343c782c6b5183
+2026-04-21 23:32:03,871 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - LIST: duration 0:00.207s
+2026-04-21 23:32:03,871 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Found path as directory (with /)
+2026-04-21 23:32:03,871 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Prefix count = 2; object count=0
+2026-04-21 23:32:03,871 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Prefix: flink-checkpoints-dev3/620c48763301ae63ae343c782c6b5183/chk-29/
+2026-04-21 23:32:03,871 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Prefix: flink-checkpoints-dev3/620c48763301ae63ae343c782c6b5183/shared/
+2026-04-21 23:32:04,677 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Job XML Parser <raw_table_test> (620c48763301ae63ae343c782c6b5183) switched from state RESTARTING to RUNNING.
+2026-04-21 23:32:04,678 INFO  org.apache.flink.runtime.checkpoint.CheckpointCoordinator    [] - Restoring job 620c48763301ae63ae343c782c6b5183 from Checkpoint 29 @ 1776766767783 for 620c48763301ae63ae343c782c6b5183 located at s3a://flink-operator-data/flink-checkpoints-dev3/620c48763301ae63ae343c782c6b5183/chk-29.
+2026-04-21 23:32:04,678 INFO  org.apache.flink.runtime.checkpoint.CheckpointCoordinator    [] - No master state to restore
+2026-04-21 23:32:04,678 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer (1/1) (2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_397) switched from CREATED to SCHEDULED.
+2026-04-21 23:32:04,678 INFO  org.apache.flink.runtime.source.coordinator.SourceCoordinator [] - Recovering subtask 0 to checkpoint 29 for source Source: Kafka Source to checkpoint.
+2026-04-21 23:32:04,678 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer (1/1) (2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_397) switched from SCHEDULED to DEPLOYING.
+2026-04-21 23:32:04,678 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Deploying Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer (1/1) (attempt #397) with attempt id 2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_397 and vertex id cbc357ccb763df2852fee8c4fc7d55f2_0 to 100.127.159.215:6122-4c40f8 @ 100.127.159.215 (dataPort=45679) with allocation id 5ac5a8f2231004453a80a5cf40e0791d
+2026-04-21 23:32:04,688 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer (1/1) (2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_397) switched from DEPLOYING to INITIALIZING.
+2026-04-21 23:32:04,699 INFO  org.apache.flink.runtime.resourcemanager.slotmanager.FineGrainedSlotManager [] - Received resource requirements from job 620c48763301ae63ae343c782c6b5183: [ResourceRequirement{resourceProfile=ResourceProfile{UNKNOWN}, numberOfRequiredSlots=1}]
+2026-04-21 23:32:04,990 INFO  org.apache.flink.runtime.source.coordinator.SourceCoordinator [] - Source Source: Kafka Source registering reader for parallel task 0 (#397) @ 100.127.159.215
+2026-04-21 23:32:04,991 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer (1/1) (2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_397) switched from INITIALIZING to RUNNING.
+2026-04-21 23:32:09,687 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:32:09,691 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:32:09,717 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:09,717 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:32:09,717 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:09,717 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:14,364 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
+2026-04-21 23:32:14,365 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:15,930 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:32:15,933 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:32:15,968 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:15,968 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:32:15,968 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:15,968 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:20,249 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
+2026-04-21 23:32:20,249 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:20,586 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
+2026-04-21 23:32:20,586 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:27,002 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
+2026-04-21 23:32:27,002 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:32,713 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
+2026-04-21 23:32:32,713 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:32,950 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
+2026-04-21 23:32:32,950 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:36,777 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Job XML Parser <raw_table_test> (620c48763301ae63ae343c782c6b5183) switched from state RUNNING to CANCELLING.
+2026-04-21 23:32:36,778 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer (1/1) (2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_397) switched from RUNNING to CANCELING.
+2026-04-21 23:32:36,846 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Source: Kafka Source -> tap_00_kafka_in -> 01_parse_xml -> tap_01_rowdata_out -> IcebergStreamWriter -> IcebergFilesCommitter -> IcebergSink core_flow_ing_raw.core_flow_ing_raw.raw_table_audit: Writer (1/1) (2afc70d269a895522adf5daa4e2b3da8_cbc357ccb763df2852fee8c4fc7d55f2_0_397) switched from CANCELING to CANCELED.
+2026-04-21 23:32:36,846 INFO  org.apache.flink.runtime.executiongraph.ExecutionGraph       [] - Job XML Parser <raw_table_test> (620c48763301ae63ae343c782c6b5183) switched from state CANCELLING to CANCELED.
+2026-04-21 23:32:36,846 INFO  org.apache.flink.runtime.checkpoint.CheckpointCoordinator    [] - Stopping checkpoint coordinator for job 620c48763301ae63ae343c782c6b5183.
+2026-04-21 23:32:36,847 INFO  org.apache.flink.runtime.dispatcher.StandaloneDispatcher     [] - Job 620c48763301ae63ae343c782c6b5183 reached terminal state CANCELED.
+2026-04-21 23:32:36,866 INFO  org.apache.flink.runtime.resourcemanager.slotmanager.FineGrainedSlotManager [] - Clearing resource requirements of job 620c48763301ae63ae343c782c6b5183
+2026-04-21 23:32:36,881 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://flink-operator-data/flink-archive-dev3/620c48763301ae63ae343c782c6b5183  (flink-archive-dev3/620c48763301ae63ae343c782c6b5183); needEmptyDirectory=false
+2026-04-21 23:32:36,881 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://flink-operator-data/flink-archive-dev3/620c48763301ae63ae343c782c6b5183
+2026-04-21 23:32:36,881 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD flink-archive-dev3/620c48763301ae63ae343c782c6b5183 with change tracker null
+2026-04-21 23:32:36,884 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - LIST List flink-operator-data:/flink-archive-dev3/620c48763301ae63ae343c782c6b5183/ delimiter=/ keys=2 requester pays=false
+2026-04-21 23:32:36,884 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Starting: LIST
+2026-04-21 23:32:36,890 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - LIST: duration 0:00.006s
+2026-04-21 23:32:36,890 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Not Found: s3a://flink-operator-data/flink-archive-dev3/620c48763301ae63ae343c782c6b5183
+2026-04-21 23:32:36,891 DEBUG org.apache.hadoop.fs.s3a.S3ARetryPolicy                      [] - Retrying on recoverable AWS failures 7 times with an initial interval of 500ms
+2026-04-21 23:32:36,891 DEBUG org.apache.hadoop.fs.s3a.S3ABlockOutputStream                [] - Initialized S3ABlockOutputStream for flink-archive-dev3/620c48763301ae63ae343c782c6b5183 output to FileBlock{index=1, destFile=/tmp/hadoop-flink/s3a/s3ablock-0001-4205129918534209596.tmp, state=Writing, dataSize=0, limit=67108864}
+2026-04-21 23:32:36,892 DEBUG org.apache.hadoop.fs.s3a.S3ABlockOutputStream                [] - S3ABlockOutputStream{WriteOperationHelper {bucket=flink-operator-data}, blockSize=67108864, activeBlock=FileBlock{index=1, destFile=/tmp/hadoop-flink/s3a/s3ablock-0001-4205129918534209596.tmp, state=Writing, dataSize=221973, limit=67108864} Statistics=counters=((multipart_upload_completed=0) (op_hflush=0) (stream_write_total_time=0) (stream_write_total_data=0) (object_multipart_aborted.failures=0) (op_abort=0) (stream_write_exceptions_completing_upload=0) (stream_write_exceptions=0) (multipart_upload_completed.failures=0) (stream_write_bytes=221973) (stream_write_block_uploads=0) (action_executor_acquired=0) (op_hsync=0) (object_multipart_aborted=0) (stream_write_queue_duration=0) (op_abort.failures=0) (action_executor_acquired.failures=0));
+gauges=((stream_write_block_uploads_data_pending=0) (stream_write_block_uploads_pending=0));
+minimums=((action_executor_acquired.failures.min=-1) (multipart_upload_completed.min=-1) (object_multipart_aborted.failures.min=-1) (action_executor_acquired.min=-1) (op_abort.min=-1) (op_abort.failures.min=-1) (object_multipart_aborted.min=-1) (multipart_upload_completed.failures.min=-1));
+maximums=((op_abort.max=-1) (object_multipart_aborted.failures.max=-1) (multipart_upload_completed.failures.max=-1) (object_multipart_aborted.max=-1) (op_abort.failures.max=-1) (action_executor_acquired.failures.max=-1) (multipart_upload_completed.max=-1) (action_executor_acquired.max=-1));
+means=((multipart_upload_completed.failures.mean=(samples=0, sum=0, mean=0.0000)) (action_executor_acquired.failures.mean=(samples=0, sum=0, mean=0.0000)) (op_abort.failures.mean=(samples=0, sum=0, mean=0.0000)) (multipart_upload_completed.mean=(samples=0, sum=0, mean=0.0000)) (object_multipart_aborted.mean=(samples=0, sum=0, mean=0.0000)) (op_abort.mean=(samples=0, sum=0, mean=0.0000)) (action_executor_acquired.mean=(samples=0, sum=0, mean=0.0000)) (object_multipart_aborted.failures.mean=(samples=0, sum=0, mean=0.0000)));
+}: Closing block #1: current block= FileBlock{index=1, destFile=/tmp/hadoop-flink/s3a/s3ablock-0001-4205129918534209596.tmp, state=Writing, dataSize=221973, limit=67108864}
+2026-04-21 23:32:36,893 DEBUG org.apache.hadoop.fs.s3a.S3ABlockOutputStream                [] - Executing regular upload for WriteOperationHelper {bucket=flink-operator-data}
+2026-04-21 23:32:36,893 DEBUG org.apache.hadoop.fs.s3a.S3ADataBlocks                       [] - Start datablock[1] upload
+2026-04-21 23:32:36,893 DEBUG org.apache.hadoop.fs.s3a.S3ADataBlocks                       [] - FileBlock{index=1, destFile=/tmp/hadoop-flink/s3a/s3ablock-0001-4205129918534209596.tmp, state=Writing, dataSize=221973, limit=67108864}: entering state Upload
+2026-04-21 23:32:36,893 DEBUG org.apache.hadoop.fs.s3a.S3ABlockOutputStream                [] - Clearing active block
+2026-04-21 23:32:36,893 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - Starting: Writing Object
+2026-04-21 23:32:36,893 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - PUT 221973 bytes to flink-archive-dev3/620c48763301ae63ae343c782c6b5183
+2026-04-21 23:32:36,893 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - PUT start 221973 bytes
+2026-04-21 23:32:36,932 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - PUT completed success=true; 221973 bytes
+2026-04-21 23:32:36,932 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Finished write to flink-archive-dev3/620c48763301ae63ae343c782c6b5183, len 221973. etag 08cb65f9069dcf2166742cb890d1e01b, version null
+2026-04-21 23:32:36,932 DEBUG org.apache.hadoop.fs.s3a.impl.CallableSupplier               [] - Starting: Waiting for task completion
+2026-04-21 23:32:36,932 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Starting: Deleting 1 keys
+2026-04-21 23:32:36,933 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Initiating delete operation for 1 objects
+2026-04-21 23:32:36,933 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] -  flink-archive-dev3/ 
+2026-04-21 23:32:36,933 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Starting: DELETE 1 keys
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - DELETE 1 keys: duration 0:00.012s
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Deleting 1 keys: duration 0:00.013s
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.impl.CallableSupplier               [] - Waiting for task completion: duration 0:00.013s
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - Writing Object: duration 0:00.052s
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3ADataBlocks                       [] - FileBlock{index=1, destFile=/tmp/hadoop-flink/s3a/s3ablock-0001-4205129918534209596.tmp, state=Upload, dataSize=221973, limit=67108864}: entering state Closed
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3ADataBlocks                       [] - Closed FileBlock{index=1, destFile=/tmp/hadoop-flink/s3a/s3ablock-0001-4205129918534209596.tmp, state=Closed, dataSize=221973, limit=67108864}
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3ADataBlocks                       [] - Closing FileBlock{index=1, destFile=/tmp/hadoop-flink/s3a/s3ablock-0001-4205129918534209596.tmp, state=Closed, dataSize=221973, limit=67108864}
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3ADataBlocks                       [] - block[1]: closeBlock()
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3ABlockOutputStream                [] - Upload complete to flink-archive-dev3/620c48763301ae63ae343c782c6b5183 by WriteOperationHelper {bucket=flink-operator-data}
+2026-04-21 23:32:36,945 DEBUG org.apache.hadoop.fs.s3a.S3ABlockOutputStream                [] - Statistics: OutputStreamStatistics{counters=((op_hsync=0) (action_executor_acquired=0) (action_executor_acquired.failures=0) (stream_write_exceptions_completing_upload=0) (stream_write_total_data=221973) (stream_write_exceptions=0) (stream_write_total_time=0) (op_abort.failures=0) (object_multipart_aborted.failures=0) (stream_write_block_uploads=1) (stream_write_bytes=221973) (op_hflush=0) (multipart_upload_completed=0) (stream_write_queue_duration=0) (object_multipart_aborted=0) (op_abort=0) (multipart_upload_completed.failures=0));
+gauges=((stream_write_block_uploads_pending=1) (stream_write_block_uploads_data_pending=0));
+minimums=((object_multipart_aborted.failures.min=-1) (multipart_upload_completed.failures.min=-1) (multipart_upload_completed.min=-1) (action_executor_acquired.failures.min=-1) (op_abort.failures.min=-1) (action_executor_acquired.min=-1) (op_abort.min=-1) (object_multipart_aborted.min=-1));
+maximums=((object_multipart_aborted.max=-1) (op_abort.failures.max=-1) (action_executor_acquired.failures.max=-1) (op_abort.max=-1) (multipart_upload_completed.failures.max=-1) (object_multipart_aborted.failures.max=-1) (action_executor_acquired.max=-1) (multipart_upload_completed.max=-1));
+means=((action_executor_acquired.failures.mean=(samples=0, sum=0, mean=0.0000)) (object_multipart_aborted.mean=(samples=0, sum=0, mean=0.0000)) (multipart_upload_completed.failures.mean=(samples=0, sum=0, mean=0.0000)) (multipart_upload_completed.mean=(samples=0, sum=0, mean=0.0000)) (action_executor_acquired.mean=(samples=0, sum=0, mean=0.0000)) (op_abort.mean=(samples=0, sum=0, mean=0.0000)) (object_multipart_aborted.failures.mean=(samples=0, sum=0, mean=0.0000)) (op_abort.failures.mean=(samples=0, sum=0, mean=0.0000)));
+, blocksActive=0, blockUploadsCompleted=0, blocksAllocated=1, blocksReleased=1, blocksActivelyAllocated=0, transferDuration=0 ms, totalUploadDuration=0 ms, effectiveBandwidth=0.0 bytes/s}
+2026-04-21 23:32:36,946 INFO  org.apache.flink.runtime.history.FsJobArchivist              [] - Job 620c48763301ae63ae343c782c6b5183 has been archived at s3a://flink-operator-data/flink-archive-dev3/620c48763301ae63ae343c782c6b5183.
+2026-04-21 23:32:36,946 INFO  org.apache.flink.runtime.jobmaster.JobMaster                 [] - Stopping the JobMaster for job 'XML Parser <raw_table_test>' (620c48763301ae63ae343c782c6b5183).
+2026-04-21 23:32:36,947 INFO  org.apache.flink.runtime.checkpoint.StandaloneCompletedCheckpointStore [] - Shutting down
+2026-04-21 23:32:36,947 INFO  org.apache.flink.runtime.checkpoint.StandaloneCompletedCheckpointStore [] - Checkpoint with ID 29 at 's3a://flink-operator-data/flink-checkpoints-dev3/620c48763301ae63ae343c782c6b5183/chk-29' not discarded.
+2026-04-21 23:32:36,947 INFO  org.apache.flink.runtime.source.coordinator.SourceCoordinator [] - Closing SourceCoordinator for source Source: Kafka Source.
+2026-04-21 23:32:36,947 INFO  org.apache.flink.runtime.jobmaster.slotpool.DefaultDeclarativeSlotPool [] - Releasing slot [5ac5a8f2231004453a80a5cf40e0791d].
+2026-04-21 23:32:36,947 INFO  org.apache.flink.runtime.jobmaster.JobMaster                 [] - Disconnect TaskExecutor 100.127.159.215:6122-4c40f8 because: Stopping JobMaster for job 'XML Parser <raw_table_test>' (620c48763301ae63ae343c782c6b5183).
+2026-04-21 23:32:36,948 INFO  org.apache.flink.runtime.jobmaster.JobMaster                 [] - Close ResourceManager connection c67e3e32e3e114f6cabcc16eb8fcf28c: Stopping JobMaster for job 'XML Parser <raw_table_test>' (620c48763301ae63ae343c782c6b5183).
+2026-04-21 23:32:36,948 INFO  org.apache.flink.runtime.resourcemanager.StandaloneResourceManager [] - Disconnect job manager 00000000000000000000000000000000@pekko.tcp://flink@flink-metrics.flink-operator:6123/user/rpc/jobmanager_21 for job 620c48763301ae63ae343c782c6b5183 from the resource manager.
+2026-04-21 23:32:36,949 WARN  org.apache.kafka.common.security.kerberos.KerberosLogin      [] - [Principal=srv.data_stream@X5.RU]: TGT renewal thread has been interrupted and will exit.
+2026-04-21 23:32:36,949 INFO  org.apache.flink.runtime.source.coordinator.SourceCoordinator [] - Source coordinator for source Source: Kafka Source closed.
+2026-04-21 23:32:36,950 INFO  org.apache.flink.runtime.resourcemanager.slotmanager.DefaultSlotStatusSyncer [] - Freeing slot 5ac5a8f2231004453a80a5cf40e0791d.
+2026-04-21 23:32:39,507 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
+2026-04-21 23:32:39,507 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:42,930 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
+2026-04-21 23:32:42,930 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:47,792 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
+2026-04-21 23:32:47,792 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:53,179 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
+2026-04-21 23:32:53,179 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:54,571 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:32:54,575 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:32:54,601 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:54,601 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:32:54,601 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:54,601 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:55,590 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:32:55,593 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:32:55,618 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:55,618 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:32:55,618 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:55,618 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:56,532 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:32:56,536 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:32:56,565 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:56,565 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:32:56,565 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:56,565 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:32:59,759 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:32:59,762 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:32:59,785 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:59,786 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:32:59,786 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:32:59,786 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:05,969 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:33:05,971 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:33:05,995 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:05,995 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:33:05,995 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:05,995 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:06,104 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
+2026-04-21 23:33:06,104 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:06,146 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
+2026-04-21 23:33:06,146 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:07,605 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
+2026-04-21 23:33:07,605 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:08,049 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
+2026-04-21 23:33:08,049 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:09,764 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
+2026-04-21 23:33:09,764 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:11,226 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
+2026-04-21 23:33:11,226 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:11,286 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
+2026-04-21 23:33:11,286 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:17,519 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
+2026-04-21 23:33:17,519 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:17,691 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #1
+2026-04-21 23:33:17,691 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:18,054 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
+2026-04-21 23:33:18,054 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:19,245 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
+2026-04-21 23:33:19,245 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:22,376 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
+2026-04-21 23:33:22,377 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:28,835 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #2
+2026-04-21 23:33:28,835 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:30,599 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
+2026-04-21 23:33:30,599 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:30,632 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
+2026-04-21 23:33:30,632 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:32,154 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
+2026-04-21 23:33:32,154 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:33,408 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
+2026-04-21 23:33:33,408 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:34,941 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #5
+2026-04-21 23:33:34,941 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:35,624 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #6
+2026-04-21 23:33:35,624 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:36,137 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
+2026-04-21 23:33:36,137 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:42,209 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #3
+2026-04-21 23:33:42,209 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:44,611 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:33:44,614 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:33:44,639 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:44,639 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:33:44,639 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:44,639 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:45,678 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:33:45,681 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:33:45,705 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:45,705 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:33:45,705 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:45,705 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:46,677 WARN  org.apache.flink.runtime.webmonitor.handlers.JarRunHandler   [] - Configuring the job submission via query parameters is deprecated. Please migrate to submitting a JSON request instead.
+2026-04-21 23:33:46,680 INFO  org.apache.flink.client.ClientUtils                          [] - Starting program (detached: true)
+2026-04-21 23:33:46,705 INFO  org.apache.iceberg.BaseMetastoreTableOperations              [] - Refreshing table metadata from new version: s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:46,706 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - Getting path status for s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json  (wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json); needEmptyDirectory=false
+2026-04-21 23:33:46,706 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - S3GetFileStatus s3a://datatransfer/wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json
+2026-04-21 23:33:46,706 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:49,060 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
+2026-04-21 23:33:49,060 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null
+2026-04-21 23:33:50,828 DEBUG org.apache.hadoop.fs.s3a.Invoker                             [] - retry #4
+2026-04-21 23:33:50,828 DEBUG org.apache.hadoop.fs.s3a.S3AFileSystem                       [] - HEAD wpufib/final_table_with_ref-ff73d00555b647e384212f9409143e9e/metadata/00000-ac2014e5-cb7c-4212-9f7e-d51218dbcb2e.metadata.json with change tracker null

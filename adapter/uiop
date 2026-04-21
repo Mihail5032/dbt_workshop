@@ -1,16 +1,13 @@
+[INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  07:48 min
-[INFO] Finished at: 2026-04-22T01:30:06+03:00
+[INFO] Total time:  4.504 s
+[INFO] Finished at: 2026-04-22T01:36:44+03:00
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.6.3:java (default-cli) on project bw-corr-receipts: Execution default-cli of goal org.codehaus.mojo:exec-maven-plugin:3.6.3:java failed: Plugin org.codehaus.mojo:exec-maven-plugin:3.6.3 or one of its dependencies could not be resolved:
-[ERROR]         Could not transfer artifact org.codehaus.plexus:plexus-xml:jar:3.0.1 from/to company-mirror (https://art.x5.ru/artifactory/maven-apache-remote): No PSK available. Unable to resume.
-[ERROR]         Could not transfer artifact org.apache.commons:commons-exec:jar:1.6.0 from/to company-mirror (https://art.x5.ru/artifactory/maven-apache-remote): peer not authenticated
-[ERROR]
-[ERROR] -> [Help 1]
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.6.3:java (default-cli) on project bw-corr-receipts: An exception occurred while executing the Java class. org/apache/flink/streaming/api/functions/KeyedProcessFunction: org.apache.flink.streaming.api.functions.KeyedProcessFunction -> [Help 1]
 [ERROR]
 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
 [ERROR] Re-run Maven using the -X switch to enable full debug logging.
 [ERROR]
 [ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

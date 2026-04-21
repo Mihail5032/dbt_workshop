@@ -1,3 +1,1 @@
-Caused by: org.apache.hadoop.hive.metastore.api.MetaException: Could not connect to meta store using any of the URIs provided. Most recent failure: org.apache.thrift.transport.TTransportException: java.net.UnknownHostException: hive-metastore.hive-metastore
-        at org.apache.thrift.transport.TSocket.open(TSocket.java:226)
- 
+findstr /n "hive.metastore.uris" src\main\java\ru\Utils\AwsUtils.java

@@ -1,1 +1,19 @@
-SQL Error [43]: Query failed (#20260421_232457_00022_8qips): line 2:5: Unknown type 'BINARY' for column 'rtl_txn_rk'
+CREATE TABLE IF NOT EXISTS ice_baby.wpufib.final_table_with_ref (
+    rtl_txn_rk               VARBINARY,
+    rtl_txn_fin_rk           VARBINARY,
+    retailstoreid            VARCHAR,
+    transactiontypecode      VARCHAR,
+    transactionsequencenumber VARCHAR,
+    workstationid            VARCHAR,
+    refererenceid            VARCHAR,
+    financialtypecode        VARCHAR,
+    businessdaydate          DATE,
+    financialsequencenumber  INTEGER,
+    amount                   DECIMAL(18,2),
+    turnover                 DECIMAL(18,2),
+    financialcurrency        VARCHAR,
+    plant                    VARCHAR,
+    fieldgroup               VARCHAR,
+    fieldname                VARCHAR,
+    fieldvalue               VARCHAR
+);

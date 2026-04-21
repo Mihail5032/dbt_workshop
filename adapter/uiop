@@ -1,1 +1,2 @@
 dir C:\ /s /b 2>nul | findstr winutils.exe
+mvn clean package -DskipTests

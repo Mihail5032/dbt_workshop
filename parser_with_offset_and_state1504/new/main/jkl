@@ -1,1 +1,33 @@
-1776718800000
+SELECT
+    retailstoreid,
+    workstationid,
+    businessdaydate,
+    transactionsequencenumber,
+    retailsequencenumber,
+    transactiontypecode,
+    itemid,
+    retailtypecode,
+    load_ts,
+    load_ts_xml
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem_test
+WHERE businessdaydate = DATE '2026-04-18'
+  AND retailstoreid = '3538'
+  AND workstationid = '1000'
+  AND transactionsequencenumber = '1000000000003889857'
+  AND retailsequencenumber = 7
+ORDER BY load_ts DESC;
+
+SELECT
+    workstationid,
+    LENGTH(workstationid) AS len,
+    COUNT(*) AS cnt
+FROM ice_baby.core_flow_ing_raw.raw_bpretaillineitem_test
+WHERE businessdaydate = DATE '2026-04-18'
+  AND retailstoreid = '3538'
+GROUP BY workstationid
+ORDER BY cnt DESC;
+
+SELECT name, low, high, opt, sign
+FROM ice_baby.core_flow_ing_raw.tvarvc
+WHERE name = 'CHK_FIXES'
+ORDER BY low;

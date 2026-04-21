@@ -1,1 +1,25 @@
-mvn clean compile exec:java -Dexec.mainClass=ru.OutputAdapterRun -Dexec.classpathScope=compile
+org.apache.iceberg.hive.RuntimeMetaException: Failed to connect to Hive Metastore
+    at org.apache.iceberg.hive.HiveClientPool.newClient (HiveClientPool.java:85)
+    at org.apache.iceberg.hive.HiveClientPool.newClient (HiveClientPool.java:34)
+    at org.apache.iceberg.ClientPoolImpl.get (ClientPoolImpl.java:143)
+utionException: java.lang.RuntimeException: java.io.FileNotFoundException: java.io.FileNotFoundException: HADOOP_HOME and hadoop.home.dir are unset. -see https://wiki.apache.org/hadoop/WindowsProblems
+se.java:377)
+    at org.codehaus.mojo.exec.AbstractExecJavaBase.lambda$execute$0 (AbstractExecJavaBase.java:287)
+    at java.lang.Thread.run (Thread.java:834)
+Caused by: java.io.FileNotFoundException: java.io.FileNotFoundException: HADOOP_HOME and hadoop.home.dir are unset. -see https://wiki.apache.org/hadoop/WindowsProblems
+    at org.apache.hadoop.util.Shell.fileNotFoundException (Shell.java:547)
+    at org.apache.hadoop.util.Shell.getHadoopHomeDir (Shell.java:568)
+    at org.apache.hadoop.util.Shell.getQualifiedBin (Shell.java:591)
+   at org.codehaus.mojo.exec.AbstractExecJavaBase.lambda$execute$0 (AbstractExecJavaBase.java:287)
+    at java.lang.Thread.run (Thread.java:834)
+Caused by: java.io.FileNotFoundException: HADOOP_HOME and hadoop.home.dir are unset.
+    at org.apache.hadoop.util.Shell.checkHadoopHomeInner (Shell.java:467)
+    at org.apache.hadoop.util.Shell.checkHadoopHome (Shell.java:438)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:314)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  21.911 s
+[INFO] Finished at: 2026-04-22T02:06:25+03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.6.3:java (default-cli) on project bw-corr-receipts: An exception occurred while executing the Java class. Failed to connect to Hive Metastore: Unable to instantiate org.apache.hadoop.hive.metastore.HiveMetaStoreClient: InvocationTargetExcepti

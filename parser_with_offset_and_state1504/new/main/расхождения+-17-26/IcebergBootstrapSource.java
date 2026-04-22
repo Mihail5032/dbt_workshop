@@ -17,21 +17,24 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Bounded SourceFunction, который читает txnKey из Iceberg-таблицы raw_bptransaction
- * за последние windowDays бизнес-дней (фильтр по businessdaydate, не по load_ts)
- * и эмитит их как BootstrapEvent.KEY.
+ * за последние windowDays бизнес-дней (фильтр по businessdaydate) и эмитит их как
+ * BootstrapEvent.KEY. После завершения чтения эмитит BootstrapEvent.END.
  *
- * После прохода по всем записям эмитит один BootstrapEvent.END — именно он используется
- * в TransactionProcessor как broadcast-сигнал, что bootstrap завершён и буфер можно флашить.
+ * ГАРАНТИЯ ТАЙМАУТА:
+ * Независимо от того, как долго Iceberg читает таблицу или закрывает итератор,
+ * END эмитится НЕ ПОЗЖЕ чем через maxRunMs с момента старта run(). Это реализовано
+ * через watchdog-тред, который:
+ *   - взводится в начале run();
+ *   - по истечении maxRunMs выставляет running=false (прерывает цикл чтения)
+ *     и принудительно эмитит END, если он ещё не был отправлен.
  *
- * Parallelism этого source-а должен быть 1 (конфигурируется в DataStreamJob), потому что
- * IcebergGenerics.read читает всю таблицу и шардинг по subtask-ам здесь не реализован.
- * Дальше ключи через keyBy(txnKey) распределяются между subtask-ами TransactionProcessor.
+ * Дубль END невозможен — его эмиссия защищена AtomicBoolean endEmitted.
  *
- * ВАЖНО: формат businessdaydate в Iceberg — DATE (epoch day), а в txnKey
- * (см. IdocParser.buildTxnKey) — строка YYYYMMDD. Делаем обратную конвертацию.
+ * Parallelism этого source-а = 1 (конфигурируется в DataStreamJob).
  */
 public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
     private static final Logger log = LogManager.getLogger("ru.x5.parser");
@@ -41,19 +44,23 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
     private final String schemaName;
     private final String tableName;
     private final int windowDays;
+    private final long maxRunMs;            // ← жёсткий таймаут на всю работу run()
     private final Map<String, String> catalogProps;
     private final Map<String, String> hadoopProps;
 
     private volatile boolean running = true;
+    private final AtomicBoolean endEmitted = new AtomicBoolean(false);
 
     public IcebergBootstrapSource(String catalogName, String schemaName, String tableName,
                                    int windowDays,
+                                   long maxRunMs,
                                    Map<String, String> catalogProps,
                                    Map<String, String> hadoopProps) {
         this.catalogName = catalogName;
         this.schemaName = schemaName;
         this.tableName = tableName;
         this.windowDays = windowDays;
+        this.maxRunMs = maxRunMs;
         this.catalogProps = catalogProps;
         this.hadoopProps = hadoopProps;
     }
@@ -68,13 +75,33 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
         CatalogLoader catalogLoader = CatalogLoader.hive(catalogName, hadoopConf, catalogProps);
         TableIdentifier tid = TableIdentifier.of(schemaName, tableName);
 
-        // Фильтруем по businessdaydate (день продаж), а не по load_ts.
-        // Это защищает от дублей даже если запись была записана в Iceberg давно
-        // (back-fill / late IDOC), но её бизнес-день ещё попадает в окно.
-        // businessdaydate в Iceberg хранится как DATE (epoch day), фильтр — по LocalDate.
         LocalDate cutoffDate = LocalDate.now(ZoneOffset.UTC).minusDays(windowDays);
-        log.info("BOOTSTRAP: start reading {}.{} where businessdaydate >= {} ({} days back)",
-                schemaName, tableName, cutoffDate, windowDays);
+        log.info("BOOTSTRAP: start reading {}.{} where businessdaydate >= {} ({} days back), maxRunMs={}",
+                schemaName, tableName, cutoffDate, windowDays, maxRunMs);
+
+        final long startTs = System.currentTimeMillis();
+
+        // === Watchdog: через maxRunMs принудительно закрываем bootstrap и эмитим END ===
+        // Поток демон, чтобы не блокировать завершение JVM.
+        Thread watchdog = new Thread(() -> {
+            try {
+                Thread.sleep(maxRunMs);
+            } catch (InterruptedException ie) {
+                return; // нормальный выход — основной поток успел эмитнуть END и прервал нас
+            }
+            if (!endEmitted.get()) {
+                log.warn("BOOTSTRAP_WATCHDOG: maxRunMs={} exceeded, forcing END emit and stopping iteration",
+                        maxRunMs);
+                running = false;
+                try {
+                    emitEndOnce(ctx, "watchdog-timeout");
+                } catch (Exception e) {
+                    log.error("BOOTSTRAP_WATCHDOG: failed to emit END", e);
+                }
+            }
+        }, "bootstrap-watchdog");
+        watchdog.setDaemon(true);
+        watchdog.start();
 
         long emitted = 0;
         long skipped = 0;
@@ -106,17 +133,39 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
                     }
                     emitted++;
                     if (emitted % 100_000 == 0) {
-                        log.info("BOOTSTRAP: emitted {} keys", emitted);
+                        long elapsed = System.currentTimeMillis() - startTs;
+                        log.info("BOOTSTRAP: emitted {} keys (elapsed {} ms, deadline {} ms)",
+                                emitted, elapsed, maxRunMs);
                     }
                 }
+                // Эмитим END ДО close() итератора — на случай зависания close().
+                emitEndOnce(ctx, "iteration-done pre-close (emitted=" + emitted + ", skipped=" + skipped + ")");
             }
         } catch (Exception e) {
             log.error("BOOTSTRAP: failed while reading Iceberg, emitting END anyway", e);
+            emitEndOnce(ctx, "exception: " + e.getClass().getSimpleName());
         }
 
-        log.info("BOOTSTRAP: finished, emitted {} keys, skipped {}, sending END", emitted, skipped);
-        synchronized (ctx.getCheckpointLock()) {
-            ctx.collect(BootstrapEvent.end());
+        // Гарантированный финальный emit — если по какой-то причине ни одна из веток выше не сработала.
+        emitEndOnce(ctx, "run-end final-safety (emitted=" + emitted + ", skipped=" + skipped + ")");
+
+        // Прерываем watchdog, чтобы он не висел до конца maxRunMs впустую.
+        watchdog.interrupt();
+
+        long elapsed = System.currentTimeMillis() - startTs;
+        log.info("BOOTSTRAP: run() returning. emitted={}, skipped={}, elapsed={} ms", emitted, skipped, elapsed);
+    }
+
+    /**
+     * Эмитит BootstrapEvent.END ровно один раз. Повторные вызовы — noop.
+     * Безопасно вызывать из любых тредов (watchdog / main).
+     */
+    private void emitEndOnce(SourceContext<BootstrapEvent> ctx, String reason) throws Exception {
+        if (endEmitted.compareAndSet(false, true)) {
+            log.info("BOOTSTRAP: sending END (reason={})", reason);
+            synchronized (ctx.getCheckpointLock()) {
+                ctx.collect(BootstrapEvent.end());
+            }
         }
     }
 

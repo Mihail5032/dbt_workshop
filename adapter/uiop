@@ -1,4 +1,4 @@
-2026-04-22 03:00:27
+2026-04-22 03:04:24
 org.apache.iceberg.exceptions.RuntimeIOException: Failed to open input stream for file: s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json
 	at org.apache.iceberg.hadoop.HadoopInputFile.newStream(HadoopInputFile.java:187)
 	at org.apache.iceberg.TableMetadataParser.read(TableMetadataParser.java:308)
@@ -34,7 +34,7 @@ org.apache.iceberg.exceptions.RuntimeIOException: Failed to open input stream fo
 	at org.apache.flink.runtime.taskmanager.Task.doRun(Task.java:756)
 	at org.apache.flink.runtime.taskmanager.Task.run(Task.java:568)
 	at java.base/java.lang.Thread.run(Unknown Source)
-Caused by: java.nio.file.AccessDeniedException: s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json: getFileStatus on s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json: com.amazonaws.services.s3.model.AmazonS3Exception: Forbidden (Service: Amazon S3; Status Code: 403; Error Code: 403 Forbidden; Request ID: 18A884C351B9C39D; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null), S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8:403 Forbidden
+Caused by: java.nio.file.AccessDeniedException: s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json: getFileStatus on s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json: com.amazonaws.services.s3.model.AmazonS3Exception: Forbidden (Service: Amazon S3; Status Code: 403; Error Code: 403 Forbidden; Request ID: 18A884FA7067ACD3; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null), S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8:403 Forbidden
 	at org.apache.hadoop.fs.s3a.S3AUtils.translateException(S3AUtils.java:255)
 	at org.apache.hadoop.fs.s3a.S3AUtils.translateException(S3AUtils.java:175)
 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3796)
@@ -45,7 +45,7 @@ Caused by: java.nio.file.AccessDeniedException: s3a://warehouse/wpufib/final_tab
 	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:976)
 	at org.apache.iceberg.hadoop.HadoopInputFile.newStream(HadoopInputFile.java:183)
 	... 33 more
-Caused by: com.amazonaws.services.s3.model.AmazonS3Exception: Forbidden (Service: Amazon S3; Status Code: 403; Error Code: 403 Forbidden; Request ID: 18A884C351B9C39D; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null), S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8
+Caused by: com.amazonaws.services.s3.model.AmazonS3Exception: Forbidden (Service: Amazon S3; Status Code: 403; Error Code: 403 Forbidden; Request ID: 18A884FA7067ACD3; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null), S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8
 	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.handleErrorResponse(AmazonHttpClient.java:1879)
 	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.handleServiceErrorResponse(AmazonHttpClient.java:1418)
 	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeOneRequest(AmazonHttpClient.java:1387)

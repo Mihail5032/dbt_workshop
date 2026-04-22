@@ -1,31 +1,67 @@
-public static Configuration getEntriesHMS() {
-    Configuration conf = new Configuration();
-    conf.set("hive.metastore.local", "false");
-    conf.set("hive.metastore.uris", "thrift://hms.s3-hms.svc.cluster.local:9083");
-    conf.set("hive.metastore.client.socket.timeout", "60000");
-    conf.set("fs.s3a.access.key", "<ACCESS_KEY>");
-    conf.set("fs.s3a.secret.key", "<SECRET_KEY>");
-    conf.set("fs.s3a.connection.ssl.enabled", "false");
-    conf.set("fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider");
-    conf.set("fs.s3a.path.style.access", "true");
-    conf.set("fs.s3a.endpoint", "http://minio.minio.svc.cluster.local:9000");
-    conf.set("fs.s3a.region", "us-east-1");
-    conf.set(CatalogProperties.FILE_IO_IMPL, "org.apache.iceberg.aws.s3.S3FileIO");
-    conf.set(S3FileIOProperties.PATH_STYLE_ACCESS, "true");
-    conf.set(S3FileIOProperties.ENDPOINT, "http://minio.minio.svc.cluster.local:9000");
-    return conf;
-}
-
-public static Map<String, String> getEntriesS3() {
-    Map<String, String> s3Map = new HashMap<>() {{
-        put("fs.s3a.access.key", "<ACCESS_KEY>");
-        put("fs.s3a.secret.key", "<SECRET_KEY>");
-        put("fs.s3a.connection.ssl.enabled", "false");
-        put("fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider");
-        put("fs.s3a.path.style.access", "true");
-        put("fs.s3a.endpoint", "http://minio.minio.svc.cluster.local:9000");
-        put("fs.s3a.region", "us-east-1");
-        put("warehouse", "s3a://warehouse");
-    }};
-    return s3Map;
-}
+2026-04-22 03:00:27
+org.apache.iceberg.exceptions.RuntimeIOException: Failed to open input stream for file: s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json
+	at org.apache.iceberg.hadoop.HadoopInputFile.newStream(HadoopInputFile.java:187)
+	at org.apache.iceberg.TableMetadataParser.read(TableMetadataParser.java:308)
+	at org.apache.iceberg.TableMetadataParser.read(TableMetadataParser.java:294)
+	at org.apache.iceberg.BaseMetastoreTableOperations.lambda$refreshFromMetadataLocation$0(BaseMetastoreTableOperations.java:180)
+	at org.apache.iceberg.BaseMetastoreTableOperations.lambda$refreshFromMetadataLocation$1(BaseMetastoreTableOperations.java:199)
+	at org.apache.iceberg.util.Tasks$Builder.runTaskWithRetry(Tasks.java:413)
+	at org.apache.iceberg.util.Tasks$Builder.runSingleThreaded(Tasks.java:219)
+	at org.apache.iceberg.util.Tasks$Builder.run(Tasks.java:203)
+	at org.apache.iceberg.util.Tasks$Builder.run(Tasks.java:196)
+	at org.apache.iceberg.BaseMetastoreTableOperations.refreshFromMetadataLocation(BaseMetastoreTableOperations.java:199)
+	at org.apache.iceberg.BaseMetastoreTableOperations.refreshFromMetadataLocation(BaseMetastoreTableOperations.java:176)
+	at org.apache.iceberg.BaseMetastoreTableOperations.refreshFromMetadataLocation(BaseMetastoreTableOperations.java:171)
+	at org.apache.iceberg.hive.HiveTableOperations.doRefresh(HiveTableOperations.java:131)
+	at org.apache.iceberg.BaseMetastoreTableOperations.refresh(BaseMetastoreTableOperations.java:88)
+	at org.apache.iceberg.BaseMetastoreTableOperations.current(BaseMetastoreTableOperations.java:71)
+	at org.apache.iceberg.BaseMetastoreCatalog.loadTable(BaseMetastoreCatalog.java:49)
+	at org.apache.iceberg.flink.TableLoader$CatalogTableLoader.loadTable(TableLoader.java:133)
+	at org.apache.iceberg.flink.source.StreamingMonitorFunction.initializeState(StreamingMonitorFunction.java:117)
+	at org.apache.flink.streaming.util.functions.StreamingFunctionUtils.tryRestoreFunction(StreamingFunctionUtils.java:187)
+	at org.apache.flink.streaming.util.functions.StreamingFunctionUtils.restoreFunctionState(StreamingFunctionUtils.java:169)
+	at org.apache.flink.streaming.api.operators.AbstractUdfStreamOperator.initializeState(AbstractUdfStreamOperator.java:101)
+	at org.apache.flink.streaming.api.operators.StreamOperatorStateHandler.initializeOperatorState(StreamOperatorStateHandler.java:142)
+	at org.apache.flink.streaming.api.operators.AbstractStreamOperator.initializeState(AbstractStreamOperator.java:304)
+	at org.apache.flink.streaming.runtime.tasks.RegularOperatorChain.initializeStateAndOpenOperators(RegularOperatorChain.java:106)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.restoreStateAndGates(StreamTask.java:858)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.lambda$restoreInternal$5(StreamTask.java:812)
+	at org.apache.flink.streaming.runtime.tasks.StreamTaskActionExecutor$SynchronizedStreamTaskActionExecutor.call(StreamTaskActionExecutor.java:100)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.restoreInternal(StreamTask.java:812)
+	at org.apache.flink.streaming.runtime.tasks.StreamTask.restore(StreamTask.java:771)
+	at org.apache.flink.runtime.taskmanager.Task.runWithSystemExitMonitoring(Task.java:963)
+	at org.apache.flink.runtime.taskmanager.Task.restoreAndInvoke(Task.java:932)
+	at org.apache.flink.runtime.taskmanager.Task.doRun(Task.java:756)
+	at org.apache.flink.runtime.taskmanager.Task.run(Task.java:568)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.nio.file.AccessDeniedException: s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json: getFileStatus on s3a://warehouse/wpufib/final_table_with_ref-34ae1b4777cf412cbfb6cb268b13c6fe/metadata/00000-acc7f0c9-1dff-4f0b-8596-d19a8fa87de7.metadata.json: com.amazonaws.services.s3.model.AmazonS3Exception: Forbidden (Service: Amazon S3; Status Code: 403; Error Code: 403 Forbidden; Request ID: 18A884C351B9C39D; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null), S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8:403 Forbidden
+	at org.apache.hadoop.fs.s3a.S3AUtils.translateException(S3AUtils.java:255)
+	at org.apache.hadoop.fs.s3a.S3AUtils.translateException(S3AUtils.java:175)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3796)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.extractOrFetchSimpleFileStatus(S3AFileSystem.java:5401)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1465)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.open(S3AFileSystem.java:1441)
+	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:976)
+	at org.apache.iceberg.hadoop.HadoopInputFile.newStream(HadoopInputFile.java:183)
+	... 33 more
+Caused by: com.amazonaws.services.s3.model.AmazonS3Exception: Forbidden (Service: Amazon S3; Status Code: 403; Error Code: 403 Forbidden; Request ID: 18A884C351B9C39D; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null), S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.handleErrorResponse(AmazonHttpClient.java:1879)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.handleServiceErrorResponse(AmazonHttpClient.java:1418)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeOneRequest(AmazonHttpClient.java:1387)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeHelper(AmazonHttpClient.java:1157)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.doExecute(AmazonHttpClient.java:814)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeWithTimer(AmazonHttpClient.java:781)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.execute(AmazonHttpClient.java:755)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutor.access$500(AmazonHttpClient.java:715)
+	at com.amazonaws.http.AmazonHttpClient$RequestExecutionBuilderImpl.execute(AmazonHttpClient.java:697)
+	at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:561)
+	at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:541)
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5456)
+	at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:5403)
+	at com.amazonaws.services.s3.AmazonS3Client.getObjectMetadata(AmazonS3Client.java:1372)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$getObjectMetadata$10(S3AFileSystem.java:2545)
+	at org.apache.hadoop.fs.s3a.Invoker.retryUntranslated(Invoker.java:414)
+	at org.apache.hadoop.fs.s3a.Invoker.retryUntranslated(Invoker.java:377)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.getObjectMetadata(S3AFileSystem.java:2533)
+	at org.apache.hadoop.fs.s3a.S3AFileSystem.getObjectMetadata(S3AFileSystem.java:2513)

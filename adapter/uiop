@@ -1,96 +1,57 @@
-CREATE TABLE ice_baby.wpufib.final_table_with_ref AS
-WITH
-has_integ_fix AS (
-    SELECT COUNT(*) > 0 AS has_fix
-    FROM ice_baby.dictionaries.tvarvc
-    WHERE name = 'CHK_FIXES'
-      AND low = 'INTEG-9192'
+INSERT INTO ice_baby.wpufib.final_table_with_ref (
+    rtl_txn_rk,
+    rtl_txn_fin_rk,
+    retailstoreid,
+    transactiontypecode,
+    transactionsequencenumber,
+    workstationid,
+    refererenceid,
+    financialtypecode,
+    businessdaydate,
+    financialsequencenumber,
+    amount,
+    turnover,
+    financialcurrency,
+    plant,
+    fieldgroup,
+    fieldname,
+    fieldvalue
+) VALUES
+(
+    to_utf8('TXN-D563-20260420-0001'),
+    to_utf8('FIN-D563-20260420-0001-01'),
+    'D563',
+    '01',
+    '1001',
+    '01',
+    'REF-0001',
+    'CASH',
+    DATE '2026-04-20',
+    1,
+    DECIMAL '1500.50',
+    DECIMAL '1500.50',
+    'RUB',
+    'D563',
+    'E1WPF02',
+    'WAERS',
+    'RUB'
 ),
-
-extensions_dedup AS (
-    SELECT DISTINCT rtl_txn_rk, rtl_txn_fin_rk, fieldgroup, fieldname, fieldvalue
-    FROM ice_baby.wpufib.bpfinancialmovementextensio
-),
-
-extensions_trn_dedup AS (
-    SELECT
-        rtl_txn_rk, fieldgroup, fieldname, fieldvalue,
-        ROW_NUMBER() OVER (
-            PARTITION BY rtl_txn_rk, fieldname
-            ORDER BY load_ts DESC NULLS LAST
-        ) AS rn
-    FROM ice_baby.wpufib.bptransactextensio
-    WHERE fieldvalue IS NOT NULL
-),
-
-txn_extensions_pivoted AS (
-    SELECT
-        rtl_txn_rk,
-        MAX(CASE WHEN fieldname = 'STORNO' THEN fieldvalue END) AS ext_storno,
-        MAX(CASE WHEN fieldname = 'CH_SOURCE' THEN fieldvalue END) AS ext_ch_source,
-        MAX(CASE WHEN fieldname = 'DOCNUMBER' THEN fieldvalue END) AS ext_docnumber,
-        MAX(CASE WHEN fieldname = 'CH_NAME' THEN fieldvalue END) AS ext_ch_name
-    FROM extensions_trn_dedup
-    WHERE rn = 1
-    GROUP BY rtl_txn_rk
-),
-
-fin_extensions_pivoted AS (
-    SELECT
-        rtl_txn_fin_rk,
-        MAX(CASE WHEN fieldname = 'AUTH_TYPE' THEN fieldvalue END) AS ext_auth_type,
-        SUM(CASE WHEN fieldname LIKE 'TYPSUM%'
-             THEN CAST(fieldvalue AS DECIMAL(32,2)) ELSE 0 END) AS typsum_total
-    FROM extensions_dedup
-    GROUP BY rtl_txn_fin_rk
-),
-
-base_filtered AS (
-    SELECT
-        fm.*,
-        txn_ext.ext_storno,
-        txn_ext.ext_ch_source,
-        txn_ext.ext_docnumber,
-        txn_ext.ext_ch_name,
-        fin_ext.ext_auth_type,
-        fin_ext.typsum_total,
-        lp.legal_party_type_dk AS ktokk,
-        s.distribution_channel_dk AS distr_chan,
-        LPAD(fm.retailstoreid, 10, '0') AS plant
-    FROM (
-        SELECT
-            rtl_txn_rk, rtl_txn_fin_rk, businessdaydate, retailstoreid,
-            transactiontypecode, transactionsequencenumber, workstationid,
-            financialtypecode, financialsequencenumber, amount, financialcurrency,
-            ROW_NUMBER() OVER (
-                PARTITION BY rtl_txn_rk, rtl_txn_fin_rk
-                ORDER BY businessdaydate DESC NULLS LAST
-            ) AS rn
-        FROM ice_baby.wpufib.bpfinancialmovemen
-        WHERE retailstoreid = 'D563'                    -- ⬅ фильтр
-          AND businessdaydate = DATE '2026-04-20'       -- ⬅ фильтр
-    ) fm
-    LEFT JOIN txn_extensions_pivoted txn_ext
-        ON fm.rtl_txn_rk = txn_ext.rtl_txn_rk
-    LEFT JOIN fin_extensions_pivoted fin_ext
-        ON fm.rtl_txn_fin_rk = fin_ext.rtl_txn_fin_rk
-    LEFT JOIN ice_baby.dictionaries.dim_legal_party lp
-        ON fm.retailstoreid = lp.legal_party_id
-    LEFT JOIN ice_baby.dictionaries.dim_store s
-        ON fm.retailstoreid = s.store_id
-        AND s.valid_to_dttm > CAST(fm.businessdaydate AS TIMESTAMP)
-    WHERE fm.rn = 1
-      AND fm.transactiontypecode NOT IN ('1303', '1304')
-      AND NOT (
-          fm.financialtypecode IN ('3206', '3100', '3104')
-          AND LPAD(fm.workstationid, 10, '0') <> '0000000000'
-      )
-      AND NOT (
-          fm.transactiontypecode = '1305'
-          AND s.distribution_channel_dk = 'K1'
-          AND fm.financialtypecode = '3226'
-      )
-      AND fm.financialtypecode NOT IN ('3114')
-),
-
--- ... остальные CTE без изменений ...
+(
+    to_utf8('TXN-D563-20260420-0002'),
+    to_utf8('FIN-D563-20260420-0002-01'),
+    'D563',
+    '01',
+    '1002',
+    '02',
+    'REF-0002',
+    'CARD',
+    DATE '2026-04-20',
+    1,
+    DECIMAL '2750.00',
+    DECIMAL '2750.00',
+    'RUB',
+    'D563',
+    'E1WPF02',
+    'WAERS',
+    'RUB'
+);

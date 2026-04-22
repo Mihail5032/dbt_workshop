@@ -1,1 +1,5 @@
-1776632400000 
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project xml-parser-correction: Compilation failure
+[ERROR] /C:/Users/Mikha.Shishkanov/flink-jobs/xml-parser-correction/src/main/java/ru/x5/DataStreamJob.java:[180,54] constructor IcebergBootstrapSource in class ru.x5.process.IcebergBootstrapSource cannot be applied to given types;
+[ERROR]   required: java.lang.String,java.lang.String,java.lang.String,int,java.util.Map<java.lang.String,java.lang.String>,java.util.Map<java.lang.String,java.lang.String>
+[ERROR]   found: java.lang.String,java.lang.String,java.lang.String,int,long,java.util.Map<java.lang.String,java.lang.String>,java.util.Map<java.lang.String,java.lang.String>
+[ERROR]   reason: actual and formal argument lists differ in length

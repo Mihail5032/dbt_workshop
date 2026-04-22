@@ -109,26 +109,15 @@ public class IcebergBootstrapSource extends RichSourceFunction<BootstrapEvent> {
                         log.info("BOOTSTRAP: emitted {} keys", emitted);
                     }
                 }
-                // ВАЖНО: эмитим END ДО выхода из try (т.е. ДО close() итератора).
-                // На больших таблицах close() может висеть минуты из-за закрытия
-                // S3-клиентов и Parquet-ридеров. Если отдать END после close(),
-                // downstream (KeyedBroadcastProcessFunction) не получит сигнал
-                // и будет копить bufferState до OOM.
-                log.info("BOOTSTRAP: finished iterating, emitted {} keys, skipped {}, sending END BEFORE close()",
-                        emitted, skipped);
-                synchronized (ctx.getCheckpointLock()) {
-                    ctx.collect(BootstrapEvent.end());
-                }
             }
         } catch (Exception e) {
             log.error("BOOTSTRAP: failed while reading Iceberg, emitting END anyway", e);
-            synchronized (ctx.getCheckpointLock()) {
-                ctx.collect(BootstrapEvent.end());
-            }
         }
 
-        log.info("BOOTSTRAP: run() returning (close() completed or skipped), emitted={}, skipped={}",
-                emitted, skipped);
+        log.info("BOOTSTRAP: finished, emitted {} keys, skipped {}, sending END", emitted, skipped);
+        synchronized (ctx.getCheckpointLock()) {
+            ctx.collect(BootstrapEvent.end());
+        }
     }
 
     @Override

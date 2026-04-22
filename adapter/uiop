@@ -1,4 +1,4 @@
-INSERT INTO ice_baby.wpufib.final_table_with_ref (
+create table ice_baby.wpufib.final_table_with_ref as (
     rtl_txn_rk,
     rtl_txn_fin_rk,
     retailstoreid,

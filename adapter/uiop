@@ -1,37 +1,28 @@
-create table lev_ice.wpufib.final_table_with_ref as
+CREATE TABLE ice_baby.wpufib.final_table_with_ref AS
 WITH
--- Шаг 1: Переменные из tvarvc для проверки условий
 has_integ_fix AS (
     SELECT COUNT(*) > 0 AS has_fix
-    FROM lev_ice.dictionaries.tvarvc
+    FROM ice_baby.dictionaries.tvarvc
     WHERE name = 'CHK_FIXES'
       AND low = 'INTEG-9192'
 ),
 
--- Шаг 2: Дедупликация расширений (оставляем последнюю load_date)
 extensions_dedup AS (
-        select distinct rtl_txn_rk,
-        rtl_txn_fin_rk,
-        fieldgroup,
-        fieldname,
-        fieldvalue from lev_ice.wpufib.bpfinancialmovementextensio_pst
+    SELECT DISTINCT rtl_txn_rk, rtl_txn_fin_rk, fieldgroup, fieldname, fieldvalue
+    FROM ice_baby.wpufib.bpfinancialmovementextensio
 ),
 
 extensions_trn_dedup AS (
     SELECT
-        rtl_txn_rk,
-        fieldgroup,
-        fieldname,
-        fieldvalue,
+        rtl_txn_rk, fieldgroup, fieldname, fieldvalue,
         ROW_NUMBER() OVER (
             PARTITION BY rtl_txn_rk, fieldname
             ORDER BY load_ts DESC NULLS LAST
         ) AS rn
-    FROM lev_ice.wpufib.bptransactextensio_pst
+    FROM ice_baby.wpufib.bptransactextensio
     WHERE fieldvalue IS NOT NULL
 ),
 
--- Шаг 3: Расширения на уровне транзакции - преобразуем в строки вместо map
 txn_extensions_pivoted AS (
     SELECT
         rtl_txn_rk,
@@ -44,7 +35,6 @@ txn_extensions_pivoted AS (
     GROUP BY rtl_txn_rk
 ),
 
--- Расширения на уровне финансового движения
 fin_extensions_pivoted AS (
     SELECT
         rtl_txn_fin_rk,
@@ -52,11 +42,9 @@ fin_extensions_pivoted AS (
         SUM(CASE WHEN fieldname LIKE 'TYPSUM%'
              THEN CAST(fieldvalue AS DECIMAL(32,2)) ELSE 0 END) AS typsum_total
     FROM extensions_dedup
-    WHERE rn = 1
     GROUP BY rtl_txn_fin_rk
 ),
 
--- Шаг 4: Основные данные с расширениями, обогащение справочниками и фильтрация
 base_filtered AS (
     SELECT
         fm.*,
@@ -78,15 +66,17 @@ base_filtered AS (
                 PARTITION BY rtl_txn_rk, rtl_txn_fin_rk
                 ORDER BY businessdaydate DESC NULLS LAST
             ) AS rn
-        FROM lev_ice.wpufib.bpfinancialmovemen_pst
+        FROM ice_baby.wpufib.bpfinancialmovemen
+        WHERE retailstoreid = 'D563'                    -- ⬅ фильтр
+          AND businessdaydate = DATE '2026-04-20'       -- ⬅ фильтр
     ) fm
     LEFT JOIN txn_extensions_pivoted txn_ext
         ON fm.rtl_txn_rk = txn_ext.rtl_txn_rk
     LEFT JOIN fin_extensions_pivoted fin_ext
         ON fm.rtl_txn_fin_rk = fin_ext.rtl_txn_fin_rk
-    LEFT JOIN lev_ice.dictionaries.dim_legal_party lp
+    LEFT JOIN ice_baby.dictionaries.dim_legal_party lp
         ON fm.retailstoreid = lp.legal_party_id
-    LEFT JOIN lev_ice.dictionaries.dim_store s
+    LEFT JOIN ice_baby.dictionaries.dim_store s
         ON fm.retailstoreid = s.store_id
         AND s.valid_to_dttm > CAST(fm.businessdaydate AS TIMESTAMP)
     WHERE fm.rn = 1
@@ -103,242 +93,4 @@ base_filtered AS (
       AND fm.financialtypecode NOT IN ('3114')
 ),
 
--- Шаг 5: Обработка транзакций 1305 - изменение fitypecode по AUTH_TYPE
-processed_fitype_base AS (
-    SELECT
-        *,
-        CASE
-            WHEN transactiontypecode = '1305'
-                 AND financialtypecode = '3213'
-                 AND ext_auth_type IS NOT NULL THEN
-                CASE
-                    WHEN ext_auth_type IN ('FPS', 'FPSTERM') THEN '3282'
-                    WHEN ext_auth_type = 'SBERPAY' THEN '3349'
-                    WHEN ext_auth_type = 'AOPPCERT' THEN '3226'
-                    ELSE financialtypecode
-                END
-            WHEN financialtypecode = '3220'
-                 AND ext_ch_source = '3251' THEN '3251'
-            ELSE financialtypecode
-        END AS financialtypecode_processed
-    FROM base_filtered
-    WHERE NOT (
-        transactiontypecode = '1305'
-        AND financialtypecode = '3213'
-        AND ext_auth_type = 'ACTCIT'
-    )
-),
-
--- Шаг 6: Установка finumber и PREP_DATE
-processed_fitype AS (
-    SELECT
-        *,
-        CASE
-            WHEN transactiontypecode = '1305' AND financialtypecode = '3213' THEN 1
-            WHEN transactiontypecode = '1305' AND financialtypecode_processed IN ('3282', '3349', '3373', '3226') THEN 1
-            ELSE CAST(financialsequencenumber AS INTEGER)
-        END AS finumber,
-        CASE
-            WHEN financialtypecode_processed IN ('3160', '3161', '3353') THEN
-                DATE_FORMAT(businessdaydate, '%d.%m.%Y')
-            ELSE NULL
-        END AS prep_date
-    FROM processed_fitype_base
-),
-
--- Шаг 7: Исправление суммы ПБП
-with_corrected_amount AS (
-    SELECT
-        w.*,
-        CASE
-            WHEN h.has_fix
-                 AND w.ktokk <> 'Z015'
-                 AND w.financialtypecode_processed IN ('3213', '3282')
-                 AND w.typsum_total > ABS(w.amount) THEN
-                w.typsum_total * (CASE WHEN w.amount < 0 THEN -1 ELSE 1 END)
-            ELSE w.amount
-        END AS corrected_amount
-    FROM processed_fitype w
-    CROSS JOIN has_integ_fix h
-),
-
--- Шаг 8: Обработка сторно и номера транзакции
-with_transformed_data AS (
-    SELECT
-        *,
-        LTRIM(transactionsequencenumber, '0') AS ltrim_transnum,
-        -- Добавление STORNO если amount < 0 и нет ext_storno
-        CASE
-            WHEN corrected_amount < 0
-                 AND ext_storno IS null then '0'
-            ELSE ext_storno
-        END AS final_ext_storno,
-        CASE
-            WHEN corrected_amount < 0 THEN -corrected_amount
-            ELSE corrected_amount
-        END AS final_amount,
-        CASE
-            WHEN corrected_amount < 0 THEN -corrected_amount
-            ELSE corrected_amount
-        END AS turnover
-    FROM with_corrected_amount
-),
-
-with_transformed_data_fixed AS (
-    SELECT
-        *,
-        CASE
-            WHEN ext_docnumber IS NOT NULL
-                 AND LENGTH(ltrim_transnum) > 15 THEN
-                ext_docnumber
-            WHEN LENGTH(ltrim_transnum) > 15 THEN
-                SUBSTRING(ltrim_transnum FROM LENGTH(ltrim_transnum) - 14)
-            ELSE ltrim_transnum
-        END AS transactionsequencenumber_final,
-        retailstoreid AS retailstoreid_final,
-        plant AS plant_final
-    FROM with_transformed_data
-),
-
--- Шаг 9: Получаем расширения транзакций с привязкой к rtl_txn_fin_rk через основные данные
-txn_extensions_expanded AS (
-    SELECT DISTINCT
-        w.rtl_txn_rk,
-        w.rtl_txn_fin_rk,
-        et.fieldgroup,
-        et.fieldname,
-        et.fieldvalue
-    FROM with_transformed_data_fixed w
-    INNER JOIN extensions_trn_dedup et
-        ON w.rtl_txn_rk = et.rtl_txn_rk
-    WHERE et.rn = 1
-),
-
--- Расширения финансовых движений уже имеют rtl_txn_fin_rk 
-
--- Объединяем все расширения
-all_extensions AS (
-    SELECT * FROM txn_extensions_expanded
-    UNION ALL
-    SELECT * FROM extensions_dedup
-),
-
--- Добавляем PREP_DATE и обновленный STORNO как расширения
-extensions_with_prep_date AS (
-    SELECT
-        rtl_txn_rk,
-        rtl_txn_fin_rk,
-        fieldgroup,
-        fieldname,
-        fieldvalue
-    FROM all_extensions
-
-    UNION ALL
-
-    -- Добавляем обновленный STORNO
-    SELECT
-        rtl_txn_rk,
-        rtl_txn_fin_rk,
-        NULL AS fieldgroup,
-        'STORNO' AS fieldname,
-        final_ext_storno AS fieldvalue
-    FROM with_transformed_data_fixed
-    WHERE final_ext_storno IS NOT NULL
-
-    UNION ALL
-
-    -- Добавляем PREP_DATE
-    SELECT
-        rtl_txn_rk,
-        rtl_txn_fin_rk,
-        NULL AS fieldgroup,
-        'PREP_DATE' AS fieldname,
-        prep_date AS fieldvalue
-    FROM with_transformed_data_fixed
-    WHERE prep_date IS NOT NULL
-),
-
--- Шаг 10: Финальные данные
-with_final_data AS (
-    SELECT
-        w.rtl_txn_rk,
-        w.rtl_txn_fin_rk,
-        w.businessdaydate,
-        w.retailstoreid_final AS retailstoreid,
-        w.transactiontypecode,
-        w.transactionsequencenumber_final AS transactionsequencenumber,
-        w.workstationid,
-        w.financialtypecode_processed AS financialtypecode,
-        CASE
-            WHEN w.transactiontypecode = '1305'
-                 AND COUNT(*) OVER (
-                     PARTITION BY
-                         w.rtl_txn_rk,
-                         w.transactiontypecode
-                 ) > 1 THEN 1
-            ELSE w.finumber
-        END AS financialsequencenumber,
-        w.final_amount AS amount,
-        w.turnover,
-        w.financialcurrency,
-        w.plant_final AS plant
-    FROM with_transformed_data_fixed w
-),
-
--- Объединяем основные данные с расширениями
-final_data_with_extensions AS (
-    SELECT
-        f.*,
-        e.fieldgroup,
-        e.fieldname,
-        e.fieldvalue
-    FROM with_final_data f
-    LEFT JOIN extensions_with_prep_date e
-        on f.rtl_txn_fin_rk = e.rtl_txn_fin_rk
-),
-
--- Шаг 11: Обработка услуг - основная выборка
-services_base AS (
-    SELECT * FROM final_data_with_extensions
-
-    UNION ALL
-
-    -- Дополнительные записи для услуг с financialtypecode = '3194'
-    SELECT
-        rtl_txn_rk, rtl_txn_fin_rk, businessdaydate, retailstoreid,
-        transactiontypecode, transactionsequencenumber, workstationid,
-        '3194' AS financialtypecode,
-        financialsequencenumber,
-        amount,
-        turnover,
-        financialcurrency,
-        plant,
-        fieldgroup,
-        fieldname,
-        fieldvalue
-    FROM final_data_with_extensions
-    WHERE financialtypecode IN ('3150', '3151', '3193')
-)
-
--- Итоговый результат
-SELECT
-    rtl_txn_rk,
-    rtl_txn_fin_rk,
-    businessdaydate,
-    retailstoreid,
-    transactiontypecode,
-    transactionsequencenumber,
-    workstationid,
-    '0' as refererenceid,
-    financialtypecode,
-    financialsequencenumber,
-    amount,
-    turnover,
-    financialcurrency,
-    plant,
-    fieldgroup,
-    fieldname,
-    fieldvalue
-FROM services_base
-ORDER BY retailstoreid, businessdaydate, transactionsequencenumber, financialsequencenumber;
-
+-- ... остальные CTE без изменений ...

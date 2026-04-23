@@ -191,6 +191,7 @@ public class DataStreamJob {
                     config.getBootstrapSchema(),
                     config.getBootstrapTable(),
                     config.getBootstrapWindowDays(),
+                    config.getBootstrapWaitMs(),   // ← жёсткий таймаут watchdog-а
                     bootstrapCatalogProps,
                     bootstrapHadoopProps);
 
